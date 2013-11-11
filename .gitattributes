@@ -1,0 +1,15 @@
+# ..
+
+# Git will automatically manage line endings for you if you set the core.autocrlf option.
+# On Windows, you usually want to use true for this setting.
+# 
+# git config --global core.autocrlf true
+# 
+
+#
+# git rm --cached -r .
+# Remove everything from the index.
+#
+# git reset --hard
+# Write both the index and working directory from git's database. 
+#
