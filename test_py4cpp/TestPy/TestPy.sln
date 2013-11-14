@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestPy", "TestPy\TestPy.vcproj", "{D69BADB4-9AA0-4BFA-9A20-8117F1C8B7EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{93BBC14D-36CC-411F-9639-543430700D5B} = {93BBC14D-36CC-411F-9639-543430700D5B}
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E} = {B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_py_engine", "lib_py_engine\lib_py_engine.vcproj", "{93BBC14D-36CC-411F-9639-543430700D5B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E} = {B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_common", "..\..\..\HDOJ\MAIN\src\lib_common\lib_common.vcproj", "{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D69BADB4-9AA0-4BFA-9A20-8117F1C8B7EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D69BADB4-9AA0-4BFA-9A20-8117F1C8B7EA}.Debug|Win32.Build.0 = Debug|Win32
+		{D69BADB4-9AA0-4BFA-9A20-8117F1C8B7EA}.Release|Win32.ActiveCfg = Release|Win32
+		{D69BADB4-9AA0-4BFA-9A20-8117F1C8B7EA}.Release|Win32.Build.0 = Release|Win32
+		{93BBC14D-36CC-411F-9639-543430700D5B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{93BBC14D-36CC-411F-9639-543430700D5B}.Debug|Win32.Build.0 = Debug|Win32
+		{93BBC14D-36CC-411F-9639-543430700D5B}.Release|Win32.ActiveCfg = Release|Win32
+		{93BBC14D-36CC-411F-9639-543430700D5B}.Release|Win32.Build.0 = Release|Win32
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Debug|Win32.Build.0 = Debug|Win32
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Release|Win32.ActiveCfg = Release|Win32
+		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
