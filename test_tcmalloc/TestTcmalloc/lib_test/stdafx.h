@@ -14,6 +14,9 @@
 #include <ctime>
 #include <map>
 #include <string>
+#include <queue>
+#include <vector>
+#include <list>
 
 #include <Windows.h>
 

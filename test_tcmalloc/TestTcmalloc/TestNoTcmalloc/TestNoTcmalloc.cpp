@@ -6,10 +6,21 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int ti = clock();
-	//random_malloc_free(1000000, 1024, 102400);
-	random_malloc_free_mthd(3, 1000000, 1024, 102400);
-	printf("%d\n", clock() - ti);
+	{
+		LogTime _AUTO_TIMER("list_malloc_free(1000000, 1024, 102400)");
+		list_malloc_free(1000000, 1024, 102400);
+	}
+
+	{
+		LogTime _AUTO_TIMER("random_malloc_free(1000000, 1024, 102400)");
+		random_malloc_free(1000000, 1024, 102400);
+	}
+
+	{
+		LogTime _AUTO_TIMER("random_malloc_free_mthd(3, 1000000, 1024, 102400)");
+		random_malloc_free_mthd(3, 1000000, 1024, 102400);
+	}
+	system("pause");
 	return 0;
 }
 

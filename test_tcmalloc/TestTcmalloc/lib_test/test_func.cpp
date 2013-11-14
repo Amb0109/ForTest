@@ -61,3 +61,31 @@ void random_malloc_free_mthd(int thd_cnt, int test_cnt, int test_cap, int max_me
 
 	delete[] thd_lst;
 }
+
+void list_malloc_free(int test_cnt, int test_cap, int max_mem)
+{
+	typedef std::list<char*> POINT_LST;
+	POINT_LST test_lst;
+	for (int i=0; i<test_cnt; ++i)
+	{
+		int len = rand() * rand() % max_mem;
+		char* block = new char[len];
+		test_lst.push_back(block);
+
+		while (test_lst.size() >= test_cap)
+		{
+			delete[] test_lst.front();
+			test_lst.pop_front();
+		}
+		if (rand() & 1)
+		{
+			delete[] test_lst.front();
+			test_lst.pop_front();
+		}
+	}
+	while(!test_lst.empty())
+	{
+		delete[] test_lst.front();
+		test_lst.pop_front();
+	}
+}
