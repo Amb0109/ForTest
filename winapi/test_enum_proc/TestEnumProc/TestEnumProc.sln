@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestWinAPI", "TestWinAPI\TestWinAPI.vcproj", "{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_common", "lib_common\lib_common.vcproj", "{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestEnumProc", "TestEnumProc\TestEnumProc.vcproj", "{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E} = {B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_common", "lib_common\lib_common.vcproj", "{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,14 +14,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}.Debug|Win32.Build.0 = Debug|Win32
-		{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}.Release|Win32.ActiveCfg = Release|Win32
-		{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}.Release|Win32.Build.0 = Release|Win32
 		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Debug|Win32.Build.0 = Debug|Win32
 		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Release|Win32.ActiveCfg = Release|Win32
 		{B47F1F00-54C9-4D7B-87CD-8FF5DBFD5F4E}.Release|Win32.Build.0 = Release|Win32
+		{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}.Debug|Win32.Build.0 = Debug|Win32
+		{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}.Release|Win32.ActiveCfg = Release|Win32
+		{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

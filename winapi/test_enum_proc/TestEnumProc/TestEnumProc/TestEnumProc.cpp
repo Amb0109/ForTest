@@ -98,7 +98,7 @@ std::string DosDevicePath2LogicalPath(LPCTSTR lpszDosPath)
 	return strResult;
 }
 
-int GetCurrentProcessList()
+void GetCurrentProcessList()
 {
 	HANDLE hPowerToken	= NULL;
 
@@ -111,7 +111,7 @@ int GetCurrentProcessList()
 
 	::ZeroMemory(proc_id_lst, 1024);
 	if( !::EnumProcesses(proc_id_lst, proc_lst_size, &proc_id_cnt) )
-		return 0;
+		return;
 	proc_id_cnt /= sizeof(DWORD);
 
 	for (int i=0; i<proc_id_cnt; ++i)

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="TestWinAPI"
-	ProjectGUID="{4BC4D9CF-3AA5-41CE-A093-A65ACD6E7BE2}"
-	RootNamespace="TestWinAPI"
+	Name="TestEnumProc"
+	ProjectGUID="{4A5A8421-7F7C-4752-A543-1BF2D1EBEDEF}"
+	RootNamespace="TestEnumProc"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -61,7 +61,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Psapi.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -182,7 +181,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TestWinAPI.cpp"
+				RelativePath=".\TestEnumProc.cpp"
 				>
 			</File>
 		</Filter>
