@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestBreakPad", "TestBreakPad\TestBreakPad.vcproj", "{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0D6D7F4C-9636-44F1-815C-D9998494C497} = {0D6D7F4C-9636-44F1-815C-D9998494C497}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_breakpad", "lib_breakpad\lib_breakpad.vcproj", "{0D6D7F4C-9636-44F1-815C-D9998494C497}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_bp|Win32 = Debug_bp|Win32
+		Debug_nobp|Win32 = Debug_nobp|Win32
+		Release_bp|Win32 = Release_bp|Win32
+		Release_nobp|Win32 = Release_nobp|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Debug_bp|Win32.ActiveCfg = Debug_bp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Debug_bp|Win32.Build.0 = Debug_bp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Debug_nobp|Win32.ActiveCfg = Debug_nobp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Debug_nobp|Win32.Build.0 = Debug_nobp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Release_bp|Win32.ActiveCfg = Release_bp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Release_bp|Win32.Build.0 = Release_bp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Release_nobp|Win32.ActiveCfg = Release_nobp|Win32
+		{E2B95EFC-914B-4B41-8C82-BDF55F7B9C8C}.Release_nobp|Win32.Build.0 = Release_nobp|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Debug_bp|Win32.ActiveCfg = Debug|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Debug_bp|Win32.Build.0 = Debug|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Debug_nobp|Win32.ActiveCfg = Debug|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Debug_nobp|Win32.Build.0 = Debug|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Release_bp|Win32.ActiveCfg = Release|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Release_bp|Win32.Build.0 = Release|Win32
+		{0D6D7F4C-9636-44F1-815C-D9998494C497}.Release_nobp|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
