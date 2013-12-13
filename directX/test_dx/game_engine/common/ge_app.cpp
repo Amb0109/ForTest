@@ -1,12 +1,15 @@
 #include "ge_app.h"
+#include "ge_engine.h"
+#include "ge_game.h"
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-	if(ge::_global_p_ge_app)
+	ge::GEApp* _g_p_ge_app = ge::GEApp::get_instance();
+	if(_g_p_ge_app)
 	{
 		BOOL use_def_win_proc = TRUE;
 		LRESULT ge_win_proc_ret = 0;
-		ge_win_proc_ret = ge::_global_p_ge_app->MsgProc( uMsg, wParam, lParam, use_def_win_proc );
+		ge_win_proc_ret = _g_p_ge_app->MsgProc( uMsg, wParam, lParam, use_def_win_proc );
 		if (!use_def_win_proc) return ge_win_proc_ret;
 	}
 
@@ -20,7 +23,18 @@ namespace ge
 GEApp::GEApp()
 	:is_app_created_(false)
 {
-	_global_p_ge_app = this;	
+	p_ge_game_ = GEGame::get_instance();
+	p_ge_engine_ = GEEngine::get_instance();
+}
+
+GEApp::~GEApp()
+{
+}
+
+GEApp* GEApp::get_instance()
+{
+	static GEApp _global_p_ge_app;
+	return &_global_p_ge_app;
 }
 
 LRESULT GEApp::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bUseDefWindowsProc )
@@ -116,5 +130,37 @@ bool GEApp::_calc_mid_wnd_pos( GE_IRECT& wnd_rect )
 	return true;
 }
 
+void GEApp::process()
+{
+	_update_time();
+
+	if (p_ge_game_ != NULL)
+	{
+		p_ge_game_->process(time_elapsed_);
+
+		p_ge_engine_ = GEEngine::get_instance();
+		if (p_ge_engine_ != NULL)
+		{
+			p_ge_engine_->process(time_elapsed_);
+		}
+	}
+}
+
+void GEApp::_update_time()
+{
+	last_time_ = cur_time_;
+	cur_time_ = clock();
+	time_elapsed_ = cur_time_ - last_time_;
+
+	++ frame_cnt_;
+	fps_elapsed_ += time_elapsed_ / 1000.f;
+
+	if (fps_elapsed_ >= 1.0f)
+	{
+		fps_ = float(frame_cnt_) / fps_elapsed_;
+		fps_elapsed_ = 0.f;
+		frame_cnt_ = 0;
+	}
+}
 
 }

@@ -6,24 +6,32 @@
 namespace ge
 {
 
-class GE_API GEApp;
+class GE_API GERender;
+
 class GE_API GEEngine
 {
 public:
-	GEEngine(GEApp* g_p_ge_app);
+	GEEngine();
 	virtual ~GEEngine();
 
+	static GEEngine* get_instance();
+
 public:
-	bool init_engine();
-	void close_engine();
+	virtual bool init_engine();
+	virtual void close_engine();
+
+	virtual void process(time_t time_elapsed);
+	virtual bool dx_begin_scene();
+	virtual bool dx_end_scene();
+	virtual bool dx_clear();
+	virtual bool dx_present();
 
 protected:
-	GEApp*					p_ge_app_;
-
 	LPDIRECT3D9				p_d3d_;
 	LPDIRECT3DDEVICE9		p_d3d_device_;
 	D3DPRESENT_PARAMETERS	d3d_present_param_;
 
+	GERender*				p_ge_render_;
 };
 
 } // namespace ge

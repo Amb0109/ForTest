@@ -1,4 +1,4 @@
-#include "ge_def.h"
+#include "geu_gmath.h"
 
 namespace ge
 {

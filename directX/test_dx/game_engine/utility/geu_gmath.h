@@ -1,7 +1,8 @@
-#ifndef _GAME_ENGINE_DEFINE_H_
-#define _GAME_ENGINE_DEFINE_H_
+#ifndef _GAME_ENGINE_UTILITY_GMATH_H_
+#define _GAME_ENGINE_UTILITY_GMATH_H_
 
-#include "ge_include.h"
+#include "../common/ge_include.h"
+
 
 namespace ge
 {
@@ -18,6 +19,14 @@ struct GE_API GE_IRECT : public RECT
 	void move_to(int pos_x, int pos_y);
 };
 
+struct GE_API GE_FRECT
+{
+	float left;
+	float top;
+	float right;
+	float bottom;
+};
+
 }
 
-#endif // _GAME_ENGINE_DEFINE_H_
+#endif // _GAME_ENGINE_UTILITY_GMATH_H_

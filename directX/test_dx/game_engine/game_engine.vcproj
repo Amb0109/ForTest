@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(DXSDK_DIR)\include"
+				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -173,50 +173,100 @@
 	</References>
 	<Files>
 		<Filter
-			Name="源文件"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="object"
 			>
 			<File
-				RelativePath=".\ge_app.cpp"
+				RelativePath=".\object\ge_object.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ge_def.cpp"
+				RelativePath=".\object\ge_object.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ge_engine.cpp"
+				RelativePath=".\object\ge_object_def.h"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_text.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_text.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="头文件"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="render"
 			>
 			<File
-				RelativePath=".\ge_app.h"
+				RelativePath=".\render\ge_render.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ge_def.h"
+				RelativePath=".\render\ge_render.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ge_engine.h"
+				RelativePath=".\render\ger_font.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ge_include.h"
+				RelativePath=".\render\ger_font.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="资源文件"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="common"
 			>
+			<File
+				RelativePath=".\common\ge_app.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_app.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_engine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_engine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_game.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_game.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_include.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_scene.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="utility"
+			>
+			<File
+				RelativePath=".\utility\geu_gmath.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\utility\geu_gmath.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\game_engine.h"

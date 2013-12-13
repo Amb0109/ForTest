@@ -1,11 +1,13 @@
 #include "ge_engine.h"
 #include "ge_app.h"
+#include "../render/ge_render.h"
 
 namespace ge
 {
 
-GEEngine::GEEngine(GEApp* g_p_ge_app)
-:p_ge_app_(g_p_ge_app)
+GEEngine::GEEngine()
+:p_d3d_(NULL) ,p_d3d_device_(NULL),
+p_ge_render_(NULL)
 {
 }
 
@@ -14,8 +16,15 @@ GEEngine::~GEEngine()
 	close_engine();
 }
 
+GEEngine* GEEngine::get_instance()
+{
+	static GEEngine _global_p_ge_engine;
+	return &_global_p_ge_engine;
+}
+
 bool GEEngine::init_engine()
 {
+	GEApp* p_ge_app_ = GEApp::get_instance();
 	if (p_ge_app_ == NULL) return false;
 	if (!p_ge_app_->is_app_created()) return false;
 
@@ -65,12 +74,70 @@ bool GEEngine::init_engine()
 	if (FAILED(h_result)) return false;
 
 	SAFE_RELEASE(p_d3d_);
+	
+	p_ge_render_ = new GERender(p_d3d_device_);
+	if(p_ge_render_ == NULL) return false;
 	return true;
 }
 
 void GEEngine::close_engine()
 {
+	if (p_ge_render_ != NULL)
+	{
+		p_ge_render_->release();
+		delete p_ge_render_;
+		p_ge_render_ = NULL;
+	}
 	SAFE_RELEASE(p_d3d_device_);
+}
+
+bool GEEngine::dx_begin_scene()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	HRESULT h_result = p_d3d_device_->BeginScene();
+	return SUCCEEDED(h_result);
+}
+
+bool GEEngine::dx_end_scene()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	HRESULT h_result = p_d3d_device_->EndScene();
+	return SUCCEEDED(h_result);
+}
+
+bool GEEngine::dx_clear()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	HRESULT h_result = p_d3d_device_->Clear(0,
+		NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+		RGBA(0, 0, 0, 255), 0.0f, 0L);
+	return SUCCEEDED(h_result);
+}
+
+bool GEEngine::dx_present()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	HRESULT h_result = p_d3d_device_->Present(NULL, NULL, NULL, NULL);
+	return SUCCEEDED(h_result);
+}
+
+void GEEngine::process(time_t time_elapsed)
+{
+	if (p_d3d_device_ == NULL) return;
+
+	if(!dx_present()) return;
+
+	if(!dx_begin_scene()) return;
+	if(!dx_clear()) return;
+
+	if (p_ge_render_ != NULL)
+		p_ge_render_->render();
+
+	if(!dx_end_scene()) return;
 }
 
 }
