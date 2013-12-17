@@ -31,7 +31,7 @@ bool GEOModel::create_vetrix_buff( int buff_size )
 	HRESULT h_res = p_d3d_device->CreateVertexBuffer(
 		buff_size * sizeof(GE_VERTEX),
 		D3DUSAGE_WRITEONLY,
-		GE_VERTEX::FVF(),
+		GE_VERTEX::FVF,
 		D3DPOOL_MANAGED,
 		&d3d_vertex_buff_,
 		NULL
@@ -154,7 +154,7 @@ void GEOModel::render( time_t time_elapsed )
 	HRESULT h_res = S_OK;
 	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, sizeof(GE_VERTEX));
 	h_res = p_d3d_device->SetIndices(d3d_index_buff_);
-	h_res = p_d3d_device->SetFVF(GE_VERTEX::FVF());
+	h_res = p_d3d_device->SetFVF(GE_VERTEX::FVF);
 	h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 		0,						// BaseVertexIndex
 		0,						// MinVertexIndex
