@@ -16,6 +16,7 @@
 
 // stl include
 #include <vector>
+#include <queue>
 #include <map>
 
 // win api include

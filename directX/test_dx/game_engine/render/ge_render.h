@@ -8,23 +8,29 @@
 namespace ge
 {
 
+class GE_API GEObject;
 class GE_API GERender
 {
+protected:
+	typedef std::queue<GEObject*> RENDER_TASK_QUE;
+
 public:
-	GERender(LPDIRECT3DDEVICE9 p_d3d_device);
+	GERender();
 	virtual ~GERender();
 
 public:
-	void render();
+	bool init();
+	void render(time_t time_elapsed);
 	void release();
 
-	bool draw_text(const char* text, GE_IRECT& rect, GE_TEXT_STYLE& style);
+	void push_render(GEObject* p_object);
+
+	virtual bool do_view_trans(D3DXVECTOR3& position, D3DXVECTOR3& target, D3DXVECTOR3& up);
+	virtual bool do_projection_trans(float fovy);
+	virtual bool set_render_state(D3DRENDERSTATETYPE type, DWORD value);
 
 protected:
-	LPDIRECT3DDEVICE9	p_d3d_device_;
-
-	GERFontManager		font_manager_;
-	int					def_font_id_;
+	RENDER_TASK_QUE		render_task_que_;
 };
 
 } // namespace ge

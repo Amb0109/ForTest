@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="d3dx9.lib d3d9.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(DXSDK_DIR)/lib/x86"
 				GenerateDebugInformation="true"
@@ -180,6 +181,18 @@
 			</File>
 			<File
 				RelativePath=".\scene\scene_test.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="object"
+			>
+			<File
+				RelativePath=".\object\model_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\model_test.h"
 				>
 			</File>
 		</Filter>

@@ -39,7 +39,11 @@ int GEGame::add_scene( GEScene* ge_scene )
 	ge_scene->init();
 	scene_vec_.push_back(ge_scene);
 	int new_scene_id = (int)scene_vec_.size() - 1;
-	if (cur_scene_id_ == -1) cur_scene_id_ = new_scene_id;
+	if (cur_scene_id_ == -1)
+	{
+		ge_scene->show();
+		cur_scene_id_ = new_scene_id;
+	}
 
 	return new_scene_id;
 }

@@ -7,6 +7,15 @@
 namespace ge
 {
 
+struct GE_VERTEX
+{
+	float x, y, z;
+
+	GE_VERTEX():x(0), y(0), z(0) {}
+	GE_VERTEX(float x_, float y_, float z_):x(x_), y(y_), z(z_) {}
+	static DWORD FVF() {return D3DFVF_XYZ;}
+};
+
 struct GE_API GE_IRECT : public RECT
 {
 	GE_IRECT();

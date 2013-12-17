@@ -1,4 +1,5 @@
 #include "game_engine.h"
+#include "scene/scene_test.h"
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -9,12 +10,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	g_p_ge_engine = ge::GEEngine::get_instance();
 	g_p_ge_game = ge::GEGame::get_instance();
 
-
 	bool init_ok = true;
 	init_ok = init_ok && g_p_ge_app->create_app(hInstance, "Hello World!", 800, 600);
 	init_ok = init_ok && g_p_ge_engine->init_engine();
 
-	if (init_ok) g_p_ge_app->MainLoop();
+	if (init_ok)
+	{
+		g_p_ge_game->add_scene(new SceneTest());
+
+		g_p_ge_app->MainLoop();
+	}
 
 	g_p_ge_engine->close_engine();
 	return 0;

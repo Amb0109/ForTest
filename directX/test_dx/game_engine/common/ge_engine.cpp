@@ -22,13 +22,18 @@ GEEngine* GEEngine::get_instance()
 	return &_global_p_ge_engine;
 }
 
+LPDIRECT3DDEVICE9 GEEngine::get_device()
+{
+	return get_instance()->p_d3d_device_;
+}
+
 bool GEEngine::init_engine()
 {
 	GEApp* p_ge_app_ = GEApp::get_instance();
 	if (p_ge_app_ == NULL) return false;
 	if (!p_ge_app_->is_app_created()) return false;
 
-	HRESULT h_result = S_OK;
+	HRESULT h_res = S_OK;
 
 	p_d3d_ = Direct3DCreate9(D3D_SDK_VERSION);
 	if (NULL == p_d3d_) return false;
@@ -36,13 +41,13 @@ bool GEEngine::init_engine()
 	UINT adapter_type	= D3DADAPTER_DEFAULT;
 	D3DDEVTYPE dev_type	= D3DDEVTYPE_HAL;
 	D3DCAPS9 d3d_caps;
-	h_result = p_d3d_->GetDeviceCaps(adapter_type, dev_type, &d3d_caps);
-	if (FAILED(h_result))
+	h_res = p_d3d_->GetDeviceCaps(adapter_type, dev_type, &d3d_caps);
+	if (FAILED(h_res))
 	{
 		dev_type = D3DDEVTYPE_REF;
-		h_result = p_d3d_->GetDeviceCaps(adapter_type, dev_type, &d3d_caps);
+		h_res = p_d3d_->GetDeviceCaps(adapter_type, dev_type, &d3d_caps);
 	}
-	if (FAILED(h_result)) return false;
+	if (FAILED(h_res)) return false;
 
 	LONG vertex_proc_type = 0L;
 	if(d3d_caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
@@ -54,7 +59,7 @@ bool GEEngine::init_engine()
 	ZeroMemory(&d3d_present_param_, sizeof(d3d_present_param_));
 	d3d_present_param_.BackBufferWidth				= wnd_rect.width();
 	d3d_present_param_.BackBufferHeight				= wnd_rect.height();
-	d3d_present_param_.BackBufferFormat				= D3DFMT_UNKNOWN;
+	d3d_present_param_.BackBufferFormat				= D3DFMT_X8R8G8B8;
 	d3d_present_param_.BackBufferCount				= 2;
 	d3d_present_param_.MultiSampleType				= D3DMULTISAMPLE_NONE;
 	d3d_present_param_.MultiSampleQuality			= 0;
@@ -67,17 +72,15 @@ bool GEEngine::init_engine()
 	d3d_present_param_.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
 	d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;
 
-	h_result = p_d3d_->CreateDevice(D3DADAPTER_DEFAULT,
+	h_res = p_d3d_->CreateDevice(D3DADAPTER_DEFAULT,
 		dev_type, p_ge_app_->get_wnd(), vertex_proc_type,
 		&d3d_present_param_, &p_d3d_device_);
 
-	if (FAILED(h_result)) return false;
+	if (FAILED(h_res)) return false;
 
 	SAFE_RELEASE(p_d3d_);
-	
-	p_ge_render_ = new GERender(p_d3d_device_);
-	if(p_ge_render_ == NULL) return false;
-	return true;
+
+	return _init_render();
 }
 
 void GEEngine::close_engine()
@@ -91,53 +94,65 @@ void GEEngine::close_engine()
 	SAFE_RELEASE(p_d3d_device_);
 }
 
-bool GEEngine::dx_begin_scene()
+bool GEEngine::_dx_begin_scene()
 {
 	if (p_d3d_device_ == NULL) return false;
 
-	HRESULT h_result = p_d3d_device_->BeginScene();
-	return SUCCEEDED(h_result);
+	HRESULT h_res = p_d3d_device_->BeginScene();
+	return SUCCEEDED(h_res);
 }
 
-bool GEEngine::dx_end_scene()
+bool GEEngine::_dx_end_scene()
 {
 	if (p_d3d_device_ == NULL) return false;
 
-	HRESULT h_result = p_d3d_device_->EndScene();
-	return SUCCEEDED(h_result);
+	HRESULT h_res = p_d3d_device_->EndScene();
+	return SUCCEEDED(h_res);
 }
 
-bool GEEngine::dx_clear()
+bool GEEngine::_dx_clear()
 {
 	if (p_d3d_device_ == NULL) return false;
 
-	HRESULT h_result = p_d3d_device_->Clear(0,
+	HRESULT h_res = p_d3d_device_->Clear(0,
 		NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-		RGBA(0, 0, 0, 255), 0.0f, 0L);
-	return SUCCEEDED(h_result);
+		RGBA(127, 127, 127, 255), 1.0f, 0L);
+	return SUCCEEDED(h_res);
 }
 
-bool GEEngine::dx_present()
+bool GEEngine::_dx_present()
 {
 	if (p_d3d_device_ == NULL) return false;
 
-	HRESULT h_result = p_d3d_device_->Present(NULL, NULL, NULL, NULL);
-	return SUCCEEDED(h_result);
+	HRESULT h_res = p_d3d_device_->Present(NULL, NULL, NULL, NULL);
+	return SUCCEEDED(h_res);
 }
 
-void GEEngine::process(time_t time_elapsed)
+void GEEngine::process( time_t time_elapsed )
 {
 	if (p_d3d_device_ == NULL) return;
 
-	if(!dx_present()) return;
-
-	if(!dx_begin_scene()) return;
-	if(!dx_clear()) return;
+	if(!_dx_begin_scene()) return;
+	if(!_dx_clear()) return;
 
 	if (p_ge_render_ != NULL)
-		p_ge_render_->render();
+		p_ge_render_->render(time_elapsed);
 
-	if(!dx_end_scene()) return;
+	if(!_dx_end_scene()) return;
+	if(!_dx_present()) return;
+}
+
+bool GEEngine::_init_render()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	p_ge_render_ = new GERender();
+	if(p_ge_render_ == NULL) return false;
+
+	p_font_manager_ = new GERFontManager();
+	if(p_ge_render_ == NULL) return false;
+
+	return p_ge_render_->init();
 }
 
 }

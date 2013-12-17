@@ -188,6 +188,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\object\geo_model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_model.h"
+				>
+			</File>
+			<File
 				RelativePath=".\object\geo_text.cpp"
 				>
 			</File>

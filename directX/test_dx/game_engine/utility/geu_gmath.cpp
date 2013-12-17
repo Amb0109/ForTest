@@ -2,6 +2,7 @@
 
 namespace ge
 {
+
 GE_IRECT::GE_IRECT()
 {
 }
@@ -29,8 +30,6 @@ void GE_IRECT::move_to( int pos_x, int pos_y )
 	bottom	+= pos_y - top;
 	top		= pos_y;
 }
-
-
 
 }
 

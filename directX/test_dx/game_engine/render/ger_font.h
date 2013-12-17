@@ -14,6 +14,8 @@ struct GE_API GE_FONT
 	int		font_charset;
 	int		font_weight;
 	bool	italic;
+	bool	underline;
+	bool	strikeout;
 };
 
 struct GE_API GE_TEXT_STYLE
@@ -21,8 +23,6 @@ struct GE_API GE_TEXT_STYLE
 	int			font_id;
 	int			format;
 	D3DCOLOR	font_color;
-	bool		underline;
-	bool		strikeout;
 	bool		border;
 	int			border_weight;
 	D3DCOLOR	border_color;
@@ -34,22 +34,25 @@ struct GE_API GE_TEXT_STYLE
 class GE_API GERFontManager
 {
 protected:
-	typedef std::pair<D3DXFONT_DESC, ID3DXFont*>	FONT_PAIR;
-	typedef std::map<int, FONT_PAIR>		FONT_MAP;
+	typedef std::pair<D3DXFONT_DESC, ID3DXFont*>	D3DX_FONT_PAIR;
+	typedef std::pair<LOGFONT, HFONT>				GDI_FONT_PAIR;
+	typedef std::map<int, D3DX_FONT_PAIR>			D3DX_FONT_MAP;
 
 public:
-	GERFontManager(LPDIRECT3DDEVICE9 p_d3d_device);
+	GERFontManager();
 	virtual ~GERFontManager();
 
 public:
 	int			add_font(GE_FONT& font);
+	int			add_d3dx_font(GE_FONT& font);
+	int			add_gdi_font(GE_FONT& font);
 	void		remove_font(int font_id);
-	ID3DXFont*	get_font(int font_id);
+	ID3DXFont*	get_d3dx_font(int font_id);
+	HFONT		get_gdi_font(int font_id);
 
 protected:
-	LPDIRECT3DDEVICE9	p_d3d_device_;
-	FONT_MAP			font_map_;
-	int					auto_font_id_;
+	D3DX_FONT_MAP			font_map_;
+	int						auto_font_id_;
 };
 
 

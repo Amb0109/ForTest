@@ -8,6 +8,7 @@ enum GEObjectType
 {
 	GEObjectType_Null = 0,
 	GEObjectType_Text,
+	GEObjectType_Model,
 };
 
 } // namespace ge
