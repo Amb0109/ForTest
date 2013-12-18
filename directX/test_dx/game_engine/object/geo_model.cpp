@@ -75,19 +75,16 @@ bool GEOModel::set_vertices( GE_VERTEX* vertex_array, int vertex_cnt )
 	if(!_create_vetrix_buff(vertex_cnt))
 		return false;
 
-	//char* vertex_buff = NULL;
-	GE_VERTEX_STRUCT* vertex_buff = NULL;
+	char* vertex_buff = NULL;
 	d3d_vertex_buff_->Lock(0, 0, (void**)&vertex_buff, 0);
 	for (int i=0; i < vertex_cnt; ++i)
 	{
 		const void* p_src = vertex_array[i].pack();
 		if (p_src == NULL) return false;
 
-		vertex_buff[i] = *(GE_VERTEX_STRUCT*)p_src;
-		//memcpy(vertex_buff, p_src, vertex_size_);
-		//
-		//++vertex_buff;
-		//vertex_buff += vertex_size_;
+		memcpy(vertex_buff, p_src, vertex_size_);
+		
+		vertex_buff += vertex_size_;
 	}
 	d3d_vertex_buff_->Unlock();
 	return true;
@@ -145,10 +142,9 @@ void GEOModel::render( time_t time_elapsed )
 	if (vertex_decl_ == NULL) return;
 
 	HRESULT h_res = S_OK;
-	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, sizeof(GE_VERTEX));
+	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);
 	h_res = p_d3d_device->SetIndices(d3d_index_buff_);
-	h_res = p_d3d_device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE));
-	//h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_);
+	h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_);
 	h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 		0,						// BaseVertexIndex
 		0,						// MinVertexIndex

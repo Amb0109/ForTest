@@ -9,12 +9,6 @@
 namespace ge
 {
 
-struct GE_VERTEX_STRUCT
-{
-	float x, y, z;
-	D3DCOLOR color;
-};
-
 class GE_API GE_VERTEX
 {
 public:
@@ -28,7 +22,7 @@ public:
 	bool			set_fvf(DWORD fvf);
 	DWORD			get_fvf() { return fvf_; }
 	P_VERTEX_DECL	get_decl() { return p_vertex_decl_; }
-	int				get_size() { return sizeof(test_body); }// return vertex_size_; }
+	int				get_size() { return vertex_size_; }
 
 	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
 	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }
@@ -54,8 +48,6 @@ private:
 	char				vertex_buff_[VERTEX_BUFF_MAX_SIZE];
 	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
 	P_VERTEX_DECL		p_vertex_decl_;
-
-	GE_VERTEX_STRUCT	test_body;
 };
 
 

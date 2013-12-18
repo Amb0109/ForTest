@@ -35,14 +35,6 @@ bool GE_VERTEX::set_fvf( DWORD fvf )
 
 const void* GE_VERTEX::pack()
 {
-	//////////////////////////////////////////////
-	test_body.x = position_.x;
-	test_body.y = position_.y;
-	test_body.z = position_.z;
-	test_body.color = color_;
-	return &test_body;
-	//////////////////////////////////////////////
-
 	int mem_size = 0;
 	memset(vertex_buff_, 0, sizeof(vertex_buff_));
 	if (fvf_ & D3DFVF_XYZ)
