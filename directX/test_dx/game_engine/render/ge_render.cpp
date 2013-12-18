@@ -25,6 +25,7 @@ bool GERender::init()
 	b_res = b_res && do_view_trans(position, target, up);
 	b_res = b_res && do_projection_trans(0.5f);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	b_res = b_res && set_render_state(D3DRS_LIGHTING, false);
 	return b_res;
 }
 
@@ -47,9 +48,9 @@ bool GERender::do_view_trans( D3DXVECTOR3& position, D3DXVECTOR3& target, D3DXVE
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if (p_d3d_device == NULL) return false;
 
-	D3DXMatrixLookAtLH(&word_view_matrix_, &position, &target, &up);
+	D3DXMatrixLookAtLH(&view_matrix_, &position, &target, &up);
 
-	HRESULT h_res = p_d3d_device->SetTransform(D3DTS_VIEW, &word_view_matrix_);
+	HRESULT h_res = p_d3d_device->SetTransform(D3DTS_VIEW, &view_matrix_);
 	return SUCCEEDED(h_res);
 }
 
@@ -60,11 +61,11 @@ bool GERender::do_projection_trans( float fovy )
 	GE_IRECT& wnd_rect = GEApp::get_instance()->get_game_rect();
 
 	D3DXMatrixPerspectiveFovLH(
-		&word_view_proj_matrix_,
+		&proj_matrix_,
 		D3DX_PI * fovy,
 		(float) wnd_rect.width() / wnd_rect.height(),
 		1.0f, 1000.0f);
-	HRESULT h_res = p_d3d_device->SetTransform(D3DTS_PROJECTION, &word_view_proj_matrix_);
+	HRESULT h_res = p_d3d_device->SetTransform(D3DTS_PROJECTION, &proj_matrix_);
 	return SUCCEEDED(h_res);
 }
 

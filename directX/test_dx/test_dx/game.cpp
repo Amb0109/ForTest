@@ -18,11 +18,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		g_p_ge_game->add_scene(new SceneTest());
 
-		//ge::GERShader test_shader;
-		//test_shader.create("./shader/cartoon.hlsl");
-		//const char* err_msg = test_shader.get_compile_error();
-		//test_shader.test_func();
-
 		g_p_ge_app->MainLoop();
 	}
 

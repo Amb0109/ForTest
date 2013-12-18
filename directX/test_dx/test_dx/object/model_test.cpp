@@ -9,6 +9,11 @@ ModelTest::ModelTest()
 
 void ModelTest::update( time_t time_elapsed )
 {
+
+}
+
+void ModelTest::render( time_t time_elapsed )
+{
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
 
@@ -20,5 +25,7 @@ void ModelTest::update( time_t time_elapsed )
 
 	D3DXMATRIX rotation_matrix = rotation_matrix_x * rotation_matrix_y;
 	p_d3d_device->SetTransform(D3DTS_WORLD, &rotation_matrix);
-}
 
+	p_d3d_device->SetVertexShader(NULL);
+	ge::GEOModel::render(time_elapsed);
+}

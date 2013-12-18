@@ -90,6 +90,11 @@ bool SceneTest::show()
 {
 	init_fps_text();
 	init_test_model();
+
+	p_teapot_ = new ge::GEOMesh();
+	p_teapot_->init();
+	object_map_[2] = p_teapot_;
+
 	return true;
 }
 
@@ -103,6 +108,10 @@ bool SceneTest::hide()
 	p_test_model_->destory();
 	delete p_test_model_;
 	p_test_model_ = NULL;
+
+	p_teapot_->destory();
+	delete p_teapot_;
+	p_teapot_ = NULL;
 
 	object_map_.clear();
 	return true;

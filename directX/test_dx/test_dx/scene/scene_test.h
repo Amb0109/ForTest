@@ -24,6 +24,8 @@ public:
 
 	int				fps_font_id_;
 	ge::GEOText*	p_fps_text_;
+
+	ge::GEOMesh*	p_teapot_;
 };
 
 #endif //_SCENE_SCENE_TEST_H_

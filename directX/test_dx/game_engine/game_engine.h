@@ -17,5 +17,6 @@
 #include "object/ge_object.h"
 #include "object/geo_text.h"
 #include "object/geo_model.h"
+#include "object/geo_mesh.h"
 
 #endif // _GAME_ENGINE_H_

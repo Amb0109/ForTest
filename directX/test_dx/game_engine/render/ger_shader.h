@@ -25,7 +25,7 @@ public:
 
 	D3DXHANDLE get_value(const char* value_name, D3DXHANDLE content = NULL);
 
-	void	test_func();
+	void	test_func(D3DXMATRIX& word_matrix);
 
 protected:
 	LPD3DXCONSTANTTABLE		p_constent_table_;

@@ -1,6 +1,7 @@
 #include "ger_shader.h"
 #include "ge_render.h"
 #include "../common/ge_engine.h"
+#include "../common/ge_app.h"
 
 namespace ge
 {
@@ -57,30 +58,32 @@ D3DXHANDLE GERShader::get_value( const char* value_name, D3DXHANDLE content /*= 
 	return p_constent_table_->GetConstantByName(content, value_name);
 }
 
-void GERShader::test_func()
+void GERShader::test_func(D3DXMATRIX& word_matrix)
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if(p_d3d_device == NULL) return ;
 
-	GERender* p_render = GEEngine::get_instance()->get_render();
-	if(p_render == NULL) return ;
 
-	D3DXHANDLE h_wvm = get_value("g_world_view_matrix");
-	D3DXHANDLE h_wvpm = get_value("g_world_view_proj_matrix");
-	D3DXHANDLE h_color = get_value("g_color");
-	D3DXHANDLE h_ld = get_value("g_light_direction");
+	//D3DXHANDLE h_wvm = get_value("ViewMatrix");
+	//D3DXHANDLE h_wvpm = get_value("ViewProjMatrix");
+	//D3DXHANDLE h_ambient_mtrl = get_value("AmbientMtrl");
+	//D3DXHANDLE h_diffuse_mtrl = get_value("DiffuseMtrl");
+	//D3DXHANDLE h_light_direction = get_value("LightDirection");
+
+	D3DXHANDLE h_wvpm = get_value("g_view_proj_matrix");
 
 	HRESULT h_res = S_OK;
-	h_res = p_constent_table_->SetMatrix(p_d3d_device, h_wvm, &p_render->get_word_view_matrix());
-	h_res = p_constent_table_->SetMatrix(p_d3d_device, h_wvpm, &p_render->get_word_view_proj_matrix());
-	
-	D3DXVECTOR4 color(0.3f, 0.7f, 0.4f, 0.5f);
-	h_res = p_constent_table_->SetVector(p_d3d_device, h_color, &color);
+	//
+	//D3DXVECTOR4 directionToLight(-0.57f, 0.57f, -0.57f, 0.0f);
+	//h_res = p_constent_table_->SetVector(p_d3d_device, h_light_direction, &directionToLight);
 
-	D3DXVECTOR4 light_direction_vec4(-0.57f, 0.57f, -0.57f, 0.0f);
-	h_res = p_constent_table_->SetVector(p_d3d_device, h_ld, &light_direction_vec4);
+	//D3DXVECTOR4 ambientMtrl(0.0f, 0.0f, 1.0f, 1.0f);
+	//D3DXVECTOR4 diffuseMtrl(0.0f, 0.0f, 1.0f, 1.0f);
+	//h_res = p_constent_table_->SetVector(p_d3d_device, h_ambient_mtrl, &ambientMtrl);
+	//h_res = p_constent_table_->SetVector(p_d3d_device, h_diffuse_mtrl, &diffuseMtrl);
+	p_d3d_device->SetVertexShader(p_shader_);
+	p_constent_table_->SetMatrix(p_d3d_device, h_wvpm, &word_matrix);
 
-	h_res = p_d3d_device->SetVertexShader(p_shader_);
 }
 
 bool GERShaderFactory::compile_shader_file( const char* file_path, GERShader& shader )

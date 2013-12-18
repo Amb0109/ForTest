@@ -3,8 +3,8 @@
 
 #include "game_engine.h"
 
-//#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEXCOORDSIZE1(0))
-#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEXCOORDSIZE1(0))
+//#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 class ModelTest : public ge::GEOModel
 {
@@ -13,6 +13,7 @@ public:
 
 public:
 	virtual void update(time_t time_elapsed);
+	virtual void render(time_t time_elapsed);
 
 protected:
 	float			model_rotation_y;
