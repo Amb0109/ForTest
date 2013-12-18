@@ -41,14 +41,30 @@ bool SceneTest::init_test_model()
 	if (p_test_model_ == NULL) return false;
 
 	ge::GE_VERTEX vertex_buff[8];
-	vertex_buff[0] = ge::GE_VERTEX(-1.0f, -1.0f, -1.0f, RGBA(0xff, 0xff, 0x00, 0xff));
-	vertex_buff[1] = ge::GE_VERTEX(-1.0f, 1.0f, -1.0f, RGBA(0xff, 0x00, 0xff, 0xff));
-	vertex_buff[2] = ge::GE_VERTEX( 1.0f, 1.0f, -1.0f, RGBA(0xff, 0xff, 0xff, 0xff));
-	vertex_buff[3] = ge::GE_VERTEX( 1.0f, -1.0f, -1.0f, RGBA(0x00, 0xff, 0x00, 0xff));
-	vertex_buff[4] = ge::GE_VERTEX(-1.0f, -1.0f, 1.0f, RGBA(0x00, 0xff, 0xff, 0xff));
-	vertex_buff[5] = ge::GE_VERTEX(-1.0f, 1.0f, 1.0f, RGBA(0xff, 0x00, 0x00, 0xff));
-	vertex_buff[6] = ge::GE_VERTEX( 1.0f, 1.0f, 1.0f, RGBA(0x00, 0x00, 0xff, 0xff));
-	vertex_buff[7] = ge::GE_VERTEX( 1.0f, -1.0f, 1.0f, RGBA(0x00, 0x00, 0x00, 0xff));
+	vertex_buff[0].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[0].set_position(D3DXVECTOR3(-1.0f, -1.0f, -1.0f));
+	vertex_buff[0].set_color(RGBA(0xff, 0xff, 0x00, 0xff));
+	vertex_buff[1].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[1].set_position(D3DXVECTOR3(-1.0f, 1.0f, -1.0f));
+	vertex_buff[1].set_color(RGBA(0xff, 0x00, 0xff, 0xff));
+	vertex_buff[2].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[2].set_position(D3DXVECTOR3(1.0f, 1.0f, -1.0f));
+	vertex_buff[2].set_color(RGBA(0xff, 0xff, 0xff, 0xff));
+	vertex_buff[3].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[3].set_position(D3DXVECTOR3(1.0f, -1.0f, -1.0f));
+	vertex_buff[3].set_color(RGBA(0x00, 0xff, 0x00, 0xff));
+	vertex_buff[4].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[4].set_position(D3DXVECTOR3(-1.0f, -1.0f, 1.0f));
+	vertex_buff[4].set_color(RGBA(0x00, 0xff, 0xff, 0xff));
+	vertex_buff[5].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[5].set_position(D3DXVECTOR3(-1.0f, 1.0f, 1.0f));
+	vertex_buff[5].set_color(RGBA(0xff, 0x00, 0x00, 0xff));
+	vertex_buff[6].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[6].set_position(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	vertex_buff[6].set_color(RGBA(0x00, 0x00, 0xff, 0xff));
+	vertex_buff[7].set_fvf(DEF_FVF_FORMAT);
+	vertex_buff[7].set_position(D3DXVECTOR3(1.0f, -1.0f, 1.0f));
+	vertex_buff[7].set_color(RGBA(0x00, 0x00, 0x00, 0xff));
 	p_test_model_->set_vertices(vertex_buff, 8);
 
 	WORD index_buff[36];

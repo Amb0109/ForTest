@@ -3,8 +3,6 @@
 namespace ge
 {
 
-const DWORD GE_VERTEX::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
-
 GE_IRECT::GE_IRECT()
 {
 }

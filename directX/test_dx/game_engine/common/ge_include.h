@@ -13,6 +13,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <assert.h>
 
 // stl include
 #include <vector>

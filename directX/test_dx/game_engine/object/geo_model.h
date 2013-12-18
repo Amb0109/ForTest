@@ -7,6 +7,7 @@
 namespace ge
 {
 
+class GE_API GE_VERTEX;
 class GE_API GEOModel : public GEObject
 {
 public:
@@ -14,15 +15,8 @@ public:
 	virtual ~GEOModel();
 
 public:
-	virtual bool create_vetrix_buff(int buff_size);
-	virtual bool set_vetrix(int id, GE_VERTEX& vertex);
-	virtual bool set_vertices(GE_VERTEX* vertex_array, int size);
-	virtual void release_vetrix_buff();
-
-	virtual bool create_index_buff(int buff_size);
-	virtual bool set_index(int id, WORD index);
-	virtual bool set_indices(WORD* vertex_array, int size);
-	virtual void release_index_buff();
+	virtual bool set_vertices(GE_VERTEX* vertex_array, int vertex_cnt);
+	virtual bool set_indices(WORD* index_array, int index_cnt);
 
 public:
 	virtual bool init();
@@ -32,10 +26,19 @@ public:
 	virtual void render(time_t time_elapsed);
 
 protected:
-	IDirect3DVertexBuffer9*	d3d_vertex_buff_;
-	IDirect3DIndexBuffer9*	d3d_index_buff_;
-	int						vertex_buff_size_;
-	int						index_buff_size_;
+	virtual bool _create_vetrix_buff(int vertex_cnt);
+	virtual bool _create_index_buff(int index_cnt);
+	virtual void _release_vetrix_buff();
+	virtual void _release_index_buff();
+
+protected:
+	LPDIRECT3DVERTEXBUFFER9	d3d_vertex_buff_;
+	LPDIRECT3DINDEXBUFFER9	d3d_index_buff_;
+	int						vertex_cnt_;
+	int						index_cnt_;
+
+	LPDIRECT3DVERTEXDECLARATION9 vertex_decl_;
+	int						vertex_size_;
 };
 
 } // namespace ge

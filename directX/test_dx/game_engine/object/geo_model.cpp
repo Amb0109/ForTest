@@ -1,6 +1,6 @@
 #include "../common/ge_app.h"
 #include "../common/ge_engine.h"
-#include "../utility/geu_gmath.h"
+#include "../utility/geu_vertex.h"
 #include "geo_model.h"
 
 namespace ge
@@ -9,8 +9,9 @@ namespace ge
 GEOModel::GEOModel()
 :d3d_vertex_buff_(NULL),
 d3d_index_buff_(NULL),
-vertex_buff_size_(0),
-index_buff_size_(0)
+vertex_cnt_(0),
+index_cnt_(0),
+vertex_decl_(0)
 {
 	GEObject::type_ = GEObjectType_Model;
 }
@@ -20,37 +21,37 @@ GEOModel::~GEOModel()
 
 }
 
-bool GEOModel::create_vetrix_buff( int buff_size )
+bool GEOModel::_create_vetrix_buff( int vertex_cnt )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	release_vetrix_buff();
-	if (buff_size <= 0) return true;
+	_release_vetrix_buff();
+	if (vertex_cnt <= 0) return true;
 
 	HRESULT h_res = p_d3d_device->CreateVertexBuffer(
-		buff_size * sizeof(GE_VERTEX),
+		vertex_cnt * vertex_size_,
 		D3DUSAGE_WRITEONLY,
-		GE_VERTEX::FVF,
+		(D3DFVF_XYZ | D3DFVF_DIFFUSE), // use decl
 		D3DPOOL_MANAGED,
 		&d3d_vertex_buff_,
 		NULL
 		);
 
-	vertex_buff_size_ = buff_size;
+	if(SUCCEEDED(h_res)) vertex_cnt_ = vertex_cnt;
 	return SUCCEEDED(h_res);
 }
 
-bool GEOModel::create_index_buff( int buff_size )
+bool GEOModel::_create_index_buff( int index_cnt )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	release_index_buff();
-	if (buff_size <= 0) return true;
+	_release_index_buff();
+	if (index_cnt <= 0) return true;
 
 	HRESULT h_res = p_d3d_device->CreateIndexBuffer(
-		buff_size * sizeof(DWORD),
+		index_cnt * sizeof(DWORD),
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -58,57 +59,48 @@ bool GEOModel::create_index_buff( int buff_size )
 		NULL
 		);
 
-	index_buff_size_ = buff_size;
+	if(SUCCEEDED(h_res)) index_cnt_ = index_cnt;
 	return SUCCEEDED(h_res);
 }
 
-bool GEOModel::set_vetrix( int id, GE_VERTEX& vertex )
+bool GEOModel::set_vertices( GE_VERTEX* vertex_array, int vertex_cnt )
 {
-	if(d3d_vertex_buff_ == NULL) return false;
-	if(id < 0 || id >= vertex_buff_size_) return false;
+	if (vertex_array == NULL) return false;
+	if (vertex_cnt == 0) return false;
 
-	GE_VERTEX* vertex_buff = NULL;
-	d3d_vertex_buff_->Lock(id, 1, (void**)&vertex_buff, 0);
-	vertex_buff[id] = vertex;
-	d3d_vertex_buff_->Unlock();
-	return true;
-}
+	GE_VERTEX& sample_vertex = vertex_array[0];
+	vertex_decl_ = sample_vertex.get_decl(); // TODO
+	vertex_size_ = sample_vertex.get_size();
 
-bool GEOModel::set_index( int id, WORD index )
-{
-	if(d3d_index_buff_ == NULL) return false;
-	if(id < 0 || id >= index_buff_size_) return false;
-
-	WORD* index_buff = NULL;
-	d3d_index_buff_->Lock(id, 1, (void**)&index_buff, 0);
-	index_buff[id] = index;
-	d3d_index_buff_->Unlock();
-	return true;
-}
-
-bool GEOModel::set_vertices( GE_VERTEX* vertex_array, int size )
-{
-	if(!create_vetrix_buff(size))
+	if(!_create_vetrix_buff(vertex_cnt))
 		return false;
 
-	GE_VERTEX* vertex_buff = NULL;
+	//char* vertex_buff = NULL;
+	GE_VERTEX_STRUCT* vertex_buff = NULL;
 	d3d_vertex_buff_->Lock(0, 0, (void**)&vertex_buff, 0);
-	for (int i=0; i < size; ++i)
+	for (int i=0; i < vertex_cnt; ++i)
 	{
-		vertex_buff[i] = vertex_array[i];
+		const void* p_src = vertex_array[i].pack();
+		if (p_src == NULL) return false;
+
+		vertex_buff[i] = *(GE_VERTEX_STRUCT*)p_src;
+		//memcpy(vertex_buff, p_src, vertex_size_);
+		//
+		//++vertex_buff;
+		//vertex_buff += vertex_size_;
 	}
 	d3d_vertex_buff_->Unlock();
 	return true;
 }
 
-bool GEOModel::set_indices( WORD* index_array, int size )
+bool GEOModel::set_indices( WORD* index_array, int index_cnt )
 {
-	if(!create_index_buff(size))
+	if(!_create_index_buff(index_cnt))
 		return false;
 
 	WORD* index_buff = NULL;
 	d3d_index_buff_->Lock(0, 0, (void**)&index_buff, 0);
-	for (int i=0; i < size; ++i)
+	for (int i=0; i < index_cnt; ++i)
 	{
 		index_buff[i] = index_array[i];
 	}
@@ -116,16 +108,16 @@ bool GEOModel::set_indices( WORD* index_array, int size )
 	return true;
 }
 
-void GEOModel::release_vetrix_buff()
+void GEOModel::_release_vetrix_buff()
 {
 	SAFE_RELEASE(d3d_vertex_buff_);
-	vertex_buff_size_ = 0;
+	vertex_cnt_ = 0;
 }
 
-void GEOModel::release_index_buff()
+void GEOModel::_release_index_buff()
 {
 	SAFE_RELEASE(d3d_index_buff_);
-	index_buff_size_ = 0;
+	index_cnt_ = 0;
 }
 
 bool GEOModel::init()
@@ -135,8 +127,8 @@ bool GEOModel::init()
 
 void GEOModel::destory()
 {
-	release_vetrix_buff();
-	release_index_buff();
+	_release_vetrix_buff();
+	_release_index_buff();
 }
 
 void GEOModel::update( time_t time_elapsed )
@@ -150,17 +142,19 @@ void GEOModel::render( time_t time_elapsed )
 	if (p_d3d_device == NULL) return;
 	if (d3d_vertex_buff_ == NULL) return;
 	if (d3d_index_buff_ == NULL) return;
+	if (vertex_decl_ == NULL) return;
 
 	HRESULT h_res = S_OK;
 	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, sizeof(GE_VERTEX));
 	h_res = p_d3d_device->SetIndices(d3d_index_buff_);
-	h_res = p_d3d_device->SetFVF(GE_VERTEX::FVF);
+	h_res = p_d3d_device->SetFVF((D3DFVF_XYZ | D3DFVF_DIFFUSE));
+	//h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_);
 	h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 		0,						// BaseVertexIndex
 		0,						// MinVertexIndex
-		vertex_buff_size_,		// NumVertices
+		vertex_cnt_,		// NumVertices
 		0,						// StartIndex
-		index_buff_size_ / 3);	// PrimitiveCount
+		index_cnt_ / 3);	// PrimitiveCount
 }
 
 }

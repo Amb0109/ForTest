@@ -223,6 +223,14 @@
 				RelativePath=".\render\ger_font.h"
 				>
 			</File>
+			<File
+				RelativePath=".\render\ger_shader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_shader.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="common"
@@ -273,6 +281,14 @@
 			</File>
 			<File
 				RelativePath=".\utility\geu_gmath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\utility\geu_vertex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\utility\geu_vertex.h"
 				>
 			</File>
 		</Filter>

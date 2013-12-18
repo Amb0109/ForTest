@@ -9,8 +9,10 @@
 
 #include "render/ge_render.h"
 #include "render/ger_font.h"
+#include "render/ger_shader.h"
 
 #include "utility/geu_gmath.h"
+#include "utility/geu_vertex.h"
 
 #include "object/ge_object.h"
 #include "object/geo_text.h"

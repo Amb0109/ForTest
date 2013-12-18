@@ -7,17 +7,6 @@
 namespace ge
 {
 
-struct GE_VERTEX
-{
-	float x, y, z;
-	D3DCOLOR color;
-	static const DWORD FVF;
-
-	GE_VERTEX():x(0), y(0), z(0), color(0xffffffff) {}
-	GE_VERTEX(float x_, float y_, float z_, D3DCOLOR color_ = 0xffffffff)
-		:x(x_), y(y_), z(z_), color(color_) {}
-};
-
 struct GE_API GE_IRECT : public RECT
 {
 	GE_IRECT();

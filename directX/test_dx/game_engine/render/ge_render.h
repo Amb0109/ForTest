@@ -27,10 +27,17 @@ public:
 
 	virtual bool do_view_trans(D3DXVECTOR3& position, D3DXVECTOR3& target, D3DXVECTOR3& up);
 	virtual bool do_projection_trans(float fovy);
+	
+	D3DXMATRIX&	get_word_view_matrix() {return word_view_matrix_;}
+	D3DXMATRIX& get_word_view_proj_matrix() {return word_view_proj_matrix_;}
+
 	virtual bool set_render_state(D3DRENDERSTATETYPE type, DWORD value);
 
 protected:
 	RENDER_TASK_QUE		render_task_que_;
+
+	D3DXMATRIX			word_view_matrix_;
+	D3DXMATRIX			word_view_proj_matrix_;
 };
 
 } // namespace ge
