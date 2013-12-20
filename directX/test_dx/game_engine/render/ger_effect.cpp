@@ -2,6 +2,7 @@
 #include "ge_render.h"
 #include "../common/ge_engine.h"
 #include "../common/ge_app.h"
+#include "../object/ge_object.h"
 
 namespace ge
 {
@@ -17,7 +18,7 @@ GEREffect::~GEREffect()
 
 }
 
-bool GEREffect::init( const char* file_path )
+bool GEREffect::create_from_file( const char* file_path )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if(p_d3d_device == NULL) return false;
@@ -44,25 +45,39 @@ bool GEREffect::init( const char* file_path )
 	return SUCCEEDED(h_res);
 }
 
-void GEREffect::release()
-{
-	file_path_.clear();
-
-	SAFE_RELEASE(p_fx_);
-	SAFE_RELEASE(p_err_msg_);
-}
-
 const char* GEREffect::get_err_msg()
 {
 	if (p_err_msg_ == NULL) return NULL;
 	return (char*)p_err_msg_->GetBufferPointer();
 }
 
-LPD3DXEFFECT GEREffect::get_fx()
+bool GEREffect::init()
 {
-	return p_fx_;
+	return true;
 }
 
+void GEREffect::render( GEObject* obj, time_t time_elapsed )
+{
+	if (p_fx_ == NULL) return;
+
+	int pass_num = 0;
+	p_fx_->Begin((UINT*)&pass_num, 0);
+	for(int i = 0; i < pass_num; ++i)
+	{
+		p_fx_->BeginPass(i);
+		obj->on_render(time_elapsed);
+		p_fx_->End();
+	}
+	p_fx_->End();
+}
+
+void GEREffect::destory()
+{
+	file_path_.clear();
+
+	SAFE_RELEASE(p_fx_);
+	SAFE_RELEASE(p_err_msg_);
+}
 
 }
 

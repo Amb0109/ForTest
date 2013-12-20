@@ -1,84 +1,125 @@
 #include "geo_mesh.h"
 #include "../common/ge_engine.h"
 #include "../render/ge_render.h"
+#include "../utility/geu_vertex.h"
 
 namespace ge
 {
 	
 GEOMesh::GEOMesh()
+:p_mesh_(NULL),
+p_effect_(NULL)
 {
 }
 
 GEOMesh::~GEOMesh()
 {
+	destory();
+}
 
+bool GEOMesh::create_mesh( GE_VERTEX_DECL* vertex_decl, int vertex_cnt, int face_cnt )
+{
+	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_device();
+	if (p_d3d_device == NULL) return false;
+
+	if (vertex_decl == NULL) return false;
+	LPD3DVERTEXELEMENT9 vertex_element = vertex_decl->get_vertex_element();
+	vertex_size_ = vertex_decl->get_vertex_size();
+	if (vertex_size_ <= 0) return false;
+
+	vertex_cnt_ = vertex_cnt;
+	face_cnt_ = face_cnt;
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateMesh(
+		face_cnt, vertex_cnt,
+		D3DXMESH_MANAGED,
+		vertex_element,
+		p_d3d_device,
+		&p_mesh_);
+
+	if (FAILED(h_res))
+	{
+		destory();
+	}
+
+	return SUCCEEDED(h_res);
+}
+
+bool GEOMesh::set_vertices( GE_VERTEX* vertex_array, int vertex_cnt )
+{
+	if (p_mesh_ == NULL) return false;
+	if (vertex_array == NULL) return false;
+	if (vertex_cnt != vertex_cnt_) return false;
+
+	bool b_ret = true;
+	char* vertex_buff = NULL;
+	p_mesh_->LockVertexBuffer(0, (void**)&vertex_buff);
+	for (int i=0; i < vertex_cnt; ++i)
+	{
+		bool b_ret = true;
+		b_ret = vertex_array[i].pack(vertex_buff, vertex_size_);
+		if (!b_ret)
+		{
+			b_ret = false;
+			break;
+		}
+
+		vertex_buff += vertex_size_;
+	}
+	p_mesh_->UnlockVertexBuffer();
+	return b_ret;
+}
+
+bool GEOMesh::set_indices( WORD* index_array, int index_cnt )
+{
+	if (p_mesh_ == NULL) return false;
+	if (index_array == NULL) return false;
+	if (index_cnt != face_cnt_ * 3) return false;
+
+	WORD* index_buff = NULL;
+	p_mesh_->LockIndexBuffer(0, (void**)&index_buff);
+	for (int i=0; i < index_cnt; ++i)
+	{
+		index_buff[i] = index_array[i];
+	}
+	p_mesh_->UnlockIndexBuffer();
+	return true;
+}
+
+bool GEOMesh::create_mesh_from_file( const char* file_name )
+{
+	return true;
+}
+
+bool GEOMesh::save_mesh_to_file( const char* file_name )
+{
+	return true;
+}
+
+bool GEOMesh::set_effect( GEREffect* p_effect )
+{
+	if (p_effect == NULL) return false;
+	p_effect_ = p_effect;
+	return true;
 }
 
 bool GEOMesh::init()
 {
-	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
-	if (p_device == NULL) return false;
-
-	D3DXCreateTeapot(p_device, &p_mesh_, 0);
-	init_effect();
-
-	return true;
-}
-
-
-bool GEOMesh::init_effect()
-{
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
-	if(p_d3d_device == NULL) return false;
-
-	effect_.init("./shader/diffuse.fx");
-	LPD3DXEFFECT p_fx = effect_.get_fx();
-	if(p_fx == NULL) return false;
-
-	D3DXHANDLE h_tech_main = p_fx->GetTechniqueByName("TechMain");
-	p_fx->SetTechnique(h_tech_main);
-
-	D3DXHANDLE h_ambient_mtrl = p_fx->GetParameterByName(0, "AmbientMtrl");
-	D3DXHANDLE h_diffuse_mtrl = p_fx->GetParameterByName(0, "DiffuseMtrl");
-	D3DXHANDLE h_light_direction = p_fx->GetParameterByName(0, "LightDirection");
-
-	D3DXVECTOR4 directionToLight(-0.57f, 0.57f, -0.57f, 0.0f);
-	p_fx->SetVector(h_light_direction, &directionToLight);
-
-	D3DXVECTOR4 ambientMtrl(0.0f, 0.0f, 1.0f, 1.0f);
-	D3DXVECTOR4 diffuseMtrl(0.0f, 0.0f, 1.0f, 1.0f);
-	p_fx->SetVector(h_ambient_mtrl, &ambientMtrl);
-	p_fx->SetVector(h_diffuse_mtrl, &diffuseMtrl);
-	return true;
-}
-
-bool GEOMesh::update_effect()
-{
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
-	if(p_d3d_device == NULL) return false;
-	GERender* p_render = GEEngine::get_instance()->get_render();
-	if(p_render == NULL) return false;
-	LPD3DXEFFECT p_fx = effect_.get_fx();
-	if(p_fx == NULL) return false;
-
-	D3DXHANDLE h_wvm = p_fx->GetParameterByName(0, "gWV");
-	D3DXHANDLE h_wvpm = p_fx->GetParameterByName(0, "gWVP");
-
-	D3DXMATRIX view_matrix = world_matrix_;
-	view_matrix = view_matrix * p_render->get_view_matrix();
-	D3DXMATRIX view_proj_matrix = world_matrix_;
-	view_proj_matrix = view_proj_matrix * p_render->get_view_matrix() * p_render->get_proj_matrix();
-
-	p_fx->SetMatrix(h_wvm, &view_matrix);
-	p_fx->SetMatrix(h_wvpm, &view_proj_matrix);
-	p_fx->CommitChanges();
-
+	if (p_effect_ != NULL)
+		p_effect_->init();
+	
 	return true;
 }
 
 void GEOMesh::destory()
 {
 	SAFE_RELEASE(p_mesh_);
+	p_effect_ = NULL;
+	
+	vertex_cnt_		= 0;
+	face_cnt_		= 0;
+	vertex_size_	= 0;
 }
 
 void GEOMesh::update( time_t time_elapsed )
@@ -96,22 +137,113 @@ void GEOMesh::render( time_t time_elapsed )
 
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
-	LPD3DXEFFECT p_fx = effect_.get_fx();
-	if(p_fx == NULL) return;
 
-	update_effect();
-	
-	UINT pass_num = 0;
-	p_fx->Begin(&pass_num, 0);
-	for(UINT i = 0; i < pass_num; ++i)
+	if (p_effect_ == NULL)
 	{
-		p_fx->BeginPass(i);
-
-		p_mesh_->DrawSubset(0);
-
-		p_fx->EndPass();
+		this->on_render(time_elapsed);
 	}
-	p_fx->End();
+	else
+	{
+		p_effect_->render(this, time_elapsed);
+	}
+}
+
+void GEOMesh::on_render( time_t time_elapsed )
+{
+	if(p_mesh_ == NULL) return;
+	p_mesh_->DrawSubset(0);
+}
+
+bool GEOMesh::create_mesh_box( float width, float height, float depth )
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateBox(p_device, width, height, depth, &p_mesh_, 0);
+	
+	if (SUCCEEDED(h_res))
+		return _get_infos_by_mesh();
+	else
+		return false;
+}
+
+bool GEOMesh::create_mesh_cylinder( float radius1, float radius2, float length, int slices, int stacks )
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateCylinder(p_device, radius1, radius2, length, slices, stacks, &p_mesh_, 0);
+
+	if (SUCCEEDED(h_res))
+		return _get_infos_by_mesh();
+	else
+		return false;
+}
+
+bool GEOMesh::create_mesh_sphere( float radius, int slices, int stacks )
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateSphere(p_device, radius, slices, stacks, &p_mesh_, 0);
+
+	if (SUCCEEDED(h_res))
+		return _get_infos_by_mesh();
+	else
+		return false;
+}
+
+bool GEOMesh::create_mesh_teapot()
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateTeapot(p_device, &p_mesh_, 0);
+
+	if (SUCCEEDED(h_res))
+		return _get_infos_by_mesh();
+	else
+		return false;
+}
+
+bool GEOMesh::create_mesh_torus( float in_radius, float out_radius, int sides, int rings )
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateTorus(p_device, in_radius, out_radius, sides, rings, &p_mesh_, 0);
+
+	if (SUCCEEDED(h_res))
+		return _get_infos_by_mesh();
+	else
+		return false;
+}
+
+bool GEOMesh::_get_infos_by_mesh()
+{
+	if (p_mesh_ != NULL)
+	{
+		vertex_cnt_ = (int)p_mesh_->GetNumVertices();
+		face_cnt_ = (int)p_mesh_->GetNumFaces();
+		vertex_size_ = (int)p_mesh_->GetNumBytesPerVertex();
+		return true;
+	}
+	return false;
 }
 
 }

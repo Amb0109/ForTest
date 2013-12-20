@@ -3,51 +3,67 @@
 
 #include "../common/ge_include.h"
 
-#define VERTEX_BUFF_MAX_SIZE 1024
 #define VERTEX_ELEMENT_MAX_CNT 16
 
 namespace ge
 {
 
+class GE_API GE_VERTEX_DECL
+{
+public:
+	typedef IDirect3DVertexDeclaration9 D3D_VERTEX_DECL;
+
+public:
+	GE_VERTEX_DECL();
+	virtual ~GE_VERTEX_DECL();
+
+public:
+	bool				init(DWORD fvf);
+
+	int					get_vertex_size() { return vertex_size_; }
+	DWORD				get_vertex_fvf() { return vertex_fvf_; }
+	D3D_VERTEX_DECL*	get_d3d_vertex_decl() { return p_vertex_decl_; }
+	LPD3DVERTEXELEMENT9	get_vertex_element() { return vertex_element_; }
+
+protected:
+	void				_calc_vertex_element_array(int& array_pos, int& mem_size);
+	bool				_add_vertex_element(DWORD fvf_type, int& array_pos, int& mem_offset);
+
+private:
+	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
+	D3D_VERTEX_DECL*	p_vertex_decl_;
+	int					vertex_size_;
+
+	DWORD				vertex_fvf_;
+};
+
 class GE_API GE_VERTEX
 {
 public:
-	typedef LPDIRECT3DVERTEXDECLARATION9 P_VERTEX_DECL;
-
-public:
 	GE_VERTEX();
-	virtual ~GE_VERTEX(){}
+	virtual ~GE_VERTEX();
 
 public:
-	bool			set_fvf(DWORD fvf);
-	DWORD			get_fvf() { return fvf_; }
-	P_VERTEX_DECL	get_decl() { return p_vertex_decl_; }
-	int				get_size() { return vertex_size_; }
+	bool			set_decl(GE_VERTEX_DECL* decl);
+	GE_VERTEX_DECL*	get_decl() { return p_vertex_decl_; }
 
 	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
 	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }
 	void			set_texcoords(D3DXVECTOR2 texcoords){ texcoords_ = texcoords; }
 	void			set_color(D3DCOLOR color)			{ color_ = color; }
 
-	const void*		pack();
+	bool			pack(void* mem_buff, int size);
 
 protected:
-	void			_calc_vertex_element_array(int& array_pos, int& mem_size);
-	bool			_add_vertex_element(DWORD fvf_type, int& array_pos, int& mem_offset);
-
-	bool			_append_data(int& mem_offset, void* p_data, int data_size);
+	bool			_append_data(void* mem_buff, int& mem_offset, void* p_data, int data_size);
 
 private:
 	D3DXVECTOR3			position_;
 	D3DXVECTOR3			normal_;
 	D3DXVECTOR2			texcoords_;
 	D3DCOLOR			color_;
-	DWORD				fvf_;
 
-	int					vertex_size_;
-	char				vertex_buff_[VERTEX_BUFF_MAX_SIZE];
-	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
-	P_VERTEX_DECL		p_vertex_decl_;
+	GE_VERTEX_DECL*		p_vertex_decl_;
 };
 
 

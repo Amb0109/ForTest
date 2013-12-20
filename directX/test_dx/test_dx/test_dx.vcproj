@@ -198,6 +198,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="render"
+			>
+			<File
+				RelativePath=".\render\effect_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\effect_test.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\game.cpp"
 			>

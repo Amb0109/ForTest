@@ -6,6 +6,7 @@
 namespace ge
 {
 
+class GE_API GEObject;
 class GE_API GEREffect
 {
 public:
@@ -13,11 +14,15 @@ public:
 	virtual ~GEREffect();
 
 public:
-	bool init(const char* file_path);
-	void release();
-	
+	bool create_from_file(const char* file_path);
+
 	const char*		get_err_msg();
-	LPD3DXEFFECT	get_fx();
+	LPD3DXEFFECT	get_fx() { return p_fx_; }
+
+public:
+	virtual bool init();
+	virtual void render(GEObject* obj, time_t time_elapsed);
+	virtual void destory();
 
 protected:
 	LPD3DXEFFECT			p_fx_;

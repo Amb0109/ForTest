@@ -64,4 +64,14 @@ void GEObject::_calc_world_matrix()
 	world_matrix_ = world_matrix_ * trans_matrix_;
 }
 
+void GEObject::on_update( time_t time_elapsed )
+{
+
+}
+
+void GEObject::on_render( time_t time_elapsed )
+{
+
+}
+
 }

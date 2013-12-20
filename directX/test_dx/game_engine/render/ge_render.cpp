@@ -25,9 +25,9 @@ bool GERender::init()
 	b_res = b_res && do_view_trans(position, target, up);
 	b_res = b_res && do_projection_trans(0.5f);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
-	b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
-	b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
+	b_res = b_res && set_render_state(D3DRS_LIGHTING, false);
+	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
+	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
 	return b_res;
 }
 

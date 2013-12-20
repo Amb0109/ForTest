@@ -3,6 +3,7 @@
 
 #include "game_engine.h"
 #include "../object/model_test.h"
+#include "../render/effect_test.h"
 
 class SceneTest : public ge::GEScene
 {
@@ -12,6 +13,7 @@ public:
 public:
 	bool init_fps_text();
 	bool init_test_model();
+	bool init_shader_mesh();
 
 public:
 	virtual bool show();
@@ -26,6 +28,7 @@ public:
 	ge::GEOText*	p_fps_text_;
 
 	ge::GEOMesh*	p_teapot_;
+	EffectTest*		p_effect_;
 
 	ge::GEOLight	light_;
 };

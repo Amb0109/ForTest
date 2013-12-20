@@ -4,22 +4,30 @@
 namespace ge
 {
 
-GE_VERTEX::GE_VERTEX()
-:position_(0.f, 0.f, 0.f), normal_(0.f, 0.f, 0.f),
-texcoords_(0.f, 0.f), color_(0xffffffff),
-vertex_size_(0), p_vertex_decl_(NULL)
+
+GE_VERTEX_DECL::GE_VERTEX_DECL()
+:p_vertex_decl_(NULL),
+vertex_size_(0),
+vertex_fvf_(0)
 {
-	this->set_fvf(NULL);
-	memset(vertex_buff_, 0, sizeof(vertex_buff_));
+	init(0);
 }
 
-bool GE_VERTEX::set_fvf( DWORD fvf )
+
+GE_VERTEX_DECL::~GE_VERTEX_DECL()
+{
+	SAFE_RELEASE(p_vertex_decl_);
+	vertex_size_ = 0;
+	vertex_fvf_ = 0;
+}
+
+bool GE_VERTEX_DECL::init( DWORD fvf )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	fvf_ = fvf;
-	
+	vertex_fvf_ = fvf;
+
 	int element_array_pos = 0;
 	int vertex_buff_size = 0;
 	_calc_vertex_element_array(element_array_pos, vertex_buff_size);
@@ -33,48 +41,7 @@ bool GE_VERTEX::set_fvf( DWORD fvf )
 	return SUCCEEDED(h_res);
 }
 
-const void* GE_VERTEX::pack()
-{
-	int mem_size = 0;
-	memset(vertex_buff_, 0, sizeof(vertex_buff_));
-	if (fvf_ & D3DFVF_XYZ)
-	{
-		_append_data(mem_size, (void*)&(position_.x), sizeof(float));
-		_append_data(mem_size, (void*)&(position_.y), sizeof(float));
-		_append_data(mem_size, (void*)&(position_.z), sizeof(float));
-	}
-
-	if (fvf_ & D3DFVF_NORMAL)
-	{
-		_append_data(mem_size, (void*)&(normal_.x), sizeof(float));
-		_append_data(mem_size, (void*)&(normal_.y), sizeof(float));
-		_append_data(mem_size, (void*)&(normal_.z), sizeof(float));
-	}
-
-	if (fvf_ & D3DFVF_TEXCOORDSIZE1(0))
-	{
-		_append_data(mem_size, (void*)&(texcoords_.x), sizeof(float));
-		_append_data(mem_size, (void*)&(texcoords_.y), sizeof(float));
-	}
-
-	if (fvf_ & D3DFVF_DIFFUSE)
-	{
-		_append_data(mem_size, (void*)&(color_), sizeof(D3DCOLOR));
-	}
-	assert(mem_size == vertex_size_);
-	if (mem_size != vertex_size_) return NULL;
-	return vertex_buff_;
-}
-
-bool GE_VERTEX::_append_data( int& mem_offset, void* p_data, int data_size )
-{
-	if (mem_offset + data_size > VERTEX_BUFF_MAX_SIZE) return false;
-	memcpy(vertex_buff_ + mem_offset, p_data, data_size);
-	mem_offset += data_size;
-	return true;
-}
-
-void GE_VERTEX::_calc_vertex_element_array( int& array_pos, int& mem_size )
+void GE_VERTEX_DECL::_calc_vertex_element_array( int& array_pos, int& mem_size )
 {
 	array_pos = -1;
 	mem_size = 0;
@@ -87,9 +54,9 @@ void GE_VERTEX::_calc_vertex_element_array( int& array_pos, int& mem_size )
 	_add_vertex_element(NULL, array_pos, mem_size);
 }
 
-bool GE_VERTEX::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_offset )
+bool GE_VERTEX_DECL::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_offset )
 {
-	if (fvf_type != NULL && !(fvf_ & fvf_type)) return false;
+	if (fvf_type != NULL && !(vertex_fvf_ & fvf_type)) return false;
 	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
 
 	switch (fvf_type)
@@ -155,6 +122,74 @@ bool GE_VERTEX::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_of
 		}
 	}
 
+	return true;
+}
+
+
+
+GE_VERTEX::GE_VERTEX()
+:position_(0.f, 0.f, 0.f), normal_(0.f, 0.f, 0.f),
+texcoords_(0.f, 0.f), color_(0xffffffff),
+p_vertex_decl_(NULL)
+{
+}
+
+GE_VERTEX::~GE_VERTEX()
+{
+
+}
+
+bool GE_VERTEX::set_decl( GE_VERTEX_DECL* decl )
+{
+	p_vertex_decl_ = decl;
+	return p_vertex_decl_ != NULL;
+}
+
+bool GE_VERTEX::pack( void* mem_buff, int size )
+{
+	if (mem_buff == NULL) return false;
+
+	if (p_vertex_decl_ == NULL) return false;	
+	DWORD fvf = p_vertex_decl_->get_vertex_fvf();
+	int vertex_size = p_vertex_decl_->get_vertex_size();
+	if(vertex_size != size) return false;
+ 
+	int buff_offset = 0;
+	memset(mem_buff, 0, size);
+	if (fvf & D3DFVF_XYZ)
+	{
+		_append_data(mem_buff, buff_offset, (void*)&(position_.x), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(position_.y), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(position_.z), sizeof(float));
+	}
+
+	if (fvf & D3DFVF_NORMAL)
+	{
+		_append_data(mem_buff, buff_offset, (void*)&(normal_.x), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(normal_.y), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(normal_.z), sizeof(float));
+	}
+
+	if (fvf & D3DFVF_TEXCOORDSIZE1(0))
+	{
+		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.x), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.y), sizeof(float));
+	}
+
+	if (fvf & D3DFVF_DIFFUSE)
+	{
+		_append_data(mem_buff, buff_offset, (void*)&(color_), sizeof(D3DCOLOR));
+	}
+
+	assert(buff_offset == vertex_size);
+	if (buff_offset != vertex_size) return false;
+	return true;
+}
+
+bool GE_VERTEX::_append_data( void* mem_buff, int& mem_offset, void* p_data, int data_size )
+{
+	memcpy((char*)mem_buff + mem_offset, p_data, data_size);
+	mem_offset += data_size;
 	return true;
 }
 

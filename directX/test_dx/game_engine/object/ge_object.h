@@ -29,6 +29,11 @@ public:
 	virtual void update(time_t time_elapsed);
 	virtual void render(time_t time_elapsed);
 
+	virtual void on_update(time_t time_elapsed);
+	virtual void on_render(time_t time_elapsed);
+
+	virtual D3DXMATRIX& get_world_matrix() { return world_matrix_; }
+
 protected:
 	virtual void _calc_world_matrix();
 

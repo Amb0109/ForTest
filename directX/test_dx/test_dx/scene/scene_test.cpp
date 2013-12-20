@@ -40,46 +40,45 @@ bool SceneTest::init_test_model()
 	p_test_model_ = new ModelTest();
 	if (p_test_model_ == NULL) return false;
 
+	ge::GE_VERTEX_DECL vertex_decl;
+	vertex_decl.init(DEF_FVF_FORMAT);
+	p_test_model_->set_vertex_decl(&vertex_decl);
+
 	ge::GE_VERTEX vertex_buff[8];
-	vertex_buff[0].set_fvf(DEF_FVF_FORMAT);
+	for (int i=0; i<8; ++i) vertex_buff[i].set_decl(&vertex_decl);
+
 	vertex_buff[0].set_position(D3DXVECTOR3(-1.0f, -1.0f, -1.0f));
 	vertex_buff[0].set_normal(D3DXVECTOR3(-1.0f, -1.0f, -1.0f));
-	vertex_buff[0].set_color(RGBA(0xff, 0xff, 0x00, 0xff));
+	vertex_buff[0].set_color(RGBA(0xff, 0xff, 0xff, 0xff));
 
-	vertex_buff[1].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[1].set_position(D3DXVECTOR3(-1.0f, 1.0f, -1.0f));
 	vertex_buff[1].set_normal(D3DXVECTOR3(-1.0f, 1.0f, -1.0f));
 	vertex_buff[1].set_color(RGBA(0xff, 0x00, 0xff, 0xff));
 	
-	vertex_buff[2].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[2].set_position(D3DXVECTOR3(1.0f, 1.0f, -1.0f));
 	vertex_buff[2].set_normal(D3DXVECTOR3(1.0f, 1.0f, -1.0f));
-	vertex_buff[2].set_color(RGBA(0xff, 0xff, 0xff, 0xff));
+	vertex_buff[2].set_color(RGBA(0x00, 0x00, 0xff, 0xff));
 
-	vertex_buff[3].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[3].set_position(D3DXVECTOR3(1.0f, -1.0f, -1.0f));
 	vertex_buff[3].set_normal(D3DXVECTOR3(1.0f, -1.0f, -1.0f));
-	vertex_buff[3].set_color(RGBA(0x00, 0xff, 0x00, 0xff));
+	vertex_buff[3].set_color(RGBA(0x00, 0xff, 0xff, 0xff));
 
-	vertex_buff[4].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[4].set_position(D3DXVECTOR3(-1.0f, -1.0f, 1.0f));
 	vertex_buff[4].set_normal(D3DXVECTOR3(-1.0f, -1.0f, 1.0f));
-	vertex_buff[4].set_color(RGBA(0x00, 0xff, 0xff, 0xff));
+	vertex_buff[4].set_color(RGBA(0xff, 0xff, 0x00, 0xff));
 
-	vertex_buff[5].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[5].set_position(D3DXVECTOR3(-1.0f, 1.0f, 1.0f));
 	vertex_buff[5].set_normal(D3DXVECTOR3(-1.0f, 1.0f, 1.0f));
 	vertex_buff[5].set_color(RGBA(0xff, 0x00, 0x00, 0xff));
 
-	vertex_buff[6].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[6].set_position(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	vertex_buff[6].set_normal(D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	vertex_buff[6].set_color(RGBA(0x00, 0x00, 0xff, 0xff));
+	vertex_buff[6].set_color(RGBA(0x00, 0x00, 0x00, 0xff));
 
-	vertex_buff[7].set_fvf(DEF_FVF_FORMAT);
 	vertex_buff[7].set_position(D3DXVECTOR3(1.0f, -1.0f, 1.0f));
 	vertex_buff[7].set_normal(D3DXVECTOR3(1.0f, -1.0f, 1.0f));
-	vertex_buff[7].set_color(RGBA(0x00, 0x00, 0x00, 0xff));
+	vertex_buff[7].set_color(RGBA(0x00, 0xff, 0x00, 0xff));
+
 	p_test_model_->set_vertices(vertex_buff, 8);
 
 	WORD index_buff[36];
@@ -97,7 +96,23 @@ bool SceneTest::init_test_model()
 	index_buff[33] = 4; index_buff[34] = 3; index_buff[35] = 7;
 	p_test_model_->set_indices(index_buff, 36);
 
-	object_map_[1] = p_test_model_;
+	//object_map_[1] = p_test_model_;
+	return true;
+}
+
+bool SceneTest::init_shader_mesh()
+{
+	p_effect_ = new EffectTest();
+	if (p_effect_ == NULL) return false;
+	p_effect_->init();
+
+	p_teapot_ = new ge::GEOMesh();
+	if (p_teapot_ == NULL) return false;
+	p_teapot_->create_mesh_teapot();
+	p_teapot_->set_effect(p_effect_);
+	p_teapot_->init();
+
+	object_map_[2] = p_teapot_;
 	return true;
 }
 
@@ -105,12 +120,9 @@ bool SceneTest::show()
 {
 	init_fps_text();
 	init_test_model();
+	init_shader_mesh();
 
-	p_teapot_ = new ge::GEOMesh();
-	p_teapot_->init();
-	object_map_[2] = p_teapot_;
-
-	light_.init();
+	//light_.init();
 
 	return true;
 }
@@ -146,3 +158,4 @@ void SceneTest::update( time_t time_elapsed )
 
 	ge::GEScene::update(time_elapsed);
 }
+
