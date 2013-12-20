@@ -40,12 +40,11 @@ bool SceneTest::init_test_model()
 	p_test_model_ = new ModelTest();
 	if (p_test_model_ == NULL) return false;
 
-	ge::GE_VERTEX_DECL vertex_decl;
-	vertex_decl.init(DEF_FVF_FORMAT);
-	p_test_model_->set_vertex_decl(&vertex_decl);
+	vertex_decl_.init(DEF_FVF_FORMAT);
+	p_test_model_->set_vertex_decl(&vertex_decl_);
 
 	ge::GE_VERTEX vertex_buff[8];
-	for (int i=0; i<8; ++i) vertex_buff[i].set_decl(&vertex_decl);
+	for (int i=0; i<8; ++i) vertex_buff[i].set_decl(&vertex_decl_);
 
 	vertex_buff[0].set_position(D3DXVECTOR3(-1.0f, -1.0f, -1.0f));
 	vertex_buff[0].set_normal(D3DXVECTOR3(-1.0f, -1.0f, -1.0f));
@@ -96,7 +95,7 @@ bool SceneTest::init_test_model()
 	index_buff[33] = 4; index_buff[34] = 3; index_buff[35] = 7;
 	p_test_model_->set_indices(index_buff, 36);
 
-	//object_map_[1] = p_test_model_;
+	object_map_[1] = p_test_model_;
 	return true;
 }
 
@@ -122,7 +121,7 @@ bool SceneTest::show()
 	init_test_model();
 	init_shader_mesh();
 
-	//light_.init();
+	light_.init();
 
 	return true;
 }

@@ -23,6 +23,7 @@ public:
 
 public:
 	ModelTest*		p_test_model_;
+	ge::GE_VERTEX_DECL vertex_decl_;
 
 	int				fps_font_id_;
 	ge::GEOText*	p_fps_text_;
