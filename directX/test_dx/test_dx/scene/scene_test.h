@@ -26,6 +26,8 @@ public:
 	ge::GEOText*	p_fps_text_;
 
 	ge::GEOMesh*	p_teapot_;
+
+	ge::GEOLight	light_;
 };
 
 #endif //_SCENE_SCENE_TEST_H_

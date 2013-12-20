@@ -9,23 +9,24 @@ namespace ge
 const char* const SHADER_MAIN_FUNC	= "ShaderMain";
 const char* const SHADER_TARGET		= "vs_2_0";
 
-class GE_API GERShaderFactory;
 class GE_API GERShader
 {
-	friend class GERShaderFactory;
-
 public:
 	GERShader();
 	virtual ~GERShader();
+
+protected:
+	static bool compile_shader_file(const char* file_path, GERShader& shader);
+	static bool compile_shader(const char* file_content, GERShader& shader);
 
 public:
 	bool create(const char* file_path);
 	void release();
 	const char* get_compile_error();
 
+	LPD3DXCONSTANTTABLE get_constent_table() { return p_constent_table_; }
+	LPDIRECT3DVERTEXSHADER9	get_shader_obj() { return p_shader_; }
 	D3DXHANDLE get_value(const char* value_name, D3DXHANDLE content = NULL);
-
-	void	test_func(D3DXMATRIX& word_matrix);
 
 protected:
 	LPD3DXCONSTANTTABLE		p_constent_table_;
@@ -37,13 +38,6 @@ protected:
 	std::string				file_path_;
 };
 
-
-class GE_API GERShaderFactory
-{
-public:
-	static bool compile_shader_file(const char* file_path, GERShader& shader);
-	static bool compile_shader(const char* file_content, GERShader& shader);
-};
 
 } // namespace ge
 

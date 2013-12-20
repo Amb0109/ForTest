@@ -188,6 +188,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\object\geo_light.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_light.h"
+				>
+			</File>
+			<File
 				RelativePath=".\object\geo_mesh.cpp"
 				>
 				<FileConfiguration
@@ -239,6 +247,14 @@
 			</File>
 			<File
 				RelativePath=".\render\ge_render.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_effect.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_effect.h"
 				>
 			</File>
 			<File

@@ -24,6 +24,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -91,6 +92,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="rmdir /s /q $(OutDir)\shader\&#x0D;&#x0A;mkdir $(OutDir)\shader\&#x0D;&#x0A;xcopy /d $(InputDir)\shader\*.* $(OutDir)\shader\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

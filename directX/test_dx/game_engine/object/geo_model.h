@@ -3,6 +3,7 @@
 
 #include "../common/ge_include.h"
 #include "../object/ge_object.h"
+#include "../render/ger_shader.h"
 
 namespace ge
 {
@@ -25,6 +26,10 @@ public:
 	virtual void update(time_t time_elapsed);
 	virtual void render(time_t time_elapsed);
 
+public:
+	virtual bool init_shader();
+	virtual void update_shader();
+
 protected:
 	virtual bool _create_vetrix_buff(int vertex_cnt);
 	virtual bool _create_index_buff(int index_cnt);
@@ -39,6 +44,8 @@ protected:
 
 	LPDIRECT3DVERTEXDECLARATION9 vertex_decl_;
 	int						vertex_size_;
+
+	GERShader				shader_;
 };
 
 } // namespace ge

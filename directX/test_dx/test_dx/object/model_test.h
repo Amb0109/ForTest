@@ -13,10 +13,8 @@ public:
 
 public:
 	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
 
 protected:
-	float			model_rotation_y;
 };
 
 #endif // _OJBECT_MODEL_TEST_H_

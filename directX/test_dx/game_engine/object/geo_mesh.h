@@ -3,7 +3,7 @@
 
 #include "../common/ge_include.h"
 #include "../object/ge_object.h"
-#include "../render/ger_shader.h"
+#include "../render/ger_effect.h"
 
 namespace ge
 {
@@ -21,12 +21,13 @@ public:
 	virtual void update(time_t time_elapsed);
 	virtual void render(time_t time_elapsed);
 
+public:
+	virtual bool init_effect();
+	virtual bool update_effect();
+
 protected:
-	ID3DXMesh*		p_mesh_;
-
-	ge::GERShader test_shader;
-
-	float			model_rotation_y;
+	LPD3DXMESH		p_mesh_;
+	GEREffect		effect_;
 };
 
 } // namespace ge

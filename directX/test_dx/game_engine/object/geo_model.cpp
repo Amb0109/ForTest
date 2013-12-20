@@ -135,11 +135,15 @@ void GEOModel::update( time_t time_elapsed )
 
 void GEOModel::render( time_t time_elapsed )
 {
+	GEObject::render(time_elapsed);
+
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
 	if (d3d_vertex_buff_ == NULL) return;
 	if (d3d_index_buff_ == NULL) return;
 	if (vertex_decl_ == NULL) return;
+
+	p_d3d_device->SetVertexShader(shader_.get_shader_obj());
 
 	HRESULT h_res = S_OK;
 	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);
@@ -151,6 +155,16 @@ void GEOModel::render( time_t time_elapsed )
 		vertex_cnt_,		// NumVertices
 		0,						// StartIndex
 		index_cnt_ / 3);	// PrimitiveCount
+}
+
+bool GEOModel::init_shader()
+{
+	return true;
+}
+
+void GEOModel::update_shader()
+{
+
 }
 
 }
