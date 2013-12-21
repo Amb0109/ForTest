@@ -15,7 +15,7 @@ p_err_msg_(NULL)
 
 GEREffect::~GEREffect()
 {
-
+	destory();
 }
 
 bool GEREffect::create_from_file( const char* file_path )
@@ -77,6 +77,8 @@ void GEREffect::destory()
 
 	SAFE_RELEASE(p_fx_);
 	SAFE_RELEASE(p_err_msg_);
+
+	h_tech_main_ = NULL;
 }
 
 }

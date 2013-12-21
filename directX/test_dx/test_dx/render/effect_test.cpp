@@ -1,5 +1,17 @@
 #include "effect_test.h"
 
+EffectTest::EffectTest()
+:h_wvm_(NULL), h_wvpm_(NULL)
+{
+
+}
+
+EffectTest::~EffectTest()
+{
+	h_wvm_ = NULL;
+	h_wvpm_ = NULL;
+}
+
 bool EffectTest::init()
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_device();
@@ -8,8 +20,10 @@ bool EffectTest::init()
 	create_from_file("./shader/diffuse.fx");
 	if(p_fx_ == NULL) return false;
 
-	D3DXHANDLE h_tech_main = p_fx_->GetTechniqueByName("TechMain");
-	p_fx_->SetTechnique(h_tech_main);
+	h_tech_main_ = p_fx_->GetTechniqueByName("TechMain");
+
+	h_wvm_ = p_fx_->GetParameterByName(0, "gWV");
+	h_wvpm_ = p_fx_->GetParameterByName(0, "gWVP");
 
 	D3DXHANDLE h_ambient_mtrl		= p_fx_->GetParameterByName(0, "AmbientMtrl");
 	D3DXHANDLE h_diffuse_mtrl		= p_fx_->GetParameterByName(0, "DiffuseMtrl");
@@ -32,17 +46,17 @@ void EffectTest::render( ge::GEObject* obj, time_t time_elapsed )
 	ge::GERender* p_render = ge::GEEngine::get_instance()->get_render();
 	if (p_render == NULL) return;
 	if (p_fx_ == NULL) return;
+	if (h_tech_main_ == NULL) return;
 
-	D3DXHANDLE h_wvm = p_fx_->GetParameterByName(0, "gWV");
-	D3DXHANDLE h_wvpm = p_fx_->GetParameterByName(0, "gWVP");
+	p_fx_->SetTechnique(h_tech_main_);
 
 	D3DXMATRIX view_matrix = obj->get_world_matrix();
 	view_matrix = view_matrix * p_render->get_view_matrix();
 	D3DXMATRIX view_proj_matrix = obj->get_world_matrix();
 	view_proj_matrix = view_proj_matrix * p_render->get_view_matrix() * p_render->get_proj_matrix();
 
-	p_fx_->SetMatrix(h_wvm, &view_matrix);
-	p_fx_->SetMatrix(h_wvpm, &view_proj_matrix);
+	p_fx_->SetMatrix(h_wvm_, &view_matrix);
+	p_fx_->SetMatrix(h_wvpm_, &view_proj_matrix);
 	p_fx_->CommitChanges();
 
 	ge::GEREffect::render(obj, time_elapsed);

@@ -28,6 +28,8 @@ protected:
 	LPD3DXEFFECT			p_fx_;
 	LPD3DXBUFFER			p_err_msg_;
 
+	D3DXHANDLE				h_tech_main_;
+
 	std::string				file_path_;
 };
 
