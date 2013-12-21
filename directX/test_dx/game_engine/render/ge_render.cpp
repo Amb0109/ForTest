@@ -24,10 +24,11 @@ bool GERender::init()
 	bool b_res = true;
 	b_res = b_res && do_view_trans(position, target, up);
 	b_res = b_res && do_projection_trans(0.5f);
+	b_res = b_res && set_render_state(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
-	b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
-	b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
+	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
+	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
 	return b_res;
 }
 
@@ -66,7 +67,7 @@ bool GERender::do_projection_trans( float fovy )
 		&proj_matrix_,
 		D3DX_PI * fovy,
 		(float) wnd_rect.width() / wnd_rect.height(),
-		1.0f, 1000.0f);
+		0.0f, 1000.0f);
 	HRESULT h_res = p_d3d_device->SetTransform(D3DTS_PROJECTION, &proj_matrix_);
 	return SUCCEEDED(h_res);
 }
@@ -78,6 +79,16 @@ bool GERender::set_render_state( D3DRENDERSTATETYPE type, DWORD value )
 
 	HRESULT h_res = p_d3d_device->SetRenderState(type, value);
 	return SUCCEEDED(h_res);
+}
+
+DWORD GERender::get_render_state( D3DRENDERSTATETYPE type )
+{
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
+	if (p_d3d_device == NULL) return 0;
+
+	DWORD value = 0;
+	p_d3d_device->GetRenderState(type, &value);
+	return value;
 }
 
 void GERender::release()

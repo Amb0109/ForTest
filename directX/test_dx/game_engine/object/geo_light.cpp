@@ -23,9 +23,9 @@ bool GEOLight::init()
 	memset(&material_, 0, sizeof(material_));
 	material_.Ambient = D3DXCOLOR(0xffffffff);
 	material_.Diffuse = D3DXCOLOR(0xfff00fff);
-	material_.Specular = D3DXCOLOR(0xffffffff);
+	material_.Specular = D3DXCOLOR(0xfff00fff);
 	material_.Emissive = D3DXCOLOR(0x000000ff);
-	material_.Power = 5.0f;
+	material_.Power = 10.0f;
 
 	memset(&light_, 0, sizeof(light_));
 	light_.Type = D3DLIGHT_DIRECTIONAL;

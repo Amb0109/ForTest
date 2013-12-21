@@ -78,14 +78,16 @@ LRESULT GEApp::MainLoop()
 	return 0;
 }
 
-bool GEApp::create_app( HINSTANCE h_instance, const char* title, int width, int height )
+bool GEApp::create_app( HINSTANCE h_app_inst, const char* title, int width, int height )
 {
+	h_app_inst_ = h_app_inst;
+
 	WNDCLASS wnd_class;
 	ZeroMemory(&wnd_class, sizeof(wnd_class));
 	wnd_class.lpszClassName	= "DxApp Window";
 	wnd_class.lpfnWndProc	= (WNDPROC) WndProc;
 	wnd_class.style			= CS_DBLCLKS | CS_VREDRAW | CS_HREDRAW;
-	wnd_class.hInstance		= h_instance;
+	wnd_class.hInstance		= h_app_inst;
 	wnd_class.hCursor		= LoadCursor( NULL, IDC_ARROW );
 	wnd_class.hbrBackground	= (HBRUSH) (COLOR_WINDOW + 1);
 	wnd_class.lpszMenuName	= NULL;
@@ -107,12 +109,14 @@ bool GEApp::create_app( HINSTANCE h_instance, const char* title, int width, int 
 
 	h_wnd_ = CreateWindow("DxApp Window", title, DEF_WND_STYLE,
 		wnd_rect.left, wnd_rect.top, wnd_rect.width(), wnd_rect.height(),
-		0L, 0L, h_instance, 0L);
+		0L, 0L, h_app_inst, 0L);
 	if (h_wnd_ == NULL) return false;
 
 	GetClientRect(h_wnd_, &game_rect_);
 	UpdateWindow(h_wnd_);
 	ShowWindow(h_wnd_, SW_NORMAL);
+	input_.init();
+
 	is_app_created_ = true;
 	return true;
 }
@@ -133,6 +137,7 @@ bool GEApp::_calc_mid_wnd_pos( GE_IRECT& wnd_rect )
 void GEApp::process()
 {
 	_update_time();
+	input_.update();
 
 	if (p_ge_game_ != NULL)
 	{

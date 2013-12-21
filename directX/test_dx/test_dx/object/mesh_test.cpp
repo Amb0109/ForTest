@@ -9,32 +9,37 @@ void MeshTest::test_mesh_factory( int mesh_seed )
 	case 0:
 		{
 			create_mesh_teapot();
-
-			EffectTest* p_effect = new EffectTest();
-			p_effect->init();
-			set_effect(p_effect);
 		}
 		break;
 	case 1:
 		{
-			create_mesh_teapot();
+			create_mesh_from_file("./mesh/Dwarf.x");
 		}
 		break;
 	case 2:
+		{
+			create_mesh_from_file("./mesh/castle.x");
+		}
 		break;
 	case 3:
+		{
+			create_mesh_from_file("./mesh/car.x");
+		}
 		break;
 	case 4:
+		{
+			create_mesh_from_file("./mesh/sphere.x");
+		}
 		break;
 	}
 
 	transform_.px = float(rand() % 8 - 4);
 	transform_.py = float(rand() % 8 - 4);
-	transform_.pz = float(rand() % 3 - 1);
+	transform_.pz = float(rand() % 3 + 1);
 
-	transform_.sx = (rand() % 5) / 10.f + 0.5f;
-	transform_.sy = (rand() % 5) / 10.f + 0.5f;
-	transform_.sz = (rand() % 5) / 10.f + 0.5f;
+	//transform_.sx = (rand() % 5) / 10.f + 0.5f;
+	//transform_.sy = (rand() % 5) / 10.f + 0.5f;
+	//transform_.sz = (rand() % 5) / 10.f + 0.5f;
 
 	r_x_ = (rand() % 100) / 100.f;
 	r_y_ = (rand() % 100) / 100.f;

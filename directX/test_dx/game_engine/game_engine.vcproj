@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="d3dx9.lib d3d9.lib"
+				AdditionalDependencies="d3dx9.lib d3d9.lib dinput8.lib dxguid.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(DXSDK_DIR)/lib/x86"
 				GenerateDebugInformation="true"
@@ -303,6 +303,14 @@
 			</File>
 			<File
 				RelativePath=".\common\ge_include.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_input.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\ge_input.h"
 				>
 			</File>
 			<File

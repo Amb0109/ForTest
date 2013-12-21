@@ -28,7 +28,7 @@ bool SceneTest::init_fps_text()
 	};
 	p_fps_text_->set_text_style(style);
 
-	ge::GE_IRECT rect(0, 0, 100, 20);
+	ge::GE_IRECT rect(0, 0, 400, 200);
 	p_fps_text_->set_rect(rect);
 
 	object_map_[0] = p_fps_text_;
@@ -106,7 +106,7 @@ bool SceneTest::init_shader_mesh()
 	for (int i=0; i<10; ++i)
 	{
 		mesh_lst_.push_back(new MeshTest());
-		mesh_lst_[i]->test_mesh_factory(1);
+		mesh_lst_[i]->test_mesh_factory(rand()%5);
 
 		object_map_[10 + i] = mesh_lst_[i];
 	}
@@ -135,11 +135,38 @@ void SceneTest::update( time_t time_elapsed )
 {
 	if(NULL != p_fps_text_)
 	{
-		float fps = ge::GEApp::get_instance()->get_fps();
-		char buff[32];
-		sprintf_s(buff, "fps %.2f", fps);
+		ge::GEApp* p_app = ge::GEApp::get_instance();
+		float fps = p_app->get_fps();
+		
+		int mouse_x, mouse_y;
+		p_app->get_input()->get_mouse_pos(mouse_x, mouse_y);
+
+		char buff[1024];
+		sprintf_s(buff, "fps: %.2f\nmouse: %d, %d", fps, mouse_x, mouse_y);
 		p_fps_text_->set_text(buff);
 	}
+
+	ge::GEInput* p_input = ge::GEApp::get_instance()->get_input();
+	if (p_input && p_input->get_key_down(DIK_W))
+	{
+		ge::GERender* p_render = ge::GEEngine::get_instance()->get_render();
+		if (p_render)
+		{
+			DWORD fill_mode = p_render->get_render_state(D3DRS_FILLMODE);
+			p_render->set_render_state(D3DRS_FILLMODE, fill_mode % 3 + 1);
+		}
+	}
+	else if (p_input && p_input->get_key_down(DIK_L))
+	{
+		ge::GERender* p_render = ge::GEEngine::get_instance()->get_render();
+		if (p_render)
+		{
+			DWORD light_mode = p_render->get_render_state(D3DRS_LIGHTING);
+			p_render->set_render_state(D3DRS_LIGHTING, !light_mode);
+		}
+	}
+
+
 
 	ge::GEScene::update(time_elapsed);
 }

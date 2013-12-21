@@ -34,6 +34,7 @@ protected:
 	virtual bool _dx_end_scene();
 	virtual bool _dx_clear();
 	virtual bool _dx_present();
+	virtual bool _dx_reset();
 
 private:
 	LPDIRECT3D9				p_d3d_;

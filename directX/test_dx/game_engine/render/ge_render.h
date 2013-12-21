@@ -32,6 +32,7 @@ public:
 	D3DXMATRIX& get_proj_matrix() {return proj_matrix_;}
 
 	virtual bool set_render_state(D3DRENDERSTATETYPE type, DWORD value);
+	virtual DWORD get_render_state(D3DRENDERSTATETYPE type);
 
 protected:
 	RENDER_TASK_QUE		render_task_que_;

@@ -128,6 +128,13 @@ bool GEEngine::_dx_present()
 	return SUCCEEDED(h_res);
 }
 
+bool GEEngine::_dx_reset()
+{
+	if (p_d3d_device_ == NULL) return false;
+	HRESULT h_res = p_d3d_device_->Reset(&d3d_present_param_);
+	return SUCCEEDED(h_res);
+}
+
 void GEEngine::process( time_t time_elapsed )
 {
 	if (p_d3d_device_ == NULL) return;
@@ -154,5 +161,6 @@ bool GEEngine::_init_render()
 
 	return p_ge_render_->init();
 }
+
 
 }

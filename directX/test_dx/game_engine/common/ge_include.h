@@ -26,6 +26,9 @@
 // d3d include
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <DxErr.h>
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
 
 #define DEF_WND_STYLE ((WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX) | WS_CLIPCHILDREN | WS_VISIBLE)
 
