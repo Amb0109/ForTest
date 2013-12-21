@@ -45,7 +45,6 @@ public:
 
 public:
 	bool			set_decl(GE_VERTEX_DECL* decl);
-	GE_VERTEX_DECL*	get_decl() { return p_vertex_decl_; }
 
 	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
 	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }
@@ -63,7 +62,8 @@ private:
 	D3DXVECTOR2			texcoords_;
 	D3DCOLOR			color_;
 
-	GE_VERTEX_DECL*		p_vertex_decl_;
+	DWORD				vertex_fvf_;
+	int					vertex_size_;
 };
 
 

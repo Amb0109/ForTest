@@ -23,16 +23,24 @@ bool GEOModel::set_vertex_decl( GE_VERTEX_DECL* vertex_decl )
 {
 	if (vertex_decl == NULL) return false;
 
+	release_vertex_decl();
+
 	p_d3d_decl_ = vertex_decl->get_d3d_vertex_decl();
 	vertex_size_ = vertex_decl->get_vertex_size();
 
 	if (p_d3d_decl_ == NULL || vertex_size_ <= 0)
 	{
-		p_d3d_decl_		= NULL;
-		vertex_size_	= 0;
+		release_vertex_decl();
 		return false;
 	}
+	p_d3d_decl_->AddRef();
 	return true;
+}
+
+void GEOModel::release_vertex_decl()
+{
+	SAFE_RELEASE(p_d3d_decl_);
+	vertex_size_ = 0;
 }
 
 bool GEOModel::_create_vetrix_buff( int vertex_cnt )
@@ -138,8 +146,7 @@ void GEOModel::destory()
 	_release_vetrix_buff();
 	_release_index_buff();
 
-	p_d3d_decl_ = NULL;
-	vertex_size_ = 0;
+	release_vertex_decl();
 }
 
 void GEOModel::update( time_t time_elapsed )

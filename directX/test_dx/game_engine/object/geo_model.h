@@ -20,6 +20,8 @@ public:
 
 public:
 	virtual bool set_vertex_decl(GE_VERTEX_DECL* vertex_decl);
+	virtual void release_vertex_decl();
+
 	virtual bool set_vertices(GE_VERTEX* vertex_array, int vertex_cnt);
 	virtual bool set_indices(WORD* index_array, int index_cnt);
 

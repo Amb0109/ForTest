@@ -40,6 +40,7 @@ bool SceneTest::init_test_model()
 	p_test_model_ = new ModelTest();
 	if (p_test_model_ == NULL) return false;
 
+	ge::GE_VERTEX_DECL vertex_decl_;
 	vertex_decl_.init(DEF_FVF_FORMAT);
 	p_test_model_->set_vertex_decl(&vertex_decl_);
 

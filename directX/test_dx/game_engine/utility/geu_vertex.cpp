@@ -130,7 +130,7 @@ bool GE_VERTEX_DECL::_add_vertex_element( DWORD fvf_type, int& array_pos, int& m
 GE_VERTEX::GE_VERTEX()
 :position_(0.f, 0.f, 0.f), normal_(0.f, 0.f, 0.f),
 texcoords_(0.f, 0.f), color_(0xffffffff),
-p_vertex_decl_(NULL)
+vertex_fvf_(0), vertex_size_(0)
 {
 }
 
@@ -141,48 +141,54 @@ GE_VERTEX::~GE_VERTEX()
 
 bool GE_VERTEX::set_decl( GE_VERTEX_DECL* decl )
 {
-	p_vertex_decl_ = decl;
-	return p_vertex_decl_ != NULL;
+	if (decl == NULL) return false;
+	vertex_fvf_ = decl->get_vertex_fvf();
+	vertex_size_ = decl->get_vertex_size();
+	if (vertex_fvf_ <= 0 || vertex_size_ <= 0)
+	{
+		vertex_size_ = 0;
+		vertex_fvf_ = 0;
+		return false;
+	}
+	return true;
 }
 
 bool GE_VERTEX::pack( void* mem_buff, int size )
 {
 	if (mem_buff == NULL) return false;
 
-	if (p_vertex_decl_ == NULL) return false;	
-	DWORD fvf = p_vertex_decl_->get_vertex_fvf();
-	int vertex_size = p_vertex_decl_->get_vertex_size();
-	if(vertex_size != size) return false;
- 
+	if(vertex_size_ <= 0 || vertex_fvf_ <= 0) return false;
+	if(vertex_size_ != size) return false;
+
 	int buff_offset = 0;
 	memset(mem_buff, 0, size);
-	if (fvf & D3DFVF_XYZ)
+	if (vertex_fvf_ & D3DFVF_XYZ)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(position_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(position_.y), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(position_.z), sizeof(float));
 	}
 
-	if (fvf & D3DFVF_NORMAL)
+	if (vertex_fvf_ & D3DFVF_NORMAL)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.y), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.z), sizeof(float));
 	}
 
-	if (fvf & D3DFVF_TEXCOORDSIZE1(0))
+	if (vertex_fvf_ & D3DFVF_TEXCOORDSIZE1(0))
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.y), sizeof(float));
 	}
 
-	if (fvf & D3DFVF_DIFFUSE)
+	if (vertex_fvf_ & D3DFVF_DIFFUSE)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(color_), sizeof(D3DCOLOR));
 	}
 
-	assert(buff_offset == vertex_size);
-	if (buff_offset != vertex_size) return false;
+	assert(buff_offset == vertex_size_);
+	if (buff_offset != vertex_size_) return false;
 	return true;
 }
 
