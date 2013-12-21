@@ -30,6 +30,8 @@ bool GEOMesh::create_mesh( GE_VERTEX_DECL* vertex_decl, int vertex_cnt, int face
 	vertex_cnt_ = vertex_cnt;
 	face_cnt_ = face_cnt;
 
+	this->destory();
+
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateMesh(
 		face_cnt, vertex_cnt,
@@ -89,7 +91,27 @@ bool GEOMesh::set_indices( WORD* index_array, int index_cnt )
 
 bool GEOMesh::create_mesh_from_file( const char* file_name )
 {
-	return true;
+	if (file_name == NULL) return false;
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	this->destory();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXLoadMeshFromX(
+		file_name,
+		D3DXMESH_MANAGED,
+		p_device,
+		NULL,	// Adjacency
+		NULL,	// Materials
+		NULL,	// Effect Instances
+		0,		// Materials Number
+		&p_mesh_);
+	
+	if (SUCCEEDED(h_res))
+		return _get_infos_from_mesh();
+	else
+		return false;
 }
 
 bool GEOMesh::save_mesh_to_file( const char* file_name )
@@ -124,11 +146,6 @@ void GEOMesh::destory()
 
 void GEOMesh::update( time_t time_elapsed )
 {
-	transform_.px = -3.f;
-	transform_.rx = D3DX_PI / 2.34f;
-	transform_.ry += time_elapsed / 1000.f;
-	transform_.sx = 1.f;
-	transform_.sy = 1.f;
 }
 
 void GEOMesh::render( time_t time_elapsed )
@@ -165,7 +182,7 @@ bool GEOMesh::create_mesh_box( float width, float height, float depth )
 	h_res = D3DXCreateBox(p_device, width, height, depth, &p_mesh_, 0);
 	
 	if (SUCCEEDED(h_res))
-		return _get_infos_by_mesh();
+		return _get_infos_from_mesh();
 	else
 		return false;
 }
@@ -181,7 +198,7 @@ bool GEOMesh::create_mesh_cylinder( float radius1, float radius2, float length, 
 	h_res = D3DXCreateCylinder(p_device, radius1, radius2, length, slices, stacks, &p_mesh_, 0);
 
 	if (SUCCEEDED(h_res))
-		return _get_infos_by_mesh();
+		return _get_infos_from_mesh();
 	else
 		return false;
 }
@@ -197,7 +214,7 @@ bool GEOMesh::create_mesh_sphere( float radius, int slices, int stacks )
 	h_res = D3DXCreateSphere(p_device, radius, slices, stacks, &p_mesh_, 0);
 
 	if (SUCCEEDED(h_res))
-		return _get_infos_by_mesh();
+		return _get_infos_from_mesh();
 	else
 		return false;
 }
@@ -213,7 +230,7 @@ bool GEOMesh::create_mesh_teapot()
 	h_res = D3DXCreateTeapot(p_device, &p_mesh_, 0);
 
 	if (SUCCEEDED(h_res))
-		return _get_infos_by_mesh();
+		return _get_infos_from_mesh();
 	else
 		return false;
 }
@@ -229,12 +246,12 @@ bool GEOMesh::create_mesh_torus( float in_radius, float out_radius, int sides, i
 	h_res = D3DXCreateTorus(p_device, in_radius, out_radius, sides, rings, &p_mesh_, 0);
 
 	if (SUCCEEDED(h_res))
-		return _get_infos_by_mesh();
+		return _get_infos_from_mesh();
 	else
 		return false;
 }
 
-bool GEOMesh::_get_infos_by_mesh()
+bool GEOMesh::_get_infos_from_mesh()
 {
 	if (p_mesh_ != NULL)
 	{

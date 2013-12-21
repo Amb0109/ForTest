@@ -29,8 +29,8 @@ bool GEOLight::init()
 
 	memset(&light_, 0, sizeof(light_));
 	light_.Type = D3DLIGHT_DIRECTIONAL;
-	light_.Position = D3DXVECTOR3(5.f, 5.f, 5.f);
-	light_.Direction = D3DXVECTOR3(-0.57f, -0.57f, -0.57f);
+	light_.Position = D3DXVECTOR3(5.f, 5.f, -5.f);
+	light_.Direction = D3DXVECTOR3(-0.57f, -0.57f, 0.57f);
 	light_.Ambient = WHITE * 0.6f;
 	light_.Diffuse = WHITE;
 	light_.Specular = WHITE * 0.3f;

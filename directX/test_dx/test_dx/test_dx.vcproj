@@ -190,6 +190,14 @@
 			Name="object"
 			>
 			<File
+				RelativePath=".\object\mesh_test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\mesh_test.h"
+				>
+			</File>
+			<File
 				RelativePath=".\object\model_test.cpp"
 				>
 			</File>

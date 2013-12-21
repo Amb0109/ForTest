@@ -8,13 +8,10 @@
 
 class ModelTest : public ge::GEOModel
 {
-public:
-	ModelTest();
 
 public:
 	virtual void update(time_t time_elapsed);
 
-protected:
 };
 
 #endif // _OJBECT_MODEL_TEST_H_

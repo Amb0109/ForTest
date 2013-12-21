@@ -33,7 +33,7 @@ public:
 	bool set_effect(GEREffect* p_effect);
 
 protected:
-	bool _get_infos_by_mesh();
+	bool _get_infos_from_mesh();
 
 public:
 	virtual bool init();

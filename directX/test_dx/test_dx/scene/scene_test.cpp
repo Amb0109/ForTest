@@ -102,24 +102,22 @@ bool SceneTest::init_test_model()
 
 bool SceneTest::init_shader_mesh()
 {
-	p_effect_ = new EffectTest();
-	if (p_effect_ == NULL) return false;
-	p_effect_->init();
+	srand(clock());
+	for (int i=0; i<10; ++i)
+	{
+		mesh_lst_.push_back(new MeshTest());
+		mesh_lst_[i]->test_mesh_factory(1);
 
-	p_teapot_ = new ge::GEOMesh();
-	if (p_teapot_ == NULL) return false;
-	p_teapot_->create_mesh_teapot();
-	p_teapot_->set_effect(p_effect_);
-	p_teapot_->init();
+		object_map_[10 + i] = mesh_lst_[i];
+	}
 
-	object_map_[2] = p_teapot_;
 	return true;
 }
 
 bool SceneTest::show()
 {
 	init_fps_text();
-	init_test_model();
+	//init_test_model();
 	init_shader_mesh();
 
 	light_.init();
@@ -130,19 +128,6 @@ bool SceneTest::show()
 
 bool SceneTest::hide()
 {
-	p_fps_text_->destory();
-	delete p_test_model_;
-	p_test_model_ = NULL;
-
-	p_test_model_->destory();
-	delete p_test_model_;
-	p_test_model_ = NULL;
-
-	p_teapot_->destory();
-	delete p_teapot_;
-	p_teapot_ = NULL;
-
-	object_map_.clear();
 	return true;
 }
 

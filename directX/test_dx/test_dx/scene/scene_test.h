@@ -4,6 +4,7 @@
 #include "game_engine.h"
 #include "../object/model_test.h"
 #include "../render/effect_test.h"
+#include "../object/mesh_test.h"
 
 class SceneTest : public ge::GEScene
 {
@@ -27,8 +28,7 @@ public:
 	int				fps_font_id_;
 	ge::GEOText*	p_fps_text_;
 
-	ge::GEOMesh*	p_teapot_;
-	EffectTest*		p_effect_;
+	std::vector<MeshTest*>	mesh_lst_;
 
 	ge::GEOLight	light_;
 };

@@ -1,10 +1,6 @@
 #include "model_test.h"
 
 
-ModelTest::ModelTest()
-{
-
-}
 
 void ModelTest::update( time_t time_elapsed )
 {
