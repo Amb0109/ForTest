@@ -188,14 +188,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_light.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\object\geo_light.h"
-				>
-			</File>
-			<File
 				RelativePath=".\object\geo_mesh.cpp"
 				>
 				<FileConfiguration
@@ -263,6 +255,14 @@
 			</File>
 			<File
 				RelativePath=".\render\ger_font.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_light.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_light.h"
 				>
 			</File>
 			<File

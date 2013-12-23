@@ -12,6 +12,7 @@
 #include "render/ger_shader.h"
 #include "render/ger_effect.h"
 #include "render/ger_material.h"
+#include "render/ger_light.h"
 
 #include "utility/geu_gmath.h"
 #include "utility/geu_vertex.h"
@@ -20,6 +21,5 @@
 #include "object/geo_text.h"
 #include "object/geo_model.h"
 #include "object/geo_mesh.h"
-#include "object/geo_light.h"
 
 #endif // _GAME_ENGINE_H_

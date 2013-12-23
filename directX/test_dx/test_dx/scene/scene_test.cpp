@@ -127,21 +127,37 @@ bool SceneTest::init_test_mesh()
 	return true;
 }
 
+bool SceneTest::init_material()
+{
+	material0_.set_color(0xffffffff, 0xff0f0ff0, 0xffffffff, 0xff000000);
+	material0_.set_power(4.0f);
+	material1_.set_color(0xffffffff, 0xfff00f0f, 0xffffffff, 0xff000000);
+	material1_.set_power(4.0f);
+	material2_.set_color(0xffffffff, 0xff0ff00f, 0xffffffff, 0xff000000);
+	material2_.set_power(4.0f);
+	ge::GE_MATERIAL::set_default_material(material0_);
+	return true;
+}
+
+bool SceneTest::init_light()
+{
+	light_.set_type(D3DLIGHT_POINT);
+	light_.set_position(5.f, 5.f, -5.f);
+	light_.set_color(D3DXCOLOR(0xffffffff) * 0.4f,
+		D3DXCOLOR(0xffffffff), D3DXCOLOR(0xffffffff) * 0.8f);
+	light_.set_attenuation(1.0f, 0.f, 0.f);
+	light_.set_range(100.f);
+	light_.enable();
+	return true;
+}
+
 bool SceneTest::show()
 {
-	material0_.set_color(0xffffffff, 0xff0f0fff, 0xffffffff, 0xff000000);
-	material0_.set_power(5.0f);
-	material1_.set_color(0xffffffff, 0xffff0f0f, 0xffffffff, 0xff000000);
-	material1_.set_power(5.0f);
-	material2_.set_color(0xffffffff, 0xff0fff0f, 0xffffffff, 0xff000000);
-	material2_.set_power(5.0f);
-	ge::GE_MATERIAL::set_default_material(material0_);
-
 	init_fps_text();
+	init_material();
+	init_light();
 	init_test_model();
 	init_test_mesh();
-
-	light_.init();
 
 	return true;
 }

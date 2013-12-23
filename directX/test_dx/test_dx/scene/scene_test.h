@@ -15,6 +15,8 @@ public:
 	bool init_fps_text();
 	bool init_test_model();
 	bool init_test_mesh();
+	bool init_material();
+	bool init_light();
 
 public:
 	virtual bool show();
@@ -30,7 +32,7 @@ public:
 
 	std::vector<MeshTest*>	mesh_lst_;
 
-	ge::GEOLight	light_;
+	ge::GE_LIGHT	light_;
 
 	ge::GE_MATERIAL	material0_;
 	ge::GE_MATERIAL	material1_;
