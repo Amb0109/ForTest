@@ -100,13 +100,26 @@ bool SceneTest::init_test_model()
 	return true;
 }
 
-bool SceneTest::init_shader_mesh()
+bool SceneTest::init_test_mesh()
 {
 	srand(clock());
 	for (int i=0; i<10; ++i)
 	{
 		mesh_lst_.push_back(new MeshTest());
 		mesh_lst_[i]->test_mesh_factory(rand()%5);
+		
+		switch (rand() % 3)
+		{
+		case 0:
+			mesh_lst_[i]->set_material(&material0_);
+			break;
+		case 1:
+			mesh_lst_[i]->set_material(&material1_);
+			break;
+		case 2:
+			mesh_lst_[i]->set_material(&material2_);
+			break;
+		}
 
 		object_map_[10 + i] = mesh_lst_[i];
 	}
@@ -116,9 +129,17 @@ bool SceneTest::init_shader_mesh()
 
 bool SceneTest::show()
 {
+	material0_.set_color(0xffffffff, 0xff0f0fff, 0xffffffff, 0xff000000);
+	material0_.set_power(5.0f);
+	material1_.set_color(0xffffffff, 0xffff0f0f, 0xffffffff, 0xff000000);
+	material1_.set_power(5.0f);
+	material2_.set_color(0xffffffff, 0xff0fff0f, 0xffffffff, 0xff000000);
+	material2_.set_power(5.0f);
+	ge::GE_MATERIAL::set_default_material(material0_);
+
 	init_fps_text();
-	//init_test_model();
-	init_shader_mesh();
+	init_test_model();
+	init_test_mesh();
 
 	light_.init();
 
@@ -156,16 +177,6 @@ void SceneTest::update( time_t time_elapsed )
 			p_render->set_render_state(D3DRS_FILLMODE, fill_mode % 3 + 1);
 		}
 	}
-	else if (p_input && p_input->get_key_down(DIK_L))
-	{
-		ge::GERender* p_render = ge::GEEngine::get_instance()->get_render();
-		if (p_render)
-		{
-			DWORD light_mode = p_render->get_render_state(D3DRS_LIGHTING);
-			p_render->set_render_state(D3DRS_LIGHTING, !light_mode);
-		}
-	}
-
 
 
 	ge::GEScene::update(time_elapsed);

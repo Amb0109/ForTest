@@ -3,13 +3,14 @@
 
 #include "../common/ge_include.h"
 #include "../object/ge_object.h"
-#include "../render/ger_effect.h"
 
 namespace ge
 {
 
 class GE_API GE_VERTEX_DECL;
 class GE_API GE_VERTEX;
+class GE_API GE_MATERIAL;
+class GE_API GEREffect;
 class GE_API GEOMesh : public GEObject
 {
 public:
@@ -30,6 +31,7 @@ public:
 	bool create_mesh_teapot();
 	bool create_mesh_torus(float in_radius, float out_radius, int sides, int rings);
 
+	bool set_material(GE_MATERIAL* p_material);
 	bool set_effect(GEREffect* p_effect);
 
 protected:
@@ -47,6 +49,7 @@ public:
 protected:
 	LPD3DXMESH		p_mesh_;
 	GEREffect*		p_effect_;
+	GE_MATERIAL*	p_material_;
 
 	int				vertex_cnt_;
 	int				face_cnt_;

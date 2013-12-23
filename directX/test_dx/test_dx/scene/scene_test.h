@@ -14,7 +14,7 @@ public:
 public:
 	bool init_fps_text();
 	bool init_test_model();
-	bool init_shader_mesh();
+	bool init_test_mesh();
 
 public:
 	virtual bool show();
@@ -31,6 +31,10 @@ public:
 	std::vector<MeshTest*>	mesh_lst_;
 
 	ge::GEOLight	light_;
+
+	ge::GE_MATERIAL	material0_;
+	ge::GE_MATERIAL	material1_;
+	ge::GE_MATERIAL	material2_;
 };
 
 #endif //_SCENE_SCENE_TEST_H_

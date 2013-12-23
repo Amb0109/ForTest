@@ -266,6 +266,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\ger_material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\ger_material.h"
+				>
+			</File>
+			<File
 				RelativePath=".\render\ger_shader.cpp"
 				>
 			</File>

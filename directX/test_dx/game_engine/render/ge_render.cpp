@@ -24,11 +24,12 @@ bool GERender::init()
 	bool b_res = true;
 	b_res = b_res && do_view_trans(position, target, up);
 	b_res = b_res && do_projection_trans(0.5f);
-	b_res = b_res && set_render_state(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	b_res = b_res && set_render_state(D3DRS_FILLMODE, D3DFILL_SOLID);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
-	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
-	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
+	b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
+	b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
+	b_res = b_res && set_render_state(D3DRS_CULLMODE, D3DCULL_CCW);
 	return b_res;
 }
 

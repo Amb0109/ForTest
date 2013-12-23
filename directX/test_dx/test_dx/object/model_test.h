@@ -3,7 +3,7 @@
 
 #include "game_engine.h"
 
-#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEXCOORDSIZE1(0))
+#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX2)
 //#define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 class ModelTest : public ge::GEOModel

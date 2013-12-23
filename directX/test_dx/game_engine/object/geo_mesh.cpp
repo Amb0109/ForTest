@@ -1,6 +1,8 @@
 #include "geo_mesh.h"
 #include "../common/ge_engine.h"
 #include "../render/ge_render.h"
+#include "../render/ger_effect.h"
+#include "../render/ger_material.h"
 #include "../utility/geu_vertex.h"
 
 namespace ge
@@ -8,7 +10,8 @@ namespace ge
 	
 GEOMesh::GEOMesh()
 :p_mesh_(NULL),
-p_effect_(NULL)
+p_effect_(NULL),
+p_material_(NULL)
 {
 }
 
@@ -126,6 +129,13 @@ bool GEOMesh::set_effect( GEREffect* p_effect )
 	return true;
 }
 
+bool GEOMesh::set_material( GE_MATERIAL* p_material )
+{
+	if (p_material == NULL) return false;
+	p_material_ = p_material;
+	return true;
+}
+
 bool GEOMesh::init()
 {
 	if (p_effect_ != NULL)
@@ -154,6 +164,15 @@ void GEOMesh::render( time_t time_elapsed )
 
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
+
+	if (p_material_ == NULL)
+	{
+			GE_MATERIAL::use_default_material();
+	}
+	else
+	{
+		p_d3d_device->SetMaterial(p_material_->get_d3d_material());
+	}
 
 	if (p_effect_ == NULL)
 	{

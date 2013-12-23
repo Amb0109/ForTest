@@ -1,5 +1,6 @@
 #include "../common/ge_app.h"
 #include "../common/ge_engine.h"
+#include "../render/ger_material.h"
 #include "../utility/geu_vertex.h"
 #include "geo_model.h"
 
@@ -166,7 +167,7 @@ void GEOModel::render( time_t time_elapsed )
 	if (p_d3d_decl_ == NULL) return;
 	if (vertex_size_ <= 0) return;
 
-//	p_d3d_device->SetVertexShader(shader_.get_shader_obj());
+	GE_MATERIAL::use_default_material();
 
 	HRESULT h_res = S_OK;
 	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);

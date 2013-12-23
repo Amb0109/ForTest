@@ -18,7 +18,7 @@ void MeshTest::test_mesh_factory( int mesh_seed )
 		break;
 	case 2:
 		{
-			create_mesh_from_file("./mesh/castle.x");
+			create_mesh_torus(0.4f, 0.8f, 50, 30);
 		}
 		break;
 	case 3:
@@ -28,7 +28,7 @@ void MeshTest::test_mesh_factory( int mesh_seed )
 		break;
 	case 4:
 		{
-			create_mesh_from_file("./mesh/sphere.x");
+			create_mesh_from_file("./mesh/castle.x");
 		}
 		break;
 	}

@@ -49,7 +49,7 @@ void GE_VERTEX_DECL::_calc_vertex_element_array( int& array_pos, int& mem_size )
 	ZeroMemory(vertex_element_, sizeof(vertex_element_));
 	_add_vertex_element(D3DFVF_XYZ, array_pos, mem_size);
 	_add_vertex_element(D3DFVF_NORMAL, array_pos, mem_size);
-	_add_vertex_element(D3DFVF_TEXCOORDSIZE1(0), array_pos, mem_size);
+	_add_vertex_element(D3DFVF_TEXCOUNT_MASK, array_pos, mem_size);
 	_add_vertex_element(D3DFVF_DIFFUSE, array_pos, mem_size);
 	_add_vertex_element(NULL, array_pos, mem_size);
 }
@@ -97,7 +97,7 @@ bool GE_VERTEX_DECL::_add_vertex_element( DWORD fvf_type, int& array_pos, int& m
 			mem_offset += sizeof(float) * 3;
 		}
 		break;
-	case D3DFVF_TEXCOORDSIZE1(0):
+	case D3DFVF_TEXCOUNT_MASK:
 		{
 			++ array_pos;
 			vertex_element_[array_pos].Stream	= 0;
@@ -105,7 +105,7 @@ bool GE_VERTEX_DECL::_add_vertex_element( DWORD fvf_type, int& array_pos, int& m
 			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
 			vertex_element_[array_pos].Type		= D3DDECLTYPE_FLOAT2;
 			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_TEXCOORD;
-			vertex_element_[array_pos].UsageIndex = 0;
+			vertex_element_[array_pos].UsageIndex = BYTE(((fvf_type & vertex_fvf_) >> D3DFVF_TEXCOUNT_SHIFT) - 1);
 			mem_offset += sizeof(float) * 2;
 		}
 		break;
@@ -176,7 +176,7 @@ bool GE_VERTEX::pack( void* mem_buff, int size )
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.z), sizeof(float));
 	}
 
-	if (vertex_fvf_ & D3DFVF_TEXCOORDSIZE1(0))
+	if (vertex_fvf_ & D3DFVF_TEXCOUNT_MASK)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.y), sizeof(float));
