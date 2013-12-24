@@ -17,6 +17,7 @@ public:
 	virtual void destory();
 
 	virtual void update();
+	virtual bool update_picking();
 
 public:
 	virtual bool get_mouse_move(int& delta_x, int& delta_y, int& delta_z);
@@ -31,6 +32,9 @@ public:
 	virtual bool get_key_up(char key);
 	virtual bool get_mouse_up(char button);
 
+	virtual D3DXVECTOR3& get_picking_origin() { return packing_org_; }
+	virtual D3DXVECTOR3& get_picking_direction() { return packing_dir_; }
+
 private:
 	LPDIRECTINPUT			p_input_;
 	LPDIRECTINPUTDEVICE		p_keyboard_device_;
@@ -40,6 +44,9 @@ private:
 	LPDIRECTINPUTDEVICE		p_mouse_device_;
 	DIMOUSESTATE2			mouse_state_;
 	DIMOUSESTATE2			mouse_state_old_;
+
+	D3DXVECTOR3				packing_org_;
+	D3DXVECTOR3				packing_dir_;
 };
 
 }

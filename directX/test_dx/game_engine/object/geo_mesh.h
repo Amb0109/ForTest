@@ -34,8 +34,12 @@ public:
 	bool set_material(GE_MATERIAL* p_material);
 	bool set_effect(GEREffect* p_effect);
 
+	bool check_picking();
+
 protected:
 	bool _get_infos_from_mesh();
+	bool _get_bound_box();
+	virtual void _render_bound();
 
 public:
 	virtual bool init();
@@ -54,6 +58,9 @@ protected:
 	int				vertex_cnt_;
 	int				face_cnt_;
 	int				vertex_size_;
+
+	LPD3DXMESH		p_bound_mesh_;
+	D3DXVECTOR3		bound_pos_;
 };
 
 } // namespace ge

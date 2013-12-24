@@ -138,6 +138,7 @@ void GEApp::process()
 {
 	_update_time();
 	input_.update();
+	input_.update_picking();
 
 	if (p_ge_game_ != NULL)
 	{

@@ -23,12 +23,12 @@ void MeshTest::test_mesh_factory( int mesh_seed )
 		break;
 	case 3:
 		{
-			create_mesh_from_file("./mesh/car.x");
+			create_mesh_from_file("./mesh/bone.x");
 		}
 		break;
 	case 4:
 		{
-			create_mesh_from_file("./mesh/castle.x");
+			create_mesh_from_file("./mesh/tiger.x");
 		}
 		break;
 	}

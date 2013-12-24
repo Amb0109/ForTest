@@ -1,5 +1,7 @@
 #include "geo_mesh.h"
 #include "../common/ge_engine.h"
+#include "../common/ge_app.h"
+#include "../common/ge_input.h"
 #include "../render/ge_render.h"
 #include "../render/ger_effect.h"
 #include "../render/ger_material.h"
@@ -11,7 +13,8 @@ namespace ge
 GEOMesh::GEOMesh()
 :p_mesh_(NULL),
 p_effect_(NULL),
-p_material_(NULL)
+p_material_(NULL),
+p_bound_mesh_(NULL)
 {
 }
 
@@ -182,6 +185,9 @@ void GEOMesh::render( time_t time_elapsed )
 	{
 		p_effect_->render(this, time_elapsed);
 	}
+
+	if (check_picking())
+		_render_bound();
 }
 
 void GEOMesh::on_render( time_t time_elapsed )
@@ -277,9 +283,95 @@ bool GEOMesh::_get_infos_from_mesh()
 		vertex_cnt_ = (int)p_mesh_->GetNumVertices();
 		face_cnt_ = (int)p_mesh_->GetNumFaces();
 		vertex_size_ = (int)p_mesh_->GetNumBytesPerVertex();
-		return true;
+		return _get_bound_box();
 	}
 	return false;
+}
+
+bool GEOMesh::_get_bound_box()
+{
+	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
+	if (p_device == NULL) return false;
+
+	D3DXVECTOR3 min_bound(0.f, 0.f, 0.f);
+	D3DXVECTOR3 max_bound(0.f, 0.f, 0.f);
+	void* p_vertex_buff;
+	HRESULT h_res = S_OK;
+	p_mesh_->LockVertexBuffer(0, &p_vertex_buff);
+	h_res = D3DXComputeBoundingBox((const D3DXVECTOR3 *)p_vertex_buff, vertex_cnt_, vertex_size_,
+		&min_bound, &max_bound);
+	p_mesh_->UnlockVertexBuffer();
+	if (FAILED(h_res)) return false;
+
+	float bound_width = max_bound.x - min_bound.x;
+	float bound_height = max_bound.y - min_bound.y;
+	float bound_depth = max_bound.z - min_bound.z;
+
+	h_res = D3DXCreateBox(p_device,
+		bound_width, bound_height, bound_depth,
+		&p_bound_mesh_, 0);
+	if (FAILED(h_res)) return false;
+
+	bound_pos_ = (max_bound + min_bound) / 2;
+	return true;
+}
+
+void GEOMesh::_render_bound()
+{
+	if (p_bound_mesh_ != NULL)
+	{
+		GERender* p_render = GEEngine::get_instance()->get_render();
+		if (p_render != NULL) 
+		{
+			LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
+			if (p_d3d_device == NULL) return;
+
+			D3DXMATRIX bound_matrix;
+			D3DXMatrixTranslation(&bound_matrix, bound_pos_.x, bound_pos_.y, bound_pos_.z);
+			bound_matrix = bound_matrix * world_matrix_;
+			p_d3d_device->SetTransform(D3DTS_WORLD, &bound_matrix);
+
+			DWORD fill_mode = p_render->get_render_state(D3DRS_FILLMODE);
+			p_render->set_render_state(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+			p_render->set_render_state(D3DRS_CULLMODE, D3DCULL_NONE);
+			p_render->set_render_state(D3DRS_SPECULARENABLE, false);
+			p_render->set_render_state(D3DRS_LIGHTING, false);
+			p_bound_mesh_->DrawSubset(0);
+			p_render->set_render_state(D3DRS_LIGHTING, true);
+			p_render->set_render_state(D3DRS_SPECULARENABLE, true);
+			p_render->set_render_state(D3DRS_CULLMODE, D3DCULL_CCW);
+			p_render->set_render_state(D3DRS_FILLMODE, fill_mode);
+		}
+	}
+}
+
+bool GEOMesh::check_picking()
+{
+	if (p_mesh_ == NULL) return false;
+
+	GEInput* p_input = GEApp::get_instance()->get_input();
+	if (p_input == NULL) return false;
+
+	D3DXVECTOR3 picking_orig = p_input->get_picking_origin();
+	D3DXVECTOR3 picking_dir = p_input->get_picking_direction();
+
+	// ??
+	D3DXVec3TransformCoord(&picking_orig, &picking_orig, &world_matrix_);
+	D3DXVec3TransformNormal(&picking_dir, &picking_dir, &world_matrix_);
+	D3DXVec3Normalize(&picking_dir, &picking_dir);
+
+	BOOL b_hit = FALSE;
+	DWORD face_index = -1;
+	float u = 0.0f;
+	float v = 0.0f;
+	float dist = 0.0f;
+	ID3DXBuffer* all_hits = 0;
+	DWORD hits_cnt = 0;
+	HRESULT h_res = D3DXIntersect(p_mesh_, &picking_orig, &picking_dir,
+		&b_hit, &face_index, &u, &v, &dist, &all_hits, &hits_cnt);
+	SAFE_RELEASE(all_hits);
+	if (FAILED(h_res)) return false;
+	return !!b_hit;
 }
 
 }

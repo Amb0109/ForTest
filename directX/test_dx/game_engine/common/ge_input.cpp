@@ -1,6 +1,7 @@
 #include "ge_input.h"
 #include "ge_engine.h"
 #include "ge_app.h"
+#include "../render/ge_render.h"
 
 namespace ge
 {
@@ -8,7 +9,8 @@ GEInput::GEInput()
 :p_input_(NULL),
 p_keyboard_device_(NULL), p_mouse_device_(NULL)
 {
-
+	memset(packing_org_, 0, sizeof(packing_org_));
+	memset(packing_dir_, 0, sizeof(packing_dir_));
 }
 
 GEInput::~GEInput()
@@ -159,6 +161,38 @@ bool GEInput::get_mouse_up( char button )
 	bool old_on = 0 != (mouse_state_.rgbButtons[(unsigned char)button] & 0x80);
 
 	return (!cur_on) && (old_on);
+}
+
+bool GEInput::update_picking()
+{
+	GEApp* p_app = GEApp::get_instance();
+	GE_IRECT& wnd_rect = p_app->get_game_rect();
+
+	GERender* p_render = GEEngine::get_instance()->get_render();
+	if (p_render == NULL) return false;
+
+	int m_pos_x, m_pos_y;
+	get_mouse_pos(m_pos_x, m_pos_y);
+
+	int wnd_width = wnd_rect.width();
+	int wnd_height = wnd_rect.height();
+
+	D3DXMATRIX& proj_matrix = p_render->get_proj_matrix();
+	D3DXMATRIX& view_matrix = p_render->get_view_matrix();
+
+	float temp_x = (2.0f * m_pos_x / wnd_width - 1.0f) / proj_matrix(0, 0);
+	float temp_y = - (2.0f * m_pos_y / wnd_height - 1.0f) / proj_matrix(1, 1);
+
+	D3DXVECTOR3 origin(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 direction(temp_x, temp_y, 1.0f);
+
+	D3DXMATRIX inv_view_matrix;
+	D3DXMatrixInverse(&inv_view_matrix, 0, &view_matrix);
+
+	D3DXVec3TransformCoord(&packing_org_, &origin, &inv_view_matrix);
+	D3DXVec3TransformNormal(&packing_dir_, &direction, &inv_view_matrix);
+	D3DXVec3Normalize(&packing_dir_, &packing_dir_);
+	return true;
 }
 
 }

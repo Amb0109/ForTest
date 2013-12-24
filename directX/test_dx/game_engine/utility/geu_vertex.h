@@ -3,7 +3,7 @@
 
 #include "../common/ge_include.h"
 
-#define VERTEX_ELEMENT_MAX_CNT 16
+#define VERTEX_ELEMENT_MAX_CNT MAX_FVF_DECL_SIZE
 
 namespace ge
 {
