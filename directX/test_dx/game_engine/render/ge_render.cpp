@@ -26,13 +26,14 @@ bool GERender::init()
 	b_res = b_res && do_projection_trans(0.5f);
 	b_res = b_res && set_render_state(D3DRS_FILLMODE, D3DFILL_SOLID);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
-	b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
-	b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
-	b_res = b_res && set_render_state(D3DRS_CULLMODE, D3DCULL_CCW);
-	b_res = b_res && set_render_state(D3DRS_ZENABLE, true);
-	b_res = b_res && set_render_state(D3DRS_ZFUNC, D3DCMP_LESSEQUAL); //??
-	b_res = b_res && set_render_state(D3DRS_ZWRITEENABLE, true);
+	b_res = b_res && set_render_state(D3DRS_LIGHTING, false);
+	//b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
+	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
+	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
+	//b_res = b_res && set_render_state(D3DRS_CULLMODE, D3DCULL_CCW);
+	//b_res = b_res && set_render_state(D3DRS_ZENABLE, true);
+	//b_res = b_res && set_render_state(D3DRS_ZFUNC, D3DCMP_LESSEQUAL); //??
+	//b_res = b_res && set_render_state(D3DRS_ZWRITEENABLE, true);
 	return b_res;
 }
 
