@@ -39,9 +39,13 @@ bool SceneTest::show()
 {
 	init_fps_text();
 
-	p_panel_2d_ = new Panel2D();
-	p_panel_2d_->init();
-	object_map_[1] = p_panel_2d_;
+	//p_panel_2d_ = new Panel2D();
+	//p_panel_2d_->init();
+	//object_map_[1] = p_panel_2d_;
+
+	p_spine_ = new ge::GEOSpine();
+	p_spine_->init();
+	object_map_[2] = p_spine_;
 
 	return true;
 }

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="game_engine"
-	ProjectGUID="{2B054DCC-2B8E-4791-8F11-F59AB423134F}"
-	RootNamespace="game_engine"
+	Name="lib_spine"
+	ProjectGUID="{5358983B-0A51-409B-B4E9-59BE747139C8}"
+	RootNamespace="lib_spine"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\include&quot;;..\lib_spine\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS"
+				AdditionalIncludeDirectories=".\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -60,19 +60,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="d3dx9.lib d3d9.lib dinput8.lib dxguid.lib"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(DXSDK_DIR)/lib/x86"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -84,12 +75,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -97,7 +82,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -118,7 +103,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -135,19 +120,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -159,12 +135,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -173,195 +143,197 @@
 	</References>
 	<Files>
 		<Filter
-			Name="object"
+			Name="源文件"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\object\ge_object.cpp"
+				RelativePath=".\src\spine\Animation.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\ge_object.h"
+				RelativePath=".\src\spine\AnimationState.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\ge_object_def.h"
+				RelativePath=".\src\spine\AnimationStateData.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_mesh.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\object\geo_mesh.h"
+				RelativePath=".\src\spine\Atlas.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_model.cpp"
+				RelativePath=".\src\spine\AtlasAttachmentLoader.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_model.h"
+				RelativePath=".\src\spine\Attachment.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_spine.cpp"
+				RelativePath=".\src\spine\AttachmentLoader.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_spine.h"
+				RelativePath=".\src\spine\Bone.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_text.cpp"
+				RelativePath=".\src\spine\BoneData.c"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_text.h"
+				RelativePath=".\src\spine\BoundingBoxAttachment.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Event.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\EventData.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\extension.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Json.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Json.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\RegionAttachment.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Skeleton.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\SkeletonBounds.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\SkeletonData.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\SkeletonJson.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Skin.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\Slot.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\spine\SlotData.c"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="render"
+			Name="头文件"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\render\ge_render.cpp"
+				RelativePath=".\include\spine\Animation.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ge_render.h"
+				RelativePath=".\include\spine\AnimationState.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_effect.cpp"
+				RelativePath=".\include\spine\AnimationStateData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_effect.h"
+				RelativePath=".\include\spine\Atlas.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_font.cpp"
+				RelativePath=".\include\spine\AtlasAttachmentLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_font.h"
+				RelativePath=".\include\spine\Attachment.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_light.cpp"
+				RelativePath=".\include\spine\AttachmentLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_light.h"
+				RelativePath=".\include\spine\Bone.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_material.cpp"
+				RelativePath=".\include\spine\BoneData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_material.h"
+				RelativePath=".\include\spine\BoundingBoxAttachment.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_shader.cpp"
+				RelativePath=".\include\spine\Event.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\ger_shader.h"
+				RelativePath=".\include\spine\EventData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\extension.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\RegionAttachment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\Skeleton.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\SkeletonBounds.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\SkeletonData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\SkeletonJson.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\Skin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\Slot.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\SlotData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\spine\spine.h"
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="common"
-			>
-			<File
-				RelativePath=".\common\ge_app.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_app.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_engine.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_engine.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_game.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_game.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_include.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_input.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_input.h"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_scene.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\common\ge_scene.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="utility"
-			>
-			<File
-				RelativePath=".\utility\geu_gmath.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\utility\geu_gmath.h"
-				>
-			</File>
-			<File
-				RelativePath=".\utility\geu_vertex.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\utility\geu_vertex.h"
-				>
-			</File>
-		</Filter>
-		<File
-			RelativePath=".\game_engine.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -25,6 +25,8 @@ public:
 
 	Panel2D*		p_panel_2d_;
 
+	ge::GEOSpine*	p_spine_;
+
 };
 
 #endif //_SCENE_SCENE_TEST_H_

@@ -17,7 +17,7 @@ GERender::~GERender()
 
 bool GERender::init()
 {
-	D3DXVECTOR3 position(0.0f, 0.0f, -5.0f);
+	D3DXVECTOR3 position(0.0f, 0.0f, -256.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
@@ -27,6 +27,10 @@ bool GERender::init()
 	b_res = b_res && set_render_state(D3DRS_FILLMODE, D3DFILL_SOLID);
 	b_res = b_res && set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	b_res = b_res && set_render_state(D3DRS_LIGHTING, false);
+
+	set_render_state(D3DRS_ALPHABLENDENABLE, true);
+	set_render_state(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	set_render_state(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	//b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
 	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
 	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
