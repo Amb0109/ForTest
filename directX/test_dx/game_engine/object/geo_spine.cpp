@@ -4,17 +4,59 @@
 #include "../common/ge_input.h"
 
 void _spAtlasPage_createTexture (spAtlasPage* self, const char* path) {
-	self->rendererObject = 0;
-	self->width = 123;
-	self->height = 456;
+	ge::GEAtlasPageManager::get_instence()->create_texture(self, path);
 }
 
 void _spAtlasPage_disposeTexture (spAtlasPage* self) {
+	ge::GEAtlasPageManager::get_instence()->dispose_texture(self);
 }
 
 char* _spUtil_readFile (const char* path, int* length) {
 	return _readFile(path, length);
 }
+
+ge::GEAtlasPageManager* ge::GEAtlasPageManager::get_instence()
+{
+	static GEAtlasPageManager _g_atlas_page_manager;
+	return &_g_atlas_page_manager;
+}
+
+bool ge::GEAtlasPageManager::create_texture( spAtlasPage* atlas_page, const char* texture_path )
+{
+	if (texture_map_.find(atlas_page) != texture_map_.end()) return true;
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
+	if (p_d3d_device == NULL) return false;
+
+	LPDIRECT3DTEXTURE9 p_img_texture = NULL;
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateTextureFromFile(p_d3d_device, texture_path, &p_img_texture);
+	if (FAILED(h_res)) return false;
+	texture_map_[atlas_page] = p_img_texture;
+
+	D3DSURFACE_DESC surface_desc;
+	p_img_texture->GetLevelDesc(0, &surface_desc);
+	atlas_page->width = surface_desc.Width;
+	atlas_page->height = surface_desc.Height;
+	atlas_page->rendererObject = NULL;
+
+	return true;
+}
+
+LPDIRECT3DTEXTURE9 ge::GEAtlasPageManager::get_texture( spAtlasPage* atlas_page )
+{
+	if (texture_map_.find(atlas_page) == texture_map_.end()) return NULL;
+	return texture_map_[atlas_page];
+}
+
+void ge::GEAtlasPageManager::dispose_texture( spAtlasPage* atlas_page )
+{
+	if (texture_map_.find(atlas_page) == texture_map_.end()) return;
+	texture_map_[atlas_page]->Release();
+	texture_map_.erase(atlas_page);
+}
+
+
+
 
 
 ge::GEOSpine::GEOSpine()
@@ -23,8 +65,6 @@ p_json_(NULL),
 p_skeleton_data_(NULL),
 p_skeleton_(NULL),
 p_animation_(NULL),
-p_img_texture_(NULL),
-p_small_texture_(NULL),
 draw_bone_mesh_(true)
 {
 
@@ -39,27 +79,24 @@ bool ge::GEOSpine::init()
 {
 	p_atlas_ = spAtlas_readAtlasFile("texture/spineboy.atlas");
 	p_json_ = spSkeletonJson_create(p_atlas_);
-	p_skeleton_data_ = spSkeletonJson_readSkeletonDataFile(p_json_, "spine/spineboy.json");
+	p_skeleton_data_ = spSkeletonJson_readSkeletonDataFile(p_json_, "texture/spineboy.json");
 	if (!p_skeleton_data_) return false;
 
 	p_skeleton_ = spSkeleton_create(p_skeleton_data_);
-	spSkeleton_setSkin(p_skeleton_, p_skeleton_data_->defaultSkin);
+	//spSkeleton_setSkinByName(p_skeleton_, "goblingirl");
+	spSkeleton_setToSetupPose(p_skeleton_);
+
 	spAnimationStateData* p_animation_state_data = spAnimationStateData_create(p_skeleton_data_);
 	p_animation_state_ = spAnimationState_create(p_animation_state_data);
-
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-
-	HRESULT h_res = S_OK;
-	h_res = D3DXCreateTextureFromFile(p_d3d_device, "texture\\spineboy.png", &p_img_texture_);
-	h_res = D3DXCreateTexture(p_d3d_device, 256, 256, D3DX_DEFAULT, D3DUSAGE_DYNAMIC, D3DFMT_A8B8G8R8, D3DPOOL_DEFAULT, &p_small_texture_);
 
 	_init_draw_panel();
 	_init_bone_mesh();
 	set_animation("walk");
+	
 	transform_.py = -100;
+	_calc_world_matrix();
 
-	return SUCCEEDED(h_res);
+	return true;
 }
 
 void ge::GEOSpine::destory()
@@ -92,19 +129,16 @@ void ge::GEOSpine::update( time_t time_elapsed )
 
 void ge::GEOSpine::render( time_t time_elapsed )
 {
-	_calc_world_matrix();
-
 	if (p_skeleton_ == NULL) return;
 	spSkeleton_updateWorldTransform(p_skeleton_);
 
-	spSkin* p_skin = p_skeleton_->skin;
 	int slot_cnt = p_skeleton_->slotCount;
 	for (int i=0; i<slot_cnt; ++i)
 	{
 		spSlot* slot = p_skeleton_->slots[i];
-		const char* attachment_name = slot->data->attachmentName;
-		spAttachment* attachment = spSkin_getAttachment(p_skin, i, attachment_name);
-		if (attachment->type ==  ATTACHMENT_REGION)
+		spAttachment* attachment = slot->attachment;
+		if (attachment == NULL) continue;
+		if (attachment && attachment->type ==  ATTACHMENT_REGION)
 		{
 			spRegionAttachment* region_attachment = (spRegionAttachment*)attachment;
 			if (region_attachment == NULL) continue;
@@ -113,7 +147,7 @@ void ge::GEOSpine::render( time_t time_elapsed )
 			if (_load_region_texture(atlas_region))
 			{
 				const spBone* bone = slot->bone;
-				_set_atlas_bone(region_attachment, bone);
+				_transform_region_texture(region_attachment, bone);
 				_do_slot_render();
 			}
 		}
@@ -141,22 +175,6 @@ bool ge::GEOSpine::_init_draw_panel()
 	vertex_decl_.init(DEF_FVF_FORMAT);
 	set_vertex_decl(&vertex_decl_);
 
-	ge::GE_VERTEX vertex_buff[4];
-	for (int i=0; i<4; ++i) vertex_buff[i].set_decl(&vertex_decl_);
-
-	vertex_buff[0].set_position(D3DXVECTOR3(0.f, 0.f, 0.f));
-	vertex_buff[0].set_texcoords(D3DXVECTOR2(0.f, 0.f));
-
-	vertex_buff[1].set_position(D3DXVECTOR3(0.f, -256.0f, 0.f));
-	vertex_buff[1].set_texcoords(D3DXVECTOR2(0.f, 1.f));
-
-	vertex_buff[2].set_position(D3DXVECTOR3(256.0f, -256.0f, 0.f));
-	vertex_buff[2].set_texcoords(D3DXVECTOR2(1.f, 1.f));
-
-	vertex_buff[3].set_position(D3DXVECTOR3(256.0f, 0.f, 0.f));
-	vertex_buff[3].set_texcoords(D3DXVECTOR2(1.f, 0.f));
-	set_vertices(vertex_buff, 4);
-
 	WORD index_buff[6];
 	index_buff[0] = 0; index_buff[1] = 3; index_buff[2] = 1;
 	index_buff[3] = 3; index_buff[4] = 2; index_buff[5] = 1;
@@ -169,45 +187,39 @@ bool ge::GEOSpine::_load_region_texture(const spAtlasRegion* atlas_region )
 {
 	if(atlas_region == NULL) return false;
 
-	ge::GE_IRECT full_rect(0, 0, 256, 256);
-	D3DLOCKED_RECT d3d_full_rect;
-	p_small_texture_->LockRect(0, &d3d_full_rect, &full_rect, 0);
-	memset(d3d_full_rect.pBits, 0, d3d_full_rect.Pitch * 256);
-	p_small_texture_->UnlockRect(0);
+	ge::GE_VERTEX_DECL	vertex_decl_;
+	vertex_decl_.init(DEF_FVF_FORMAT);
+	set_vertex_decl(&vertex_decl_);
 
-	ge::GE_IRECT rect(0, 0, atlas_region->width, atlas_region->height);
-	ge::GE_IRECT rect2 = rect;
-	rect.move_to(atlas_region->x, atlas_region->y);
+	float width = (float)atlas_region->width;
+	float height = (float)atlas_region->height;
 
-	D3DLOCKED_RECT d3d_rect;
-	D3DLOCKED_RECT d3d_rect2;
-	p_img_texture_->LockRect(0, &d3d_rect, &rect, D3DLOCK_READONLY);
-	p_small_texture_->LockRect(0, &d3d_rect2, &rect2, 0);
-	
-	char* p_src = (char*)d3d_rect.pBits;
-	char* p_dst = (char*)d3d_rect2.pBits;
-	int src_pitch = d3d_rect.Pitch;
-	int dst_pitch = d3d_rect2.Pitch;
+	ge::GE_VERTEX vertex_buff[4];
+	for (int i=0; i<4; ++i) vertex_buff[i].set_decl(&vertex_decl_);
 
-	for (int i=0; i<rect.height(); i++)
-	{
-		memcpy(p_dst, p_src, rect.width() * 4);
-		p_src += src_pitch;
-		p_dst += dst_pitch;
-	}
+	vertex_buff[0].set_position(D3DXVECTOR3(0.f, 0.f, 0.f));
+	vertex_buff[0].set_texcoords(D3DXVECTOR2(atlas_region->u, atlas_region->v));
 
-	p_small_texture_->UnlockRect(0);
-	p_img_texture_->UnlockRect(0);
+	vertex_buff[1].set_position(D3DXVECTOR3(0.f, -height, 0.f));
+	vertex_buff[1].set_texcoords(D3DXVECTOR2(atlas_region->u, atlas_region->v2));
+
+	vertex_buff[2].set_position(D3DXVECTOR3(width, -height, 0.f));
+	vertex_buff[2].set_texcoords(D3DXVECTOR2(atlas_region->u2, atlas_region->v2));
+
+	vertex_buff[3].set_position(D3DXVECTOR3(width, 0.f, 0.f));
+	vertex_buff[3].set_texcoords(D3DXVECTOR2(atlas_region->u2, atlas_region->v));
+	set_vertices(vertex_buff, 4);
 
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	p_d3d_device->SetTexture(0, p_small_texture_);
+	LPDIRECT3DTEXTURE9 p_texture = GEAtlasPageManager::get_instence()->get_texture(p_atlas_->pages);
+	p_d3d_device->SetTexture(0, p_texture);
 
 	return true;
 }
 
-bool ge::GEOSpine::_set_atlas_bone(const spRegionAttachment* region_attachment, const spBone* bone)
+bool ge::GEOSpine::_transform_region_texture(const spRegionAttachment* region_attachment, const spBone* bone)
 {
 	if (region_attachment == NULL) return false;
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();

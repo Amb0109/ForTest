@@ -21,6 +21,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		g_p_ge_app->MainLoop();
 	}
 
+	g_p_ge_game->remove_all_scenes();
 	g_p_ge_engine->close_engine();
 	return 0;
 }

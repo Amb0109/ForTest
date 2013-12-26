@@ -11,6 +11,21 @@
 namespace ge
 {
 
+class GE_API GEAtlasPageManager
+{
+public:
+	typedef std::map<spAtlasPage*, LPDIRECT3DTEXTURE9> TEXTURE_MAP;
+	static GEAtlasPageManager* get_instence();
+
+public:
+	bool create_texture(spAtlasPage*, const char*);
+	LPDIRECT3DTEXTURE9 get_texture(spAtlasPage*);
+	void dispose_texture(spAtlasPage*);
+
+private:
+	TEXTURE_MAP texture_map_;
+};
+
 class GE_API GEOSpine : public GEOModel
 {
 public:
@@ -24,7 +39,7 @@ protected:
 	bool _init_draw_panel();
 
 	bool _load_region_texture(const spAtlasRegion* atlas_region);
-	bool _set_atlas_bone(const spRegionAttachment* region_attachment, const spBone* bone);
+	bool _transform_region_texture(const spRegionAttachment* region_attachment, const spBone* bone);
 	bool _do_slot_render();
 
 	bool _init_bone_mesh();
@@ -44,10 +59,6 @@ private:
 	spSkeletonData*		p_skeleton_data_;
 	spAnimation*		p_animation_;
 	spAnimationState*	p_animation_state_;
-	int					event_cnt_;
-
-	LPDIRECT3DTEXTURE9	p_img_texture_;
-	LPDIRECT3DTEXTURE9	p_small_texture_;
 
 	GEOModel			bone_mesh_;
 	bool				draw_bone_mesh_;
