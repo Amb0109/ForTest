@@ -26,21 +26,20 @@ private:
 	TEXTURE_MAP texture_map_;
 };
 
-class GE_API GEOSpine : public GEOModel
+class GE_API GEOSpine : public GEObject
 {
 public:
 	GEOSpine();
 	virtual ~GEOSpine();
 
 public:
-	bool set_animation(const char* state);
+	bool set_animation(int track_id, const char* state, bool loop = true);
 
 protected:
 	bool _init_draw_panel();
 
 	bool _load_region_texture(const spAtlasRegion* atlas_region);
 	bool _transform_region_texture(const spRegionAttachment* region_attachment, const spBone* bone);
-	bool _do_slot_render();
 
 	bool _init_bone_mesh();
 	bool _render_bone();
@@ -59,6 +58,8 @@ private:
 	spSkeletonData*		p_skeleton_data_;
 	spAnimation*		p_animation_;
 	spAnimationState*	p_animation_state_;
+
+	GEOModel			mesh_;
 
 	GEOModel			bone_mesh_;
 	bool				draw_bone_mesh_;

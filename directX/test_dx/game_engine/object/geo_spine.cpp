@@ -91,7 +91,7 @@ bool ge::GEOSpine::init()
 
 	_init_draw_panel();
 	_init_bone_mesh();
-	set_animation("walk");
+	set_animation(0, "walk");
 	
 	transform_.py = -100;
 	_calc_world_matrix();
@@ -113,10 +113,7 @@ void ge::GEOSpine::update( time_t time_elapsed )
 	if (p_input)
 	{
 		if (p_input->get_key_down(DIK_J))
-			set_animation("jump");
-		else if (p_input->get_key_down(DIK_W))
-			set_animation("walk");
-		
+			set_animation(1, "jump", false);
 		if (p_input->get_key_down(DIK_D))
 			draw_bone_mesh_ = !draw_bone_mesh_;
 	}
@@ -146,9 +143,8 @@ void ge::GEOSpine::render( time_t time_elapsed )
 
 			if (_load_region_texture(atlas_region))
 			{
-				const spBone* bone = slot->bone;
-				_transform_region_texture(region_attachment, bone);
-				_do_slot_render();
+				_transform_region_texture(region_attachment, slot->bone);
+				mesh_.render(0);
 			}
 		}
 	}
@@ -156,14 +152,14 @@ void ge::GEOSpine::render( time_t time_elapsed )
 	if (draw_bone_mesh_) _render_bone();
 }
 
-bool ge::GEOSpine::set_animation( const char* state )
+bool ge::GEOSpine::set_animation( int track_id, const char* state, bool loop/* = loop*/)
 {
 	if (p_skeleton_data_ == NULL) return false;
 
 	p_animation_ = spSkeletonData_findAnimation(p_skeleton_data_, state);
 	if (p_animation_)
 	{
-		spAnimationState_setAnimation(p_animation_state_, 0, p_animation_, true);
+		spAnimationState_setAnimation(p_animation_state_, track_id, p_animation_, loop);
 		return true;
 	}
 	return false;
@@ -173,12 +169,12 @@ bool ge::GEOSpine::_init_draw_panel()
 {
 	ge::GE_VERTEX_DECL	vertex_decl_;
 	vertex_decl_.init(DEF_FVF_FORMAT);
-	set_vertex_decl(&vertex_decl_);
+	mesh_.set_vertex_decl(&vertex_decl_);
 
 	WORD index_buff[6];
 	index_buff[0] = 0; index_buff[1] = 3; index_buff[2] = 1;
 	index_buff[3] = 3; index_buff[4] = 2; index_buff[5] = 1;
-	set_indices(index_buff, 6);
+	mesh_.set_indices(index_buff, 6);
 
 	return true;
 }
@@ -187,9 +183,14 @@ bool ge::GEOSpine::_load_region_texture(const spAtlasRegion* atlas_region )
 {
 	if(atlas_region == NULL) return false;
 
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
+	if (p_d3d_device == NULL) return false;
+
+	LPDIRECT3DTEXTURE9 p_texture = GEAtlasPageManager::get_instence()->get_texture(p_atlas_->pages);
+	if (p_texture == NULL) return false;
+
 	ge::GE_VERTEX_DECL	vertex_decl_;
 	vertex_decl_.init(DEF_FVF_FORMAT);
-	set_vertex_decl(&vertex_decl_);
 
 	float width = (float)atlas_region->width;
 	float height = (float)atlas_region->height;
@@ -208,12 +209,8 @@ bool ge::GEOSpine::_load_region_texture(const spAtlasRegion* atlas_region )
 
 	vertex_buff[3].set_position(D3DXVECTOR3(width, 0.f, 0.f));
 	vertex_buff[3].set_texcoords(D3DXVECTOR2(atlas_region->u2, atlas_region->v));
-	set_vertices(vertex_buff, 4);
+	mesh_.set_vertices(vertex_buff, 4);
 
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-
-	LPDIRECT3DTEXTURE9 p_texture = GEAtlasPageManager::get_instence()->get_texture(p_atlas_->pages);
 	p_d3d_device->SetTexture(0, p_texture);
 
 	return true;
@@ -256,30 +253,6 @@ bool ge::GEOSpine::_transform_region_texture(const spRegionAttachment* region_at
 
 	p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix);
 
-	return true;
-}
-
-bool ge::GEOSpine::_do_slot_render()
-{
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-
-	if (d3d_vertex_buff_ == NULL) return true;
-	if (d3d_index_buff_ == NULL) return true;
-
-	if (p_d3d_decl_ == NULL) return true;
-	if (vertex_size_ <= 0) return true;
-
-	HRESULT h_res = S_OK;
-	h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);
-	h_res = p_d3d_device->SetIndices(d3d_index_buff_);
-	h_res = p_d3d_device->SetVertexDeclaration(p_d3d_decl_);
-	h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-		0,						// BaseVertexIndex
-		0,						// MinVertexIndex
-		vertex_cnt_,			// NumVertices
-		0,						// StartIndex
-		index_cnt_ / 3);		// PrimitiveCount
 	return true;
 }
 
