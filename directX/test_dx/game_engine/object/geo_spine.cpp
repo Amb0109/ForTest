@@ -23,7 +23,6 @@ ge::GEAtlasPageManager* ge::GEAtlasPageManager::get_instence()
 
 bool ge::GEAtlasPageManager::create_texture( spAtlasPage* atlas_page, const char* texture_path )
 {
-	if (texture_map_.find(atlas_page) != texture_map_.end()) return true;
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
@@ -31,28 +30,21 @@ bool ge::GEAtlasPageManager::create_texture( spAtlasPage* atlas_page, const char
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateTextureFromFile(p_d3d_device, texture_path, &p_img_texture);
 	if (FAILED(h_res)) return false;
-	texture_map_[atlas_page] = p_img_texture;
 
 	D3DSURFACE_DESC surface_desc;
 	p_img_texture->GetLevelDesc(0, &surface_desc);
 	atlas_page->width = surface_desc.Width;
 	atlas_page->height = surface_desc.Height;
-	atlas_page->rendererObject = NULL;
+	atlas_page->rendererObject = (void*)p_img_texture;
 
 	return true;
 }
 
-LPDIRECT3DTEXTURE9 ge::GEAtlasPageManager::get_texture( spAtlasPage* atlas_page )
-{
-	if (texture_map_.find(atlas_page) == texture_map_.end()) return NULL;
-	return texture_map_[atlas_page];
-}
-
 void ge::GEAtlasPageManager::dispose_texture( spAtlasPage* atlas_page )
 {
-	if (texture_map_.find(atlas_page) == texture_map_.end()) return;
-	texture_map_[atlas_page]->Release();
-	texture_map_.erase(atlas_page);
+	if (atlas_page->rendererObject != NULL)
+		((LPDIRECT3DTEXTURE9)(atlas_page->rendererObject))->Release();
+	atlas_page->rendererObject = NULL;
 }
 
 
@@ -86,12 +78,16 @@ bool ge::GEOSpine::init()
 	//spSkeleton_setSkinByName(p_skeleton_, "goblingirl");
 	spSkeleton_setToSetupPose(p_skeleton_);
 
-	spAnimationStateData* p_animation_state_data = spAnimationStateData_create(p_skeleton_data_);
-	p_animation_state_ = spAnimationState_create(p_animation_state_data);
+	p_animation_state_data_ = spAnimationStateData_create(p_skeleton_data_);
+	spAnimationStateData_setMixByName(p_animation_state_data_, "walk", "jump", 0.3f);
+	spAnimationStateData_setMixByName(p_animation_state_data_, "jump", "walk", 0.3f);
+	spAnimationStateData_setMixByName(p_animation_state_data_, "jump", "jump", 0.3f);
+
+	p_animation_state_ = spAnimationState_create(p_animation_state_data_);
+	spAnimationState_setAnimationByName(p_animation_state_, 0, "walk", true);
 
 	_init_draw_panel();
 	_init_bone_mesh();
-	set_animation(0, "walk");
 	
 	transform_.py = -100;
 	_calc_world_matrix();
@@ -101,6 +97,8 @@ bool ge::GEOSpine::init()
 
 void ge::GEOSpine::destory()
 {
+	spAnimationState_dispose(p_animation_state_);
+	spAnimationStateData_dispose(p_animation_state_data_);
 	spSkeleton_dispose(p_skeleton_);
 	spSkeletonData_dispose(p_skeleton_data_);
 	spSkeletonJson_dispose(p_json_);
@@ -113,7 +111,10 @@ void ge::GEOSpine::update( time_t time_elapsed )
 	if (p_input)
 	{
 		if (p_input->get_key_down(DIK_J))
-			set_animation(1, "jump", false);
+		{		
+			spAnimationState_addAnimationByName(p_animation_state_, 0, "jump", false, 0);
+			spAnimationState_addAnimationByName(p_animation_state_, 0, "walk", true, 0);
+		}
 		if (p_input->get_key_down(DIK_D))
 			draw_bone_mesh_ = !draw_bone_mesh_;
 	}
@@ -152,19 +153,6 @@ void ge::GEOSpine::render( time_t time_elapsed )
 	if (draw_bone_mesh_) _render_bone();
 }
 
-bool ge::GEOSpine::set_animation( int track_id, const char* state, bool loop/* = loop*/)
-{
-	if (p_skeleton_data_ == NULL) return false;
-
-	p_animation_ = spSkeletonData_findAnimation(p_skeleton_data_, state);
-	if (p_animation_)
-	{
-		spAnimationState_setAnimation(p_animation_state_, track_id, p_animation_, loop);
-		return true;
-	}
-	return false;
-}
-
 bool ge::GEOSpine::_init_draw_panel()
 {
 	ge::GE_VERTEX_DECL	vertex_decl_;
@@ -186,7 +174,7 @@ bool ge::GEOSpine::_load_region_texture(const spAtlasRegion* atlas_region )
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	LPDIRECT3DTEXTURE9 p_texture = GEAtlasPageManager::get_instence()->get_texture(p_atlas_->pages);
+	LPDIRECT3DTEXTURE9 p_texture = (LPDIRECT3DTEXTURE9)p_atlas_->pages->rendererObject;
 	if (p_texture == NULL) return false;
 
 	ge::GE_VERTEX_DECL	vertex_decl_;

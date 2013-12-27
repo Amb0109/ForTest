@@ -14,16 +14,11 @@ namespace ge
 class GE_API GEAtlasPageManager
 {
 public:
-	typedef std::map<spAtlasPage*, LPDIRECT3DTEXTURE9> TEXTURE_MAP;
 	static GEAtlasPageManager* get_instence();
 
 public:
 	bool create_texture(spAtlasPage*, const char*);
-	LPDIRECT3DTEXTURE9 get_texture(spAtlasPage*);
 	void dispose_texture(spAtlasPage*);
-
-private:
-	TEXTURE_MAP texture_map_;
 };
 
 class GE_API GEOSpine : public GEObject
@@ -31,9 +26,6 @@ class GE_API GEOSpine : public GEObject
 public:
 	GEOSpine();
 	virtual ~GEOSpine();
-
-public:
-	bool set_animation(int track_id, const char* state, bool loop = true);
 
 protected:
 	bool _init_draw_panel();
@@ -58,6 +50,7 @@ private:
 	spSkeletonData*		p_skeleton_data_;
 	spAnimation*		p_animation_;
 	spAnimationState*	p_animation_state_;
+	spAnimationStateData* p_animation_state_data_;
 
 	GEOModel			mesh_;
 
