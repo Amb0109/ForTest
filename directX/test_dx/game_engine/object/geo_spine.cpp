@@ -53,7 +53,7 @@ void ge::GEAtlasPageManager::dispose_texture( spAtlasPage* atlas_page )
 
 ge::GEOSpine::GEOSpine()
 :p_atlas_(NULL),
-p_json_(NULL),
+p_skeleton_json_(NULL),
 p_skeleton_data_(NULL),
 p_skeleton_(NULL),
 p_animation_(NULL),
@@ -70,8 +70,8 @@ ge::GEOSpine::~GEOSpine()
 bool ge::GEOSpine::init()
 {
 	p_atlas_ = spAtlas_readAtlasFile("texture/spineboy.atlas");
-	p_json_ = spSkeletonJson_create(p_atlas_);
-	p_skeleton_data_ = spSkeletonJson_readSkeletonDataFile(p_json_, "texture/spineboy.json");
+	p_skeleton_json_ = spSkeletonJson_create(p_atlas_);
+	p_skeleton_data_ = spSkeletonJson_readSkeletonDataFile(p_skeleton_json_, "texture/spineboy.json");
 	if (!p_skeleton_data_) return false;
 
 	p_skeleton_ = spSkeleton_create(p_skeleton_data_);
@@ -86,7 +86,7 @@ bool ge::GEOSpine::init()
 	p_animation_state_ = spAnimationState_create(p_animation_state_data_);
 	spAnimationState_setAnimationByName(p_animation_state_, 0, "walk", true);
 
-	_init_draw_panel();
+	_init_mesh();
 	_init_bone_mesh();
 	
 	transform_.py = -100;
@@ -101,7 +101,7 @@ void ge::GEOSpine::destory()
 	spAnimationStateData_dispose(p_animation_state_data_);
 	spSkeleton_dispose(p_skeleton_);
 	spSkeletonData_dispose(p_skeleton_data_);
-	spSkeletonJson_dispose(p_json_);
+	spSkeletonJson_dispose(p_skeleton_json_);
 	spAtlas_dispose(p_atlas_);
 }
 
@@ -120,8 +120,8 @@ void ge::GEOSpine::update( time_t time_elapsed )
 	}
 
 	if (p_skeleton_ == NULL) return;
-	spAnimationState_update(p_animation_state_, time_elapsed / 1000.f);
 	spSkeleton_update(p_skeleton_, time_elapsed / 1000.f);
+	spAnimationState_update(p_animation_state_, time_elapsed / 1000.f);
 	spAnimationState_apply(p_animation_state_, p_skeleton_);
 }
 
@@ -130,151 +130,104 @@ void ge::GEOSpine::render( time_t time_elapsed )
 	if (p_skeleton_ == NULL) return;
 	spSkeleton_updateWorldTransform(p_skeleton_);
 
-	int slot_cnt = p_skeleton_->slotCount;
-	for (int i=0; i<slot_cnt; ++i)
-	{
-		spSlot* slot = p_skeleton_->slots[i];
-		spAttachment* attachment = slot->attachment;
-		if (attachment == NULL) continue;
-		if (attachment && attachment->type ==  ATTACHMENT_REGION)
-		{
-			spRegionAttachment* region_attachment = (spRegionAttachment*)attachment;
-			if (region_attachment == NULL) continue;
-			spAtlasRegion* atlas_region = (spAtlasRegion*)region_attachment->rendererObject;
-
-			if (_load_region_texture(atlas_region))
-			{
-				_transform_region_texture(region_attachment, slot->bone);
-				mesh_.render(0);
-			}
-		}
-	}
-
-	if (draw_bone_mesh_) _render_bone();
+	_do_render();
+	if (draw_bone_mesh_)
+		_do_bone_render();
 }
 
-bool ge::GEOSpine::_init_draw_panel()
+bool ge::GEOSpine::_init_mesh()
 {
-	ge::GE_VERTEX_DECL	vertex_decl_;
-	vertex_decl_.init(DEF_FVF_FORMAT);
+	vertex_decl_.init(D3DFVF_XYZ | D3DFVF_TEX1);
 	mesh_.set_vertex_decl(&vertex_decl_);
 
-	WORD index_buff[6];
-	index_buff[0] = 0; index_buff[1] = 3; index_buff[2] = 1;
-	index_buff[3] = 3; index_buff[4] = 2; index_buff[5] = 1;
-	mesh_.set_indices(index_buff, 6);
-
-	return true;
-}
-
-bool ge::GEOSpine::_load_region_texture(const spAtlasRegion* atlas_region )
-{
-	if(atlas_region == NULL) return false;
-
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-
-	LPDIRECT3DTEXTURE9 p_texture = (LPDIRECT3DTEXTURE9)p_atlas_->pages->rendererObject;
-	if (p_texture == NULL) return false;
-
-	ge::GE_VERTEX_DECL	vertex_decl_;
-	vertex_decl_.init(DEF_FVF_FORMAT);
-
-	float width = (float)atlas_region->width;
-	float height = (float)atlas_region->height;
-
-	ge::GE_VERTEX vertex_buff[4];
-	for (int i=0; i<4; ++i) vertex_buff[i].set_decl(&vertex_decl_);
-
-	vertex_buff[0].set_position(D3DXVECTOR3(0.f, 0.f, 0.f));
-	vertex_buff[0].set_texcoords(D3DXVECTOR2(atlas_region->u, atlas_region->v));
-
-	vertex_buff[1].set_position(D3DXVECTOR3(0.f, -height, 0.f));
-	vertex_buff[1].set_texcoords(D3DXVECTOR2(atlas_region->u, atlas_region->v2));
-
-	vertex_buff[2].set_position(D3DXVECTOR3(width, -height, 0.f));
-	vertex_buff[2].set_texcoords(D3DXVECTOR2(atlas_region->u2, atlas_region->v2));
-
-	vertex_buff[3].set_position(D3DXVECTOR3(width, 0.f, 0.f));
-	vertex_buff[3].set_texcoords(D3DXVECTOR2(atlas_region->u2, atlas_region->v));
-	mesh_.set_vertices(vertex_buff, 4);
-
-	p_d3d_device->SetTexture(0, p_texture);
-
-	return true;
-}
-
-bool ge::GEOSpine::_transform_region_texture(const spRegionAttachment* region_attachment, const spBone* bone)
-{
-	if (region_attachment == NULL) return false;
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-
-	D3DXMATRIX trans_to_center_matrix;
-	D3DXMATRIX org_trans_matrix;
-	D3DXMATRIX org_rotate_matrix;
-	D3DXMATRIX org_scale_matrix;
-	D3DXMATRIX trans_matrix;
-	D3DXMATRIX rotate_matrix;
-	D3DXMATRIX scale_matrix;
-
-	// 中点挪到0,0
-	D3DXMatrixTranslation(&trans_to_center_matrix, - region_attachment->regionWidth / 2.f, region_attachment->regionHeight / 2.f, 0.f);
-	// 相对骨骼变换
-	D3DXMatrixRotationZ(&org_rotate_matrix, region_attachment->rotation / 180.f * 3.141592654f);
-	D3DXMatrixScaling(&org_scale_matrix, region_attachment->scaleX, region_attachment->scaleY, 1.0f);
-	D3DXMatrixTranslation(&org_trans_matrix, region_attachment->x, region_attachment->y, 0.f);
-	// 骨骼变换
-	D3DXMatrixRotationZ(&rotate_matrix, bone->worldRotation / 180.f * 3.141592654f);
-	D3DXMatrixScaling(&scale_matrix, bone->worldScaleX, bone->worldScaleY, 1.0f);
-	D3DXMatrixTranslation(&trans_matrix, bone->worldX, bone->worldY, 0.f);
-
-	D3DXMATRIX world_matrix;
-	world_matrix = trans_to_center_matrix;
-	world_matrix = world_matrix * org_scale_matrix;
-	world_matrix = world_matrix * org_rotate_matrix;
-	world_matrix = world_matrix * org_trans_matrix;
-	world_matrix = world_matrix * scale_matrix;
-	world_matrix = world_matrix * rotate_matrix;
-	world_matrix = world_matrix * trans_matrix;
-	world_matrix = world_matrix * world_matrix_; //最终整体的变换
-
-	p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix);
+	mesh_.create_vetrix_buff(p_skeleton_->slotCount * 4);
+	mesh_.create_index_buff(p_skeleton_->slotCount * 6);
 
 	return true;
 }
 
 bool ge::GEOSpine::_init_bone_mesh()
 {
-	ge::GE_VERTEX_DECL	vertex_decl_;
-	vertex_decl_.init(D3DFVF_XYZ | D3DFVF_DIFFUSE);
-	bone_mesh_.set_vertex_decl(&vertex_decl_);
+	bone_vertex_decl_.init(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+	bone_mesh_.set_vertex_decl(&bone_vertex_decl_);
+
+	bone_mesh_.create_vetrix_buff(3);
 
 	ge::GE_VERTEX vertex_buff[3];
-	for (int i=0; i<3; ++i) vertex_buff[i].set_decl(&vertex_decl_);
+	for (int i=0; i<3; ++i) vertex_buff[i].set_decl(&bone_vertex_decl_);
 
 	vertex_buff[0].set_position(D3DXVECTOR3(0.f, 3.f, 0.f));
 	vertex_buff[0].set_color(0xffffffff);
 
-	vertex_buff[1].set_position(D3DXVECTOR3(0.f, -3.f, 0.f));
+	vertex_buff[1].set_position(D3DXVECTOR3(100.f, 0.0f, 0.f));
 	vertex_buff[1].set_color(0xffffffff);
 
-	vertex_buff[2].set_position(D3DXVECTOR3(100.f, 0.0f, 0.f));
+	vertex_buff[2].set_position(D3DXVECTOR3(0.f, -3.f, 0.f));
 	vertex_buff[2].set_color(0xffffffff);
-	bone_mesh_.set_vertices(vertex_buff, 3);
 
-	WORD index_buff[3];
-	index_buff[0] = 0; index_buff[1] = 2; index_buff[2] = 1;
-	bone_mesh_.set_indices(index_buff, 3);
+	bone_mesh_.set_vertices(vertex_buff, 0, 3);
+
 	return true;
 }
 
-bool ge::GEOSpine::_render_bone()
+void ge::GEOSpine::_do_render()
 {
-	if (p_skeleton_ == NULL) return false;
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
-	
+	if (p_d3d_device == NULL) return;
+
+	if (p_atlas_ == NULL) return;
+	LPDIRECT3DTEXTURE9 p_texture = (LPDIRECT3DTEXTURE9)p_atlas_->pages->rendererObject;
+	if (p_texture == NULL) return;
+	p_d3d_device->SetTexture(0, p_texture);
+	p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix_);
+
+	if (p_skeleton_ == NULL) return;
+
+	ge::GE_VERTEX vertex_buff[4];
+	WORD index_buff[6] = {0};
+	for (int i=0; i<4; ++i) vertex_buff[i].set_decl(&vertex_decl_);
+	index_buff[0] = 0; index_buff[1] = 1; index_buff[2] = 3;
+	index_buff[3] = 3; index_buff[4] = 1; index_buff[5] = 2;
+
+	int region_offset = 0;
+	int slot_cnt = p_skeleton_->slotCount;
+	for (int i=0; i<slot_cnt; ++i)
+	{
+		spSlot* slot = p_skeleton_->slots[i];
+		spAttachment* attachment = slot->attachment;
+		if (attachment && attachment->type ==  ATTACHMENT_REGION)
+		{
+			spRegionAttachment* region_attachment = (spRegionAttachment*)attachment;
+			if (region_attachment == NULL) continue;
+
+			float verties[8], *uvs;
+			spRegionAttachment_computeWorldVertices(region_attachment,
+				0.f, 0.f, slot->bone, verties);
+			uvs = region_attachment->uvs;
+			for (int ii=0; ii<4; ++ii)
+			{
+				vertex_buff[ii].set_position(
+					D3DXVECTOR3(verties[ii<<1], verties[ii<<1|1], 0.f));
+				vertex_buff[ii].set_texcoords(
+					D3DXVECTOR2(uvs[ii<<1], uvs[ii<<1|1]));
+			}
+			mesh_.set_vertices(vertex_buff, region_offset * 4, 4);
+
+			for (int ii=0; ii<6; ++ii) index_buff[ii] += 4;
+			mesh_.set_indices(index_buff, region_offset * 6, 6);
+			++ region_offset;
+		}
+	}
+	mesh_.set_primitive_draw(0, region_offset << 1);
+	mesh_.render(0);
+}
+
+void ge::GEOSpine::_do_bone_render()
+{
+	if (p_skeleton_ == NULL) return;
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
+	if (p_d3d_device == NULL) return;
+
 	int slot_cnt = p_skeleton_->slotCount;
 
 	D3DXMATRIX trans_matrix;
@@ -297,6 +250,5 @@ bool ge::GEOSpine::_render_bone()
 		p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix);
 		bone_mesh_.render(0);
 	}
-	return true;
 }
 

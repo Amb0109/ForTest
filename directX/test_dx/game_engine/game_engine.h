@@ -19,7 +19,7 @@
 
 #include "object/ge_object.h"
 #include "object/geo_text.h"
-#include "object/geo_model.h"
+#include "object/geo_primitive.h"
 #include "object/geo_mesh.h"
 #include "object/geo_spine.h"
 

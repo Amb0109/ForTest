@@ -4,7 +4,7 @@
 #include "../common/ge_include.h"
 #include "ge_object.h"
 #include "ge_object_def.h"
-#include "geo_model.h"
+#include "geo_primitive.h"
 #include "spine/spine.h"
 #include "spine/extension.h"
 
@@ -21,20 +21,22 @@ public:
 	void dispose_texture(spAtlasPage*);
 };
 
+class GE_API GE_VERTEX_DECL;
 class GE_API GEOSpine : public GEObject
 {
+protected:
+	typedef GE_VERTEX_DECL::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
+
 public:
 	GEOSpine();
 	virtual ~GEOSpine();
 
 protected:
-	bool _init_draw_panel();
-
-	bool _load_region_texture(const spAtlasRegion* atlas_region);
-	bool _transform_region_texture(const spRegionAttachment* region_attachment, const spBone* bone);
+	bool _init_mesh();
+	void _do_render();
 
 	bool _init_bone_mesh();
-	bool _render_bone();
+	void _do_bone_render();
 
 public:
 	virtual bool init();
@@ -44,18 +46,20 @@ public:
 	virtual void render(time_t time_elapsed);
 
 private:
-	spAtlas*			p_atlas_;
-	spSkeleton*			p_skeleton_;
-	spSkeletonJson*		p_json_;
-	spSkeletonData*		p_skeleton_data_;
-	spAnimation*		p_animation_;
-	spAnimationState*	p_animation_state_;
-	spAnimationStateData* p_animation_state_data_;
+	spAtlas*				p_atlas_;
+	spSkeleton*				p_skeleton_;
+	spSkeletonJson*			p_skeleton_json_;
+	spSkeletonData*			p_skeleton_data_;
+	spAnimation*			p_animation_;
+	spAnimationState*		p_animation_state_;
+	spAnimationStateData*	p_animation_state_data_;
 
-	GEOModel			mesh_;
+	GEOPrimitive			mesh_;
+	GE_VERTEX_DECL			vertex_decl_;
 
-	GEOModel			bone_mesh_;
-	bool				draw_bone_mesh_;
+	bool					draw_bone_mesh_;
+	GEOPrimitive			bone_mesh_;
+	GE_VERTEX_DECL			bone_vertex_decl_;
 };
 
 } // namespace ge

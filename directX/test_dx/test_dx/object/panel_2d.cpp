@@ -25,12 +25,12 @@ bool Panel2D::init()
 	vertex_buff[3].set_position(D3DXVECTOR3(5.0f, -5.0f, 0.f));
 	vertex_buff[3].set_texcoords(D3DXVECTOR2(1.f, 0.f));
 	vertex_buff[3].set_color(RGBA(0xff, 0xff, 0xff, 0xff));
-	set_vertices(vertex_buff, 4);
+	set_vertices(vertex_buff, 0, 4);
 
 	WORD index_buff[6];
 	index_buff[0] = 0; index_buff[1] = 1; index_buff[2] = 3;
 	index_buff[3] = 3; index_buff[4] = 1; index_buff[5] = 2;
-	set_indices(index_buff, 6);
+	set_indices(index_buff, 0, 6);
 
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
@@ -79,5 +79,5 @@ void Panel2D::update( time_t time_elapsed )
 
 void Panel2D::render( time_t time_elapsed )
 {
-	ge::GEOModel::render(time_elapsed);
+	ge::GEOPrimitive::render(time_elapsed);
 }

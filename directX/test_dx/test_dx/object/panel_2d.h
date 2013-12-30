@@ -5,10 +5,10 @@
 
 #define DEF_FVF_FORMAT (D3DFVF_XYZ | D3DFVF_TEX1)
 
-class Panel2D : public ge::GEOModel
+class Panel2D : public ge::GEOPrimitive
 {
 public:
-	Panel2D():ge::GEOModel(){}
+	Panel2D():ge::GEOPrimitive(){}
 	virtual ~Panel2D(){}
 
 public:

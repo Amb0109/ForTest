@@ -214,11 +214,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_model.cpp"
+				RelativePath=".\object\geo_primitive.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\object\geo_model.h"
+				RelativePath=".\object\geo_primitive.h"
 				>
 			</File>
 			<File
