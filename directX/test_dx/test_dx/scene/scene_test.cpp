@@ -45,7 +45,7 @@ bool SceneTest::show()
 
 	p_spine_ = new ge::GEOSpine();
 	p_spine_->init();
-	object_map_[2] = p_spine_;
+	//object_map_[2] = p_spine_;
 
 	return true;
 }

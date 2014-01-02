@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\lib_spine\include;..\game_engine;&quot;$(DXSDK_DIR)\include&quot;"
+				AdditionalIncludeDirectories="..\lib_ccbone;..\lib_spine\include;..\game_engine;&quot;$(DXSDK_DIR)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
