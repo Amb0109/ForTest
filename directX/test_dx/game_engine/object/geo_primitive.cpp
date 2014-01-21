@@ -8,9 +8,13 @@ namespace ge
 {
 
 GEOPrimitive::GEOPrimitive()
-:d3d_vertex_buff_(NULL), vertex_cnt_(0),
-d3d_index_buff_(NULL), index_cnt_(0),
-p_d3d_decl_(NULL), vertex_size_(0)
+: d3d_vertex_buff_(NULL)
+, vertex_cnt_(0)
+, d3d_index_buff_(NULL)
+, index_cnt_(0)
+, p_d3d_decl_(NULL)
+, vertex_size_(0)
+, d3d_texture_(NULL)
 {
 	GEObject::type_ = GEObjectType_Primitive;
 }
@@ -26,6 +30,7 @@ bool GEOPrimitive::set_vertex_decl( GE_VERTEX_DECL* vertex_decl )
 
 	release_vertex_decl();
 
+	vertex_decl_ = *vertex_decl;
 	p_d3d_decl_ = vertex_decl->get_d3d_vertex_decl();
 	vertex_size_ = vertex_decl->get_vertex_size();
 
@@ -88,6 +93,21 @@ bool GEOPrimitive::create_index_buff( int index_cnt )
 	return SUCCEEDED(h_res);
 }
 
+bool GEOPrimitive::create_texture( const char* texture_path )
+{
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
+	if (p_d3d_device == NULL) return false;
+
+	release_texture();
+
+	HRESULT h_res = S_OK;
+	h_res = D3DXCreateTextureFromFile(p_d3d_device, texture_path, &d3d_texture_);
+	if (FAILED(h_res) || d3d_texture_ == NULL) return false;
+
+	d3d_texture_->GetLevelDesc(0, &texture_desc_);
+	return true;
+}
+
 bool GEOPrimitive::set_vertices( GE_VERTEX* vertex_array, int offset, int vertex_cnt )
 {
 	if (vertex_array == NULL) return false;
@@ -111,7 +131,6 @@ bool GEOPrimitive::set_vertices( GE_VERTEX* vertex_array, int offset, int vertex
 		vertex_buff += vertex_size_;
 	}
 	d3d_vertex_buff_->Unlock();
-	set_primitive_draw(offset / 3, vertex_cnt / 3);
 	return true;
 }
 
@@ -130,7 +149,6 @@ bool GEOPrimitive::set_indices( WORD* index_array, int offset, int index_cnt )
 		index_buff[i] = index_array[i];
 	}
 	d3d_index_buff_->Unlock();
-	set_primitive_draw(offset / 3, index_cnt / 3);
 	return true;
 }
 
@@ -144,6 +162,12 @@ void GEOPrimitive::release_index_buff()
 {
 	SAFE_RELEASE(d3d_index_buff_);
 	index_cnt_ = 0;
+}
+
+void GEOPrimitive::release_texture()
+{
+	SAFE_RELEASE(d3d_texture_);
+	memset(&texture_desc_, 0, sizeof(D3DSURFACE_DESC));
 }
 
 void GEOPrimitive::set_primitive_draw( int start, int cnt )
@@ -163,6 +187,8 @@ void GEOPrimitive::destory()
 	release_index_buff();
 
 	release_vertex_decl();
+
+	release_texture();
 }
 
 void GEOPrimitive::update( time_t time_elapsed )
@@ -178,6 +204,11 @@ void GEOPrimitive::render( time_t time_elapsed )
 
 	if (d3d_vertex_buff_ == NULL) return;
 	if (vertex_size_ <= 0) return;
+
+	p_d3d_device->SetTexture(0, d3d_texture_);
+
+	p_d3d_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	p_d3d_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
 	HRESULT h_res = S_OK;
 	if (d3d_index_buff_ == NULL)
@@ -198,6 +229,29 @@ void GEOPrimitive::render( time_t time_elapsed )
 			draw_primitive_start_,		// StartIndex
 			draw_primitive_cnt_);		// PrimitiveCount
 	}
+
+	p_d3d_device->SetTexture(0, NULL);
+}
+
+void GEOPrimitive::get_texture_size( int& width, int& height )
+{
+	width = texture_desc_.Width;
+	height = texture_desc_.Height;
+}
+
+int GEOPrimitive::get_vertex_buff_size()
+{
+	return vertex_cnt_;
+}
+
+int GEOPrimitive::get_index_buff_size()
+{
+	return index_cnt_;
+}
+
+GE_VERTEX_DECL* GEOPrimitive::get_vertex_decl()
+{
+	return &vertex_decl_;
 }
 
 

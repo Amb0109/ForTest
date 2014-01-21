@@ -17,6 +17,9 @@ public:
 	virtual bool hide();
 
 	virtual void update(time_t time_elapsed);
+	virtual void render(time_t time_elapsed);
+
+	virtual void update_camera();
 
 public:
 
@@ -26,6 +29,12 @@ public:
 	Panel2D*		p_panel_2d_;
 
 	ge::GEOSpine*	p_spine_;
+
+	ge::GEOArmature*	p_armature_;
+
+	D3DXVECTOR3		position;
+	D3DXVECTOR3		target;
+	D3DXVECTOR3		up;
 
 };
 

@@ -22,5 +22,6 @@
 #include "object/geo_primitive.h"
 #include "object/geo_mesh.h"
 #include "object/geo_spine.h"
+#include "object/geo_armature.h"
 
 #endif // _GAME_ENGINE_H_

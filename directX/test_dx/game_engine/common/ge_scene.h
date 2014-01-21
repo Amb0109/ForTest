@@ -18,6 +18,7 @@ public:
 
 public:
 	virtual bool init();
+	virtual void add_object(int key, GEObject* obj);
 	virtual void destory();
 	virtual bool show();
 	virtual bool hide();

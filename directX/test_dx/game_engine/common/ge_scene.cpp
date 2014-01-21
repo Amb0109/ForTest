@@ -29,10 +29,14 @@ void GEScene::destory()
 		GEObject* p_obj = (GEObject*)(obj_it->second);
 		if (NULL == p_obj) continue;
 		p_obj->destory();
-		delete p_obj;
 		obj_it->second = NULL;
 	}
 	object_map_.clear();
+}
+
+void GEScene::add_object( int key, GEObject* obj )
+{
+	object_map_[key] = obj;
 }
 
 bool GEScene::show()

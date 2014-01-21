@@ -17,7 +17,7 @@ GERender::~GERender()
 
 bool GERender::init()
 {
-	D3DXVECTOR3 position(0.0f, 0.0f, -256.0f);
+	D3DXVECTOR3 position(0.0f, 0.0f, -256.f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
@@ -34,7 +34,7 @@ bool GERender::init()
 	//b_res = b_res && set_render_state(D3DRS_LIGHTING, true);
 	//b_res = b_res && set_render_state(D3DRS_NORMALIZENORMALS, true);
 	//b_res = b_res && set_render_state(D3DRS_SPECULARENABLE, true);
-	//b_res = b_res && set_render_state(D3DRS_CULLMODE, D3DCULL_NONE);
+	b_res = b_res && set_render_state(D3DRS_CULLMODE, D3DCULL_NONE);
 	//b_res = b_res && set_render_state(D3DRS_ZENABLE, true);
 	//b_res = b_res && set_render_state(D3DRS_ZFUNC, D3DCMP_LESSEQUAL); //??
 	//b_res = b_res && set_render_state(D3DRS_ZWRITEENABLE, true);
