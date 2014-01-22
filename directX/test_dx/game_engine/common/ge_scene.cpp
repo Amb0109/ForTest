@@ -39,6 +39,11 @@ void GEScene::add_object( int key, GEObject* obj )
 	object_map_[key] = obj;
 }
 
+void GEScene::remove_object( int key )
+{
+	object_map_.erase(key);
+}
+
 bool GEScene::show()
 {
 	return true;
@@ -49,21 +54,19 @@ bool GEScene::hide()
 	return true;
 }
 
-void GEScene::update( time_t time_elapsed )
+void GEScene::update( time_t delta )
 {
 	FOR_EACH (GE_OBJECT_MAP, object_map_, obj_it)
 	{
 		GEObject* p_obj = (GEObject*)(obj_it->second);
 		if (NULL == p_obj) continue;
-		p_obj->update(time_elapsed);
+		p_obj->update(delta);
 	}
 }
 
-void GEScene::render( time_t time_elapsed )
+void GEScene::render( time_t delta )
 {
-	GEEngine* p_engine = GEEngine::get_instance();
-	if (p_engine == NULL) return;
-	GERender* p_render = p_engine->get_render();
+	GERender* p_render = GERender::get_instance();
 	if (p_render == NULL) return;
 
 	FOR_EACH (GE_OBJECT_MAP, object_map_, obj_it)

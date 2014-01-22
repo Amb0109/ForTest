@@ -38,5 +38,22 @@
 
 #define FOR_EACH(type, obj, it) for (type::iterator it = obj.begin(); it != obj.end(); ++it)
 
+#define DLL_MANAGE_CLASS(type) \
+public:\
+	static type* create();\
+	static void release(type** ptr);\
+private:
+
+#define DLL_MANAGE_CLASS_IMPLEMENT(type) \
+type* type::create()\
+{\
+	return new type();\
+}\
+\
+void type::release(type** ptr)\
+{\
+	delete *ptr;\
+	*ptr = NULL;\
+}
 
 #endif // _GAME_ENGINE_INCLUDE_H_

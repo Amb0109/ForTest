@@ -14,7 +14,8 @@ namespace ge
 
 class GE_API GEOArmature : public GEObject
 {
-public:
+	DLL_MANAGE_CLASS(GEOArmature);
+
 	GEOArmature();
 	virtual ~GEOArmature();
 
@@ -22,8 +23,8 @@ public:
 	virtual bool init();
 	virtual void destory();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
 private:
 	CC::CCArmature* ptr_armature_;

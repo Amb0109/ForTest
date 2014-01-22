@@ -18,6 +18,8 @@ struct GETransform
 
 class GE_API GEObject
 {
+	DLL_MANAGE_CLASS(GEObject);
+
 public:
 	GEObject();
 	virtual ~GEObject();
@@ -26,29 +28,29 @@ public:
 	virtual bool init();
 	virtual void destory();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
-	virtual void on_update(time_t time_elapsed);
-	virtual void on_render(time_t time_elapsed);
+	virtual void on_update(time_t delta);
+	virtual void on_render(time_t delta);
 
-	virtual D3DXMATRIX& get_world_matrix() { return world_matrix_; }
+public:
+	virtual D3DXMATRIX& get_world_transform();
+	virtual void set_transform_dirty(bool is_dirty);
 
-protected:
-	virtual void _calc_world_matrix();
+	virtual GETransform& get_transform();
+	virtual void set_transform(GETransform& transform);
 
 protected:
 	GEObjectType	type_;
-	GETransform		transform_;
 
-	D3DXMATRIX		trans_matrix_;
-	D3DXMATRIX		rotatex_matrix_;
-	D3DXMATRIX		rotatey_matrix_;
-	D3DXMATRIX		rotatez_matrix_;
-	D3DXMATRIX		scale_matrix_;
-	D3DXMATRIX		world_matrix_;
+	GETransform		transform_;
+	D3DXMATRIX		d3d_world_transform_;
+	bool			is_transform_dirty_;
 };
 
 } // namespace ge
+
+
 
 #endif // _GAME_ENGINE_OBJECT_H_

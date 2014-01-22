@@ -6,7 +6,7 @@
 namespace ge
 {
 
-class GE_API GEObject;
+class GEObject;
 class GE_API GEScene
 {
 protected:
@@ -19,12 +19,13 @@ public:
 public:
 	virtual bool init();
 	virtual void add_object(int key, GEObject* obj);
+	virtual void remove_object(int key);
 	virtual void destory();
 	virtual bool show();
 	virtual bool hide();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
 protected:
 	GE_OBJECT_MAP object_map_;

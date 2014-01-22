@@ -95,6 +95,8 @@ void CCTextureAtlas::releaseTexture()
 
 namespace ge {
 
+DLL_MANAGE_CLASS_IMPLEMENT(GEOArmature);
+
 GEOArmature::GEOArmature()
 : ptr_armature_(NULL)
 {
@@ -103,7 +105,7 @@ GEOArmature::GEOArmature()
 
 GEOArmature::~GEOArmature()
 {
-
+	destory();
 }
 
 bool GEOArmature::init()
@@ -131,13 +133,13 @@ void GEOArmature::destory()
 	}
 }
 
-void GEOArmature::update( time_t time_elapsed )
+void GEOArmature::update( time_t delta )
 {
-	ptr_armature_->updateAnimation(time_elapsed / 1000.f);
-	ptr_armature_->updateTransform(time_elapsed / 1000.f);
+	ptr_armature_->updateAnimation(delta / 1000.f);
+	ptr_armature_->updateTransform(delta / 1000.f);
 }
 
-void GEOArmature::render( time_t time_elapsed )
+void GEOArmature::render( time_t delta )
 {
 	ptr_armature_->render();
 }

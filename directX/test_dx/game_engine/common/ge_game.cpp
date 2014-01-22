@@ -20,7 +20,7 @@ GEGame* GEGame::get_instance()
 	return &_global_p_ge_game;
 }
 
-void GEGame::process( time_t time_elapsed )
+void GEGame::process( time_t delta )
 {
 	if(!is_valid_scene(cur_scene_id_))
 	{
@@ -28,8 +28,8 @@ void GEGame::process( time_t time_elapsed )
 		return;
 	}
 
-	scene_vec_[cur_scene_id_]->update(time_elapsed);
-	scene_vec_[cur_scene_id_]->render(time_elapsed);
+	scene_vec_[cur_scene_id_]->update(delta);
+	scene_vec_[cur_scene_id_]->render(delta);
 }
 
 int GEGame::add_scene( GEScene* ge_scene )
@@ -74,6 +74,11 @@ void GEGame::remove_scene( int scene_id )
 {
 	if (is_valid_scene(scene_id))
 	{
+		if (scene_id == cur_scene_id_)
+		{
+			scene_vec_[scene_id]->hide();
+		}
+
 		scene_vec_[scene_id]->destory();
 		scene_vec_[scene_id] = NULL;
 

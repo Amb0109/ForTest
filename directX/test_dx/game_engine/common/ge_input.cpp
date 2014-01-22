@@ -48,8 +48,11 @@ bool GEInput::init()
 
 void GEInput::destory()
 {
-	p_keyboard_device_->Unacquire();
-	p_mouse_device_->Unacquire();
+	if (p_keyboard_device_) p_keyboard_device_->Unacquire();
+	p_keyboard_device_ = NULL;
+
+	if (p_mouse_device_) p_mouse_device_->Unacquire();
+	p_keyboard_device_ = NULL;
 
 	SAFE_RELEASE(p_keyboard_device_);
 	SAFE_RELEASE(p_mouse_device_);

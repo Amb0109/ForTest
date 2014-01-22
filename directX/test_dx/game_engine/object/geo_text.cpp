@@ -4,6 +4,8 @@
 namespace ge
 {
 
+DLL_MANAGE_CLASS_IMPLEMENT(GEOText);
+
 GEOText::GEOText()
 {
 
@@ -11,7 +13,7 @@ GEOText::GEOText()
 
 GEOText::~GEOText()
 {
-
+	text_.clear();
 }
 
 void GEOText::set_text( const char* text )
@@ -20,11 +22,9 @@ void GEOText::set_text( const char* text )
 	text_ = text;
 }
 
-void GEOText::render( time_t time_elapsed )
+void GEOText::render( time_t delta )
 {
-	GEEngine* p_engine = GEEngine::get_instance();
-	if (p_engine == NULL) return;
-	GERFontManager* p_font_manager = p_engine->get_font_manager();
+	GERFontManager* p_font_manager = GERFontManager::get_instance();
 	if (p_font_manager == NULL) return;
 
 	if (text_.length() == 0) return;

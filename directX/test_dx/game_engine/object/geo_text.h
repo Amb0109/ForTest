@@ -9,7 +9,8 @@ namespace ge
 {
 class GE_API GEOText : public GEObject
 {
-public:
+	DLL_MANAGE_CLASS(GEOText);
+
 	GEOText();
 	virtual ~GEOText();
 
@@ -21,7 +22,7 @@ public:
 	void set_text_style(GE_TEXT_STYLE& style) { text_style_ = style; };
 
 public:
-	virtual void render(time_t time_elapsed);
+	virtual void render(time_t delta);
 
 public:
 	std::string		text_;

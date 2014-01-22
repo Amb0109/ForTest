@@ -54,6 +54,13 @@ void CCArmature::release()
 	m_sBonesMap.clear();
 	m_bNeedReorder = true;
 
+	if (m_pAnimation)
+	{
+		m_pAnimation->release();
+		delete m_pAnimation;
+		m_pAnimation = NULL;
+	}
+
 	FOR_EACH (std::vector<CCTextureAtlas*>, m_sTextureAtlas, it)
 	{
 		if (CCTextureAtlas* pTextureAtlas = dynamic_cast<CCTextureAtlas*>(*it))
