@@ -7,10 +7,10 @@
 namespace ge
 {
 
-class GE_API GE_VERTEX_DECL;
-class GE_API GE_VERTEX;
-class GE_API GE_MATERIAL;
-class GE_API GEREffect;
+class GE_VERTEX_DECL;
+class GE_VERTEX;
+class GE_MATERIAL;
+class GEREffect;
 class GE_API GEOMesh : public GEObject
 {
 public:
@@ -41,10 +41,10 @@ public:
 	virtual bool init();
 	virtual void destory();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
-	virtual void on_render(time_t time_elapsed);
+	virtual void on_render(time_t delta);
 
 protected:
 	LPD3DXMESH		p_mesh_;

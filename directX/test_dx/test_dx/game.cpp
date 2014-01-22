@@ -17,12 +17,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	if (init_ok)
 	{
-		g_p_ge_game->add_scene(new SceneTest());
+		SceneTest* main_scene = new SceneTest();
+		g_p_ge_game->add_scene(main_scene);
 
 		g_p_ge_app->MainLoop();
+
+		g_p_ge_game->remove_all_scenes();
+		delete main_scene;
+		main_scene = NULL;
 	}
 
-	g_p_ge_game->remove_all_scenes();
 	g_p_ge_engine->close_engine();
 	return 0;
 }

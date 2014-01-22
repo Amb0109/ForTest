@@ -8,7 +8,7 @@
 namespace ge
 {
 
-class GE_API GEObject;
+class GEObject;
 class GE_API GERender
 {
 protected:
@@ -18,9 +18,11 @@ public:
 	GERender();
 	virtual ~GERender();
 
+	static GERender* get_instance();
+
 public:
 	bool init();
-	void render(time_t time_elapsed);
+	void render(time_t delta);
 	void release();
 
 	void push_render(GEObject* p_object);
@@ -33,6 +35,9 @@ public:
 
 	virtual bool set_render_state(D3DRENDERSTATETYPE type, DWORD value);
 	virtual DWORD get_render_state(D3DRENDERSTATETYPE type);
+
+	virtual bool set_sampler_state(D3DSAMPLERSTATETYPE type, DWORD value);
+	virtual DWORD get_sampler_state(D3DSAMPLERSTATETYPE type );
 
 protected:
 	RENDER_TASK_QUE		render_task_que_;

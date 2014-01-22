@@ -7,6 +7,8 @@
 namespace ge
 {
 
+DLL_MANAGE_CLASS_IMPLEMENT(GEOPrimitive);
+
 GEOPrimitive::GEOPrimitive()
 : d3d_vertex_buff_(NULL)
 , vertex_cnt_(0)
@@ -191,12 +193,12 @@ void GEOPrimitive::destory()
 	release_texture();
 }
 
-void GEOPrimitive::update( time_t time_elapsed )
+void GEOPrimitive::update( time_t delta )
 {
 
 }
 
-void GEOPrimitive::render( time_t time_elapsed )
+void GEOPrimitive::render( time_t delta )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
@@ -206,9 +208,6 @@ void GEOPrimitive::render( time_t time_elapsed )
 	if (vertex_size_ <= 0) return;
 
 	p_d3d_device->SetTexture(0, d3d_texture_);
-
-	p_d3d_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	p_d3d_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
 	HRESULT h_res = S_OK;
 	if (d3d_index_buff_ == NULL)

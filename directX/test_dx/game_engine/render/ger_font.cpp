@@ -14,6 +14,12 @@ GERFontManager::~GERFontManager()
 {
 }
 
+GERFontManager* GERFontManager::get_instance()
+{
+	static GERFontManager _global_p_ge_font_manager;
+	return &_global_p_ge_font_manager;
+}
+
 int GERFontManager::add_d3dx_font( GE_FONT& font )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();

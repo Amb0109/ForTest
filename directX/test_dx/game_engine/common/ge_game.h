@@ -6,7 +6,7 @@
 namespace ge
 {
 
-class GE_API GEScene;
+class GEScene;
 
 class GE_API GEGame
 {
@@ -20,7 +20,7 @@ public:
 	static GEGame* get_instance();
 
 public:
-	void		process(time_t time_elapsed);
+	void		process(time_t delta);
 
 	int			add_scene(GEScene* ge_scene);
 	bool		is_valid_scene(int scene_id);

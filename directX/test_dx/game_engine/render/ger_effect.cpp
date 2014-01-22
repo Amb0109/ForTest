@@ -56,7 +56,7 @@ bool GEREffect::init()
 	return true;
 }
 
-void GEREffect::render( GEObject* obj, time_t time_elapsed )
+void GEREffect::render( GEObject* obj, time_t delta )
 {
 	if (p_fx_ == NULL) return;
 
@@ -65,7 +65,7 @@ void GEREffect::render( GEObject* obj, time_t time_elapsed )
 	for(int i = 0; i < pass_num; ++i)
 	{
 		p_fx_->BeginPass(i);
-		obj->on_render(time_elapsed);
+		obj->on_render(delta);
 		p_fx_->End();
 	}
 	p_fx_->End();

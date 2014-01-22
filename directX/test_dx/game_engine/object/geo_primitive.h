@@ -10,14 +10,16 @@
 namespace ge
 {
 
-class GE_API GE_VERTEX;
-class GE_API GEREffect;
+class GE_VERTEX;
+class GEREffect;
 class GE_API GEOPrimitive : public GEObject
 {
 protected:
 	typedef GE_VERTEX_DECL::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
 
+	DLL_MANAGE_CLASS(GEOPrimitive);
 public:
+
 	GEOPrimitive();
 	virtual ~GEOPrimitive();
 
@@ -46,8 +48,8 @@ public:
 	virtual bool init();
 	virtual void destory();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
 protected:
 	LPDIRECT3DVERTEXBUFFER9	d3d_vertex_buff_;

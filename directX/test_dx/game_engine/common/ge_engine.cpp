@@ -85,12 +85,6 @@ bool GEEngine::init_engine()
 
 void GEEngine::close_engine()
 {
-	if (p_ge_render_ != NULL)
-	{
-		p_ge_render_->release();
-		delete p_ge_render_;
-		p_ge_render_ = NULL;
-	}
 	SAFE_RELEASE(p_d3d_device_);
 }
 
@@ -135,7 +129,7 @@ bool GEEngine::_dx_reset()
 	return SUCCEEDED(h_res);
 }
 
-void GEEngine::process( time_t time_elapsed )
+void GEEngine::process( time_t delta )
 {
 	if (p_d3d_device_ == NULL) return;
 
@@ -143,7 +137,7 @@ void GEEngine::process( time_t time_elapsed )
 	if(!_dx_clear()) return;
 
 	if (p_ge_render_ != NULL)
-		p_ge_render_->render(time_elapsed);
+		p_ge_render_->render(delta);
 
 	if(!_dx_end_scene()) return;
 	if(!_dx_present()) return;
@@ -153,14 +147,13 @@ bool GEEngine::_init_render()
 {
 	if (p_d3d_device_ == NULL) return false;
 
-	p_ge_render_ = new GERender();
+	p_ge_render_ = GERender::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
-	p_font_manager_ = new GERFontManager();
+	p_font_manager_ = GERFontManager::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
 	return p_ge_render_->init();
 }
-
 
 }

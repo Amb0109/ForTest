@@ -4,54 +4,29 @@
 #include "../common/ge_input.h"
 
 void _spAtlasPage_createTexture (spAtlasPage* self, const char* path) {
-	ge::GEAtlasPageManager::get_instence()->create_texture(self, path);
+	if (self == NULL) return;
+	ge::GEOPrimitive* render_object = ge::GEOPrimitive::create();
+	if (render_object == NULL) return;
+	render_object->create_texture(path);
+	render_object->get_texture_size(self->width, self->height);
+	self->rendererObject = (void*)render_object;
 }
 
 void _spAtlasPage_disposeTexture (spAtlasPage* self) {
-	ge::GEAtlasPageManager::get_instence()->dispose_texture(self);
+	ge::GEOPrimitive* render_object = (ge::GEOPrimitive*)(self->rendererObject);
+	if (render_object == NULL) return;
+	ge::GEOPrimitive::release(&render_object);
 }
 
 char* _spUtil_readFile (const char* path, int* length) {
 	return _readFile(path, length);
 }
 
-ge::GEAtlasPageManager* ge::GEAtlasPageManager::get_instence()
-{
-	static GEAtlasPageManager _g_atlas_page_manager;
-	return &_g_atlas_page_manager;
-}
+namespace ge {
 
-bool ge::GEAtlasPageManager::create_texture( spAtlasPage* atlas_page, const char* texture_path )
-{
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return false;
+DLL_MANAGE_CLASS_IMPLEMENT(GEOSpine);
 
-	LPDIRECT3DTEXTURE9 p_img_texture = NULL;
-	HRESULT h_res = S_OK;
-	h_res = D3DXCreateTextureFromFile(p_d3d_device, texture_path, &p_img_texture);
-	if (FAILED(h_res)) return false;
-
-	D3DSURFACE_DESC surface_desc;
-	p_img_texture->GetLevelDesc(0, &surface_desc);
-	atlas_page->width = surface_desc.Width;
-	atlas_page->height = surface_desc.Height;
-	atlas_page->rendererObject = (void*)p_img_texture;
-
-	return true;
-}
-
-void ge::GEAtlasPageManager::dispose_texture( spAtlasPage* atlas_page )
-{
-	if (atlas_page->rendererObject != NULL)
-		((LPDIRECT3DTEXTURE9)(atlas_page->rendererObject))->Release();
-	atlas_page->rendererObject = NULL;
-}
-
-
-
-
-
-ge::GEOSpine::GEOSpine()
+GEOSpine::GEOSpine()
 :p_atlas_(NULL),
 p_skeleton_json_(NULL),
 p_skeleton_data_(NULL),
@@ -62,12 +37,12 @@ draw_bone_mesh_(true)
 
 }
 
-ge::GEOSpine::~GEOSpine()
+GEOSpine::~GEOSpine()
 {
 
 }
 
-bool ge::GEOSpine::init()
+bool GEOSpine::init()
 {
 	p_atlas_ = spAtlas_readAtlasFile("texture/spineboy.atlas");
 	p_skeleton_json_ = spSkeletonJson_create(p_atlas_);
@@ -86,16 +61,15 @@ bool ge::GEOSpine::init()
 	p_animation_state_ = spAnimationState_create(p_animation_state_data_);
 	spAnimationState_setAnimationByName(p_animation_state_, 0, "walk", true);
 
-	_init_mesh();
-	_init_bone_mesh();
+	vertex_decl_.init(D3DFVF_XYZ | D3DFVF_TEX1);
+	bone_vertex_decl_.init(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 	
 	transform_.py = -100;
-	_calc_world_matrix();
 
 	return true;
 }
 
-void ge::GEOSpine::destory()
+void GEOSpine::destory()
 {
 	spAnimationState_dispose(p_animation_state_);
 	spAnimationStateData_dispose(p_animation_state_data_);
@@ -105,7 +79,7 @@ void ge::GEOSpine::destory()
 	spAtlas_dispose(p_atlas_);
 }
 
-void ge::GEOSpine::update( time_t time_elapsed )
+void GEOSpine::update( time_t delta )
 {
 	GEInput* p_input = GEApp::get_instance()->get_input();
 	if (p_input)
@@ -120,77 +94,47 @@ void ge::GEOSpine::update( time_t time_elapsed )
 	}
 
 	if (p_skeleton_ == NULL) return;
-	spSkeleton_update(p_skeleton_, time_elapsed / 1000.f);
-	spAnimationState_update(p_animation_state_, time_elapsed / 1000.f);
+	spSkeleton_update(p_skeleton_, delta / 1000.f);
+	spAnimationState_update(p_animation_state_, delta / 1000.f);
 	spAnimationState_apply(p_animation_state_, p_skeleton_);
 }
 
-void ge::GEOSpine::render( time_t time_elapsed )
+void GEOSpine::render( time_t delta )
 {
 	if (p_skeleton_ == NULL) return;
 	spSkeleton_updateWorldTransform(p_skeleton_);
+
+	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
+	if (p_d3d_device == NULL) return;
+	p_d3d_device->SetTransform(D3DTS_WORLD, &get_world_transform());
 
 	_do_render();
 	if (draw_bone_mesh_)
 		_do_bone_render();
 }
 
-bool ge::GEOSpine::_init_mesh()
-{
-	vertex_decl_.init(D3DFVF_XYZ | D3DFVF_TEX1);
-	mesh_.set_vertex_decl(&vertex_decl_);
-
-	mesh_.create_vetrix_buff(p_skeleton_->slotCount * 4);
-	mesh_.create_index_buff(p_skeleton_->slotCount * 6);
-
-	return true;
-}
-
-bool ge::GEOSpine::_init_bone_mesh()
-{
-	bone_vertex_decl_.init(D3DFVF_XYZ | D3DFVF_DIFFUSE);
-	bone_mesh_.set_vertex_decl(&bone_vertex_decl_);
-
-	bone_mesh_.create_vetrix_buff(3);
-
-	ge::GE_VERTEX vertex_buff[3];
-	for (int i=0; i<3; ++i) vertex_buff[i].set_decl(&bone_vertex_decl_);
-
-	vertex_buff[0].set_position(D3DXVECTOR3(0.f, 3.f, 0.f));
-	vertex_buff[0].set_color(0xffffffff);
-
-	vertex_buff[1].set_position(D3DXVECTOR3(100.f, 0.0f, 0.f));
-	vertex_buff[1].set_color(0xffffffff);
-
-	vertex_buff[2].set_position(D3DXVECTOR3(0.f, -3.f, 0.f));
-	vertex_buff[2].set_color(0xffffffff);
-
-	bone_mesh_.set_vertices(vertex_buff, 0, 3);
-
-	return true;
-}
-
-void ge::GEOSpine::_do_render()
+void GEOSpine::_do_render()
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
+	p_d3d_device->SetTransform(D3DTS_WORLD, &get_world_transform());
 
 	if (p_atlas_ == NULL) return;
-	LPDIRECT3DTEXTURE9 p_texture = (LPDIRECT3DTEXTURE9)p_atlas_->pages->rendererObject;
-	if (p_texture == NULL) return;
-	p_d3d_device->SetTexture(0, p_texture);
-	p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix_);
+	GEOPrimitive* render_object = (GEOPrimitive*)p_atlas_->pages->rendererObject;
+	if (render_object == NULL) return;
 
 	if (p_skeleton_ == NULL) return;
 
-	ge::GE_VERTEX vertex_buff[4];
-	WORD index_buff[6] = {0};
-	for (int i=0; i<4; ++i) vertex_buff[i].set_decl(&vertex_decl_);
+	int slot_cnt = p_skeleton_->slotCount;
+
+	std::vector<GE_VERTEX> vertex_buff;
+	std::vector<WORD> index_buff;
+	vertex_buff.resize(slot_cnt * 4);
+	index_buff.resize(slot_cnt * 6);
 	index_buff[0] = 0; index_buff[1] = 1; index_buff[2] = 3;
 	index_buff[3] = 3; index_buff[4] = 1; index_buff[5] = 2;
 
 	int region_offset = 0;
-	int slot_cnt = p_skeleton_->slotCount;
 	for (int i=0; i<slot_cnt; ++i)
 	{
 		spSlot* slot = p_skeleton_->slots[i];
@@ -201,54 +145,107 @@ void ge::GEOSpine::_do_render()
 			if (region_attachment == NULL) continue;
 
 			float verties[8], *uvs;
-			spRegionAttachment_computeWorldVertices(region_attachment,
-				0.f, 0.f, slot->bone, verties);
+			spRegionAttachment_computeWorldVertices(region_attachment, 0.f, 0.f, slot->bone, verties);
 			uvs = region_attachment->uvs;
+			
+			int vertex_offset = 4 * region_offset;
 			for (int ii=0; ii<4; ++ii)
 			{
-				vertex_buff[ii].set_position(
-					D3DXVECTOR3(verties[ii<<1], verties[ii<<1|1], 0.f));
-				vertex_buff[ii].set_texcoords(
-					D3DXVECTOR2(uvs[ii<<1], uvs[ii<<1|1]));
+				GE_VERTEX vertex;
+				vertex.set_decl(&vertex_decl_);
+				vertex.set_position(D3DXVECTOR3(verties[ii<<1], verties[ii<<1|1], 0.f));
+				vertex.set_texcoords(D3DXVECTOR2(uvs[ii<<1], uvs[ii<<1|1]));
+				vertex_buff[vertex_offset + ii] = vertex;
 			}
-			mesh_.set_vertices(vertex_buff, region_offset * 4, 4);
 
-			for (int ii=0; ii<6; ++ii) index_buff[ii] += 4;
-			mesh_.set_indices(index_buff, region_offset * 6, 6);
+			if (region_offset != 0)
+			{
+				int index_offset = 6 * region_offset;
+				for (int ii=0; ii<6; ++ii)
+				{
+					index_buff[index_offset + ii] = index_buff[ii + index_offset - 6] + 4;
+				}
+			}
 			++ region_offset;
 		}
 	}
-	mesh_.set_primitive_draw(0, region_offset << 1);
-	mesh_.render(0);
+
+	if (render_object->get_vertex_buff_size() <= 0)
+	{
+		render_object->set_vertex_decl(&vertex_decl_);
+		render_object->create_vetrix_buff(slot_cnt * 4);
+		render_object->create_index_buff(slot_cnt * 6);
+	}
+
+	render_object->set_vertices(&vertex_buff[0], 0, region_offset * 4);
+	render_object->set_indices(&index_buff[0], 0, region_offset * 6);
+	render_object->set_primitive_draw(0, region_offset * 2);
+	render_object->render(0);
 }
 
-void ge::GEOSpine::_do_bone_render()
+void GEOSpine::_do_bone_render()
 {
 	if (p_skeleton_ == NULL) return;
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return;
 
 	int slot_cnt = p_skeleton_->slotCount;
 
-	D3DXMATRIX trans_matrix;
-	D3DXMATRIX rotate_matrix;
-	D3DXMATRIX scale_matrix;
-	D3DXMATRIX world_matrix;
+	std::vector<GE_VERTEX> vertex_buff;
+	vertex_buff.resize(slot_cnt * 3);
 
-	p_d3d_device->SetTexture(0, NULL);
+	int render_bone_cnt = 0;
 	for (int i=0; i<slot_cnt; ++i)
 	{
 		spSlot* slot = p_skeleton_->slots[i];
+		if (slot == NULL) continue;
+
 		const spBone* bone = slot->bone;
+		if (bone == NULL) continue;
 
-		D3DXMatrixTranslation(&trans_matrix, bone->worldX, bone->worldY, -1.f);
-		D3DXMatrixRotationZ(&rotate_matrix, bone->worldRotation / 180.f * 3.141592654f);
-		D3DXMatrixScaling(&scale_matrix, bone->data->length / 100.f, 1.f, 1.0f);
+		const spBoneData* bone_data = bone->data;
+		if (bone_data == NULL) continue;
 
-		world_matrix = scale_matrix * rotate_matrix * trans_matrix * world_matrix_;
+		if (bone_data->length - FLT_EPSILON < 0.f) continue;
 
-		p_d3d_device->SetTransform(D3DTS_WORLD, &world_matrix);
-		bone_mesh_.render(0);
+		float plx = 0.f, ply = -5.f;
+		float prx = 0.f, pry = 5.f;
+		float ptx = bone->data->length, pty = 0.f;
+
+		float fangle = bone->worldRotation / 180.f * 3.141592654f;
+		float fsin = sin(fangle);
+		float fcos = cos(fangle);
+
+		float vlx = plx * fcos - ply * fsin + bone->worldX;
+		float vly = plx * fsin + ply * fcos + bone->worldY;
+		float vrx = prx * fcos - pry * fsin + bone->worldX;
+		float vry = prx * fsin + pry * fcos + bone->worldY;
+		float vtx = ptx * fcos - pty * fsin + bone->worldX;
+		float vty = ptx * fsin + pty * fcos + bone->worldY;
+
+		int vertex_offset = render_bone_cnt * 3;
+		GE_VERTEX vertex;
+		vertex.set_decl(&bone_vertex_decl_);
+		vertex.set_color(D3DXCOLOR(0xffffffff));
+
+		vertex.set_position(D3DXVECTOR3(vlx, vly, 0.f));
+		vertex_buff[vertex_offset + 0] = vertex;
+
+		vertex.set_position(D3DXVECTOR3(vrx, vry, 0.f));
+		vertex_buff[vertex_offset + 1] = vertex;
+
+		vertex.set_position(D3DXVECTOR3(vtx, vty, 0.f));
+		vertex_buff[vertex_offset + 2] = vertex;
+
+		++ render_bone_cnt;
 	}
-}
 
+	if (bone_mesh_.get_vertex_buff_size() <= 0)
+	{
+		bone_mesh_.set_vertex_decl(&bone_vertex_decl_);
+		bone_mesh_.create_vetrix_buff(slot_cnt * 3);
+	}
+
+	bone_mesh_.set_vertices(&vertex_buff[0], 0, render_bone_cnt * 3);
+	bone_mesh_.set_primitive_draw(0, render_bone_cnt);
+	bone_mesh_.render(0);
+}
+}

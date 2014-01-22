@@ -154,13 +154,13 @@ void GEOMesh::destory()
 	vertex_size_	= 0;
 }
 
-void GEOMesh::update( time_t time_elapsed )
+void GEOMesh::update( time_t delta )
 {
 }
 
-void GEOMesh::render( time_t time_elapsed )
+void GEOMesh::render( time_t delta )
 {
-	GEObject::render(time_elapsed);
+	GEObject::render(delta);
 
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
@@ -176,15 +176,15 @@ void GEOMesh::render( time_t time_elapsed )
 
 	if (p_effect_ == NULL)
 	{
-		this->on_render(time_elapsed);
+		this->on_render(delta);
 	}
 	else
 	{
-		p_effect_->render(this, time_elapsed);
+		p_effect_->render(this, delta);
 	}
 }
 
-void GEOMesh::on_render( time_t time_elapsed )
+void GEOMesh::on_render( time_t delta )
 {
 	if(p_mesh_ == NULL) return;
 	p_mesh_->DrawSubset(0);

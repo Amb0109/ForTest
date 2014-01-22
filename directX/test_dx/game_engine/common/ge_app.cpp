@@ -141,12 +141,12 @@ void GEApp::process()
 
 	if (p_ge_game_ != NULL)
 	{
-		p_ge_game_->process(time_elapsed_);
+		p_ge_game_->process(delta_);
 
 		p_ge_engine_ = GEEngine::get_instance();
 		if (p_ge_engine_ != NULL)
 		{
-			p_ge_engine_->process(time_elapsed_);
+			p_ge_engine_->process(delta_);
 		}
 	}
 }
@@ -155,10 +155,10 @@ void GEApp::_update_time()
 {
 	last_time_ = cur_time_;
 	cur_time_ = clock();
-	time_elapsed_ = cur_time_ - last_time_;
+	delta_ = cur_time_ - last_time_;
 
 	++ frame_cnt_;
-	fps_elapsed_ += time_elapsed_ / 1000.f;
+	fps_elapsed_ += delta_ / 1000.f;
 
 	if (fps_elapsed_ >= 1.0f)
 	{

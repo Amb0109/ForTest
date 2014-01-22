@@ -6,7 +6,7 @@
 namespace ge
 {
 
-class GE_API GEObject;
+class GEObject;
 class GE_API GEREffect
 {
 public:
@@ -21,7 +21,7 @@ public:
 
 public:
 	virtual bool init();
-	virtual void render(GEObject* obj, time_t time_elapsed);
+	virtual void render(GEObject* obj, time_t delta);
 	virtual void destory();
 
 protected:

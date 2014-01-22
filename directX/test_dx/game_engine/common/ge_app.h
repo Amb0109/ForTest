@@ -9,8 +9,8 @@
 namespace ge
 {
 
-class GE_API GEGame;
-class GE_API GEEngine;
+class GEGame;
+class GEEngine;
 class GE_API GEApp
 {
 public:
@@ -52,7 +52,7 @@ protected:
 	int			frame_cnt_;
 	time_t		cur_time_;
 	time_t		last_time_;
-	time_t		time_elapsed_;
+	time_t		delta_;
 
 	GEGame*		p_ge_game_;
 	GEEngine*	p_ge_engine_;

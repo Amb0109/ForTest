@@ -60,7 +60,7 @@ void CCTextureAtlas::drawQuads()
 bool CCTextureAtlas::initTexture( const char* texturePath )
 {
 	ge::GEOPrimitive* render_object = NULL;
-	render_object = new ge::GEOPrimitive();
+	render_object = ge::GEOPrimitive::create();
 	if (render_object == NULL) return false;
 
 	ge::GE_VERTEX_DECL vertex_decl;
@@ -83,8 +83,7 @@ void CCTextureAtlas::releaseTexture()
 	ge::GEOPrimitive* render_object = (ge::GEOPrimitive*)m_pRenderObject;
 	if (render_object)
 	{
-		render_object->release_texture();
-		delete render_object;
+		ge::GEOPrimitive::release(&render_object);
 	}
 
 	m_pRenderObject = NULL;

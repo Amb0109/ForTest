@@ -42,6 +42,8 @@ public:
 	GERFontManager();
 	virtual ~GERFontManager();
 
+	static GERFontManager* get_instance();
+
 public:
 	int			add_font(GE_FONT& font);
 	int			add_d3dx_font(GE_FONT& font);

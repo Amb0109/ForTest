@@ -11,19 +11,11 @@
 namespace ge
 {
 
-class GE_API GEAtlasPageManager
-{
-public:
-	static GEAtlasPageManager* get_instence();
-
-public:
-	bool create_texture(spAtlasPage*, const char*);
-	void dispose_texture(spAtlasPage*);
-};
-
-class GE_API GE_VERTEX_DECL;
+class GE_VERTEX_DECL;
 class GE_API GEOSpine : public GEObject
 {
+	DLL_MANAGE_CLASS(GEOSpine);
+
 protected:
 	typedef GE_VERTEX_DECL::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
 
@@ -32,18 +24,15 @@ public:
 	virtual ~GEOSpine();
 
 protected:
-	bool _init_mesh();
 	void _do_render();
-
-	bool _init_bone_mesh();
 	void _do_bone_render();
 
 public:
 	virtual bool init();
 	virtual void destory();
 
-	virtual void update(time_t time_elapsed);
-	virtual void render(time_t time_elapsed);
+	virtual void update(time_t delta);
+	virtual void render(time_t delta);
 
 private:
 	spAtlas*				p_atlas_;

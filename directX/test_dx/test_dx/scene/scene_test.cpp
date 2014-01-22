@@ -47,9 +47,9 @@ bool SceneTest::show()
 	//p_panel_2d_->init();
 	//add_object(1, p_panel_2d_);
 
-	//p_spine_ = new ge::GEOSpine();
-	//p_spine_->init();
-	//add_object(2, p_spine_);
+	p_spine_ = ge::GEOSpine::create();
+	p_spine_->init();
+	add_object(2, p_spine_);
 
 	p_armature_ = ge::GEOArmature::create();
 	p_armature_->init();
@@ -61,6 +61,9 @@ bool SceneTest::show()
 
 bool SceneTest::hide()
 {
+	remove_object(2);
+	ge::GEOSpine::release(&p_spine_);
+
 	remove_object(3);
 	ge::GEOArmature::release(&p_armature_);
 

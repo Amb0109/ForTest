@@ -6,8 +6,8 @@
 namespace ge
 {
 
-class GE_API GERender;
-class GE_API GERFontManager;
+class GERender;
+class GERFontManager;
 
 class GE_API GEEngine
 {
@@ -22,10 +22,7 @@ public:
 	virtual bool init_engine();
 	virtual void close_engine();
 
-	virtual void process(time_t time_elapsed);
-
-	GERender*		get_render() { return p_ge_render_; }
-	GERFontManager*	get_font_manager() { return p_font_manager_; }
+	virtual void process(time_t delta);
 
 protected:
 	virtual bool _init_render();
