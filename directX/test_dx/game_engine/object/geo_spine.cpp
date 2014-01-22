@@ -39,7 +39,7 @@ draw_bone_mesh_(true)
 
 GEOSpine::~GEOSpine()
 {
-
+	destory();
 }
 
 bool GEOSpine::init()
@@ -115,10 +115,6 @@ void GEOSpine::render( time_t delta )
 
 void GEOSpine::_do_render()
 {
-	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
-	if (p_d3d_device == NULL) return;
-	p_d3d_device->SetTransform(D3DTS_WORLD, &get_world_transform());
-
 	if (p_atlas_ == NULL) return;
 	GEOPrimitive* render_object = (GEOPrimitive*)p_atlas_->pages->rendererObject;
 	if (render_object == NULL) return;
