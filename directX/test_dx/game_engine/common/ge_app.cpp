@@ -33,8 +33,8 @@ GEApp::~GEApp()
 
 GEApp* GEApp::get_instance()
 {
-	static GEApp _global_p_ge_app;
-	return &_global_p_ge_app;
+	static GEApp _global_ge_app;
+	return &_global_ge_app;
 }
 
 LRESULT GEApp::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bUseDefWindowsProc )

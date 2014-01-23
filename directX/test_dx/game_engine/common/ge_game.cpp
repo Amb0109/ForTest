@@ -16,8 +16,8 @@ GEGame::~GEGame()
 
 GEGame* GEGame::get_instance()
 {
-	static GEGame _global_p_ge_game;
-	return &_global_p_ge_game;
+	static GEGame _global_ge_game;
+	return &_global_ge_game;
 }
 
 void GEGame::process( time_t delta )

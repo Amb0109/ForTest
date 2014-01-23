@@ -18,8 +18,8 @@ GEEngine::~GEEngine()
 
 GEEngine* GEEngine::get_instance()
 {
-	static GEEngine _global_p_ge_engine;
-	return &_global_p_ge_engine;
+	static GEEngine _global_ge_engine;
+	return &_global_ge_engine;
 }
 
 LPDIRECT3DDEVICE9 GEEngine::get_device()

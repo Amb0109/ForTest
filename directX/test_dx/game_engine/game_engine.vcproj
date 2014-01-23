@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\include&quot;;..\lib_spine\include;..\lib_armature;..\lib_json"
+				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)\include&quot;;..\lib_spine\include;..\lib_armature;..\lib_json;..\lib_freetype\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -246,6 +246,14 @@
 			</File>
 			<File
 				RelativePath=".\object\geo_text.h"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_text_ft.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_text_ft.h"
 				>
 			</File>
 		</Filter>

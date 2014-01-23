@@ -17,8 +17,8 @@ GERender::~GERender()
 
 GERender* GERender::get_instance()
 {
-	static GERender _global_p_ge_render;
-	return &_global_p_ge_render;
+	static GERender _global_ge_render;
+	return &_global_ge_render;
 }
 
 bool GERender::init()
