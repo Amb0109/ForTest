@@ -48,9 +48,11 @@ public:
 	int			add_font(GE_FONT& font);
 	int			add_d3dx_font(GE_FONT& font);
 	int			add_gdi_font(GE_FONT& font);
-	void		remove_font(int font_id);
+
 	ID3DXFont*	get_d3dx_font(int font_id);
 	HFONT		get_gdi_font(int font_id);
+
+	void		remove_font(int font_id);
 
 protected:
 	D3DX_FONT_MAP			font_map_;

@@ -18,10 +18,14 @@
 #include "utility/geu_vertex.h"
 
 #include "object/ge_object.h"
-#include "object/geo_text.h"
 #include "object/geo_primitive.h"
 #include "object/geo_mesh.h"
 #include "object/geo_spine.h"
 #include "object/geo_armature.h"
+#include "object/text/geo_text.h"
+#include "object/text/geo_bm_font.h"
+#include "object/text/geo_text_bm.h"
+#include "object/text/geo_text_ft.h"
+
 
 #endif // _GAME_ENGINE_H_

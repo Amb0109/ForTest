@@ -33,6 +33,8 @@ public:
 
 	ge::GEOArmature*	p_armature_;
 
+	ge::GEBMFont*		p_bm_font_;
+
 	D3DXVECTOR3			position;
 	D3DXVECTOR3			target;
 	D3DXVECTOR3			up;

@@ -240,22 +240,42 @@
 				RelativePath=".\object\geo_spine.h"
 				>
 			</File>
-			<File
-				RelativePath=".\object\geo_text.cpp"
+			<Filter
+				Name="text"
 				>
-			</File>
-			<File
-				RelativePath=".\object\geo_text.h"
-				>
-			</File>
-			<File
-				RelativePath=".\object\geo_text_ft.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\object\geo_text_ft.h"
-				>
-			</File>
+				<File
+					RelativePath=".\object\text\geo_bm_font.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_bm_font.h"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text.h"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text_bm.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text_bm.h"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text_ft.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text_ft.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="render"

@@ -49,11 +49,15 @@ bool SceneTest::show()
 
 	p_spine_ = ge::GEOSpine::create();
 	p_spine_->init();
-	add_object(2, p_spine_);
+	//add_object(2, p_spine_);
 
 	p_armature_ = ge::GEOArmature::create();
 	p_armature_->init();
-	add_object(3, p_armature_);
+	//add_object(3, p_armature_);
+
+
+	p_bm_font_ = new ge::GEBMFont();
+	p_bm_font_->parse_binary_file("bmfont\\arial.fnt");
 
 	return true;
 }

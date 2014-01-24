@@ -1,5 +1,5 @@
 #include "geo_text.h"
-#include "../common/ge_engine.h"
+#include "../../common/ge_engine.h"
 
 namespace ge
 {
@@ -16,10 +16,28 @@ GEOText::~GEOText()
 	text_.clear();
 }
 
-void GEOText::set_text( const char* text )
+bool GEOText::set_text( const char* text )
 {
-	if (text == NULL) return;
-	text_ = text;
+	if (text == NULL) text_.clear();
+	else text_ = text;
+	return true;
+}
+
+const char* GEOText::get_text()
+{
+	return text_.c_str();
+}
+
+bool GEOText::set_rect( GE_IRECT& rect )
+{
+	text_rect_ = rect;
+	return true;
+}
+
+bool GEOText::set_text_style( GE_TEXT_STYLE& style )
+{
+	text_style_ = style;
+	return true;
 }
 
 void GEOText::render( time_t delta )
@@ -36,7 +54,6 @@ void GEOText::render( time_t delta )
 	font_obj->DrawText(NULL, text_.c_str(), -1, &text_rect_,
 		text_style_.format, text_style_.font_color);
 }
-
 
 }
 
