@@ -17,7 +17,7 @@ p_material_(NULL)
 
 GEOMesh::~GEOMesh()
 {
-	destory();
+	release();
 }
 
 bool GEOMesh::create_mesh( GEVertexDecl* vertex_decl, int vertex_cnt, int face_cnt )
@@ -33,7 +33,7 @@ bool GEOMesh::create_mesh( GEVertexDecl* vertex_decl, int vertex_cnt, int face_c
 	vertex_cnt_ = vertex_cnt;
 	face_cnt_ = face_cnt;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateMesh(
@@ -45,7 +45,7 @@ bool GEOMesh::create_mesh( GEVertexDecl* vertex_decl, int vertex_cnt, int face_c
 
 	if (FAILED(h_res))
 	{
-		destory();
+		release();
 	}
 
 	return SUCCEEDED(h_res);
@@ -98,7 +98,7 @@ bool GEOMesh::create_mesh_from_file( const char* file_name )
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXLoadMeshFromX(
@@ -144,7 +144,7 @@ bool GEOMesh::init()
 	return true;
 }
 
-void GEOMesh::destory()
+void GEOMesh::release()
 {
 	SAFE_RELEASE(p_mesh_);
 	p_effect_ = NULL;
@@ -195,7 +195,7 @@ bool GEOMesh::create_mesh_box( float width, float height, float depth )
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateBox(p_device, width, height, depth, &p_mesh_, 0);
@@ -211,7 +211,7 @@ bool GEOMesh::create_mesh_cylinder( float radius1, float radius2, float length, 
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateCylinder(p_device, radius1, radius2, length, slices, stacks, &p_mesh_, 0);
@@ -227,7 +227,7 @@ bool GEOMesh::create_mesh_sphere( float radius, int slices, int stacks )
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateSphere(p_device, radius, slices, stacks, &p_mesh_, 0);
@@ -243,7 +243,7 @@ bool GEOMesh::create_mesh_teapot()
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateTeapot(p_device, &p_mesh_, 0);
@@ -259,7 +259,7 @@ bool GEOMesh::create_mesh_torus( float in_radius, float out_radius, int sides, i
 	LPDIRECT3DDEVICE9 p_device = ge::GEEngine::get_device();
 	if (p_device == NULL) return false;
 
-	this->destory();
+	this->release();
 
 	HRESULT h_res = S_OK;
 	h_res = D3DXCreateTorus(p_device, in_radius, out_radius, sides, rings, &p_mesh_, 0);

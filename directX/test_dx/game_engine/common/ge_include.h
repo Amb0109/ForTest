@@ -43,7 +43,7 @@
 #define DLL_MANAGE_CLASS(type) \
 public:\
 	static type* create();\
-	static void release(type** ptr);\
+	static void destory(type** ptr);\
 private:
 
 #define DLL_MANAGE_CLASS_IMPLEMENT(type) \
@@ -52,7 +52,7 @@ type* type::create()\
 	return new type();\
 }\
 \
-void type::release(type** ptr)\
+void type::destory(type** ptr)\
 {\
 	delete *ptr;\
 	*ptr = NULL;\

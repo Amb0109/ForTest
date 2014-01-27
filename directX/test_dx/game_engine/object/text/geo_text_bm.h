@@ -4,11 +4,12 @@
 #include "../ge_object.h"
 #include "ge_bm_font.h"
 #include "geo_text.h"
+#include "../geo_atlas_render.h"
 
 namespace ge
 {
 
-class GEOPrimitive;
+class GEOAtlasRender;
 
 class GE_API GEOTextBM : public GEOText
 {
@@ -32,14 +33,14 @@ public:
 	virtual void render(time_t delta);
 
 protected:
-	void add_render_char(GE_TEXT_CHAR& text_char);
-	void clear_render_chars();
+	void _add_render_char(GE_TEXT_CHAR& text_char);
+	void _clear_render_chars();
+	void _text_char_to_quad(GE_QUAD& out_quad, const GE_TEXT_CHAR& text_char);
 
 private:
-	typedef std::vector<GEOPrimitive*>	RENDER_OBJECT_LIST;
 	typedef std::vector<GE_TEXT_CHAR>	RENDER_CHAR_LIST;
 
-	RENDER_OBJECT_LIST			render_objectes_;
+	GEOAtlasRender*				render_object_;
 	RENDER_CHAR_LIST			render_chars_;
 
 };

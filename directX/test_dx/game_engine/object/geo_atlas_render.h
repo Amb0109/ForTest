@@ -51,8 +51,8 @@ public:
 	virtual bool draw_quads();
 
 public:
-	//virtual bool init();
-	//virtual void destory();
+	virtual bool init();
+	virtual void release();
 
 	//virtual void update(time_t delta);
 	virtual void render(time_t delta);

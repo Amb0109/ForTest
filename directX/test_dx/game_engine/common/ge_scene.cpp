@@ -28,7 +28,7 @@ void GEScene::destory()
 	{
 		GEObject* p_obj = (GEObject*)(obj_it->second);
 		if (NULL == p_obj) continue;
-		p_obj->destory();
+		p_obj->release();
 		obj_it->second = NULL;
 	}
 	object_map_.clear();

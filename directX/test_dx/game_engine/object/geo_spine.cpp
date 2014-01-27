@@ -15,7 +15,7 @@ void _spAtlasPage_createTexture (spAtlasPage* self, const char* path) {
 void _spAtlasPage_disposeTexture (spAtlasPage* self) {
 	ge::GEOPrimitive* render_object = (ge::GEOPrimitive*)(self->rendererObject);
 	if (render_object == NULL) return;
-	ge::GEOPrimitive::release(&render_object);
+	ge::GEOPrimitive::destory(&render_object);
 }
 
 char* _spUtil_readFile (const char* path, int* length) {
@@ -39,7 +39,7 @@ draw_bone_mesh_(true)
 
 GEOSpine::~GEOSpine()
 {
-	destory();
+	release();
 }
 
 bool GEOSpine::init()
@@ -69,7 +69,7 @@ bool GEOSpine::init()
 	return true;
 }
 
-void GEOSpine::destory()
+void GEOSpine::release()
 {
 	spAnimationState_dispose(p_animation_state_);
 	spAnimationStateData_dispose(p_animation_state_data_);

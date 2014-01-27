@@ -24,7 +24,7 @@ bool GEObject::init()
 	return true;
 }
 
-void GEObject::destory()
+void GEObject::release()
 {
 
 }

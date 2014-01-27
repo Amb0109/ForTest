@@ -131,10 +131,11 @@ int GEBMFontChar::load_with_binary( const char* ptr_data )
 	return int(ptr_fnt - ptr_data);
 }
 
+DLL_MANAGE_CLASS_IMPLEMENT(GEBMFont);
 
 GEBMFont::GEBMFont()
 {
-
+	type_ = FontType_BMFont;
 }
 
 GEBMFont::~GEBMFont()
@@ -286,7 +287,7 @@ void GEBMFont::get_png_path( char* out_png_path, int index )
 bool GEBMFont::compose( GEOTextBM* out_text, const char* text, int width, int height, bool wrap )
 {
 	if (out_text == NULL) return false;
-	out_text->clear_render_chars();
+	out_text->_clear_render_chars();
 
 	if (text == NULL) return true;
 
@@ -318,7 +319,7 @@ bool GEBMFont::compose( GEOTextBM* out_text, const char* text, int width, int he
 				text_char.img_			= bm_char.page_;
 				text_char.img_pos_.x	= bm_char.x_;
 				text_char.img_pos_.y	= bm_char.y_;
-				out_text->add_render_char(text_char);
+				out_text->_add_render_char(text_char);
 
 				pen_x += bm_char.xadvance_;
 			}

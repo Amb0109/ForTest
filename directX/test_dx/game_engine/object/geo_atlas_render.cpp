@@ -23,6 +23,16 @@ GEOAtlasRender::GEOAtlasRender()
 
 GEOAtlasRender::~GEOAtlasRender()
 {
+	release();
+}
+
+bool GEOAtlasRender::init()
+{
+	return true;
+}
+
+void GEOAtlasRender::release()
+{
 	release_vertex_decl();
 	release_all_texture();
 	release_render();
@@ -74,7 +84,7 @@ int GEOAtlasRender::add_texture( const char* texture_path )
 GETexture* GEOAtlasRender::get_texture( int texture_id )
 {
 	if (texture_id < 0) return NULL;
-	if ((int)texture_list_.size() >= texture_id) return NULL;
+	if ((int)texture_list_.size() <= texture_id) return NULL;
 	return texture_list_[texture_id];
 }
 
@@ -140,7 +150,8 @@ bool GEOAtlasRender::init_render()
 			&dx_index_buff_,
 			NULL);		
 		if (FAILED(h_res)) goto init_faild;
-		
+		dx_quads_cnt_ = quads_cnt;
+
 		for (int i=0; i<quads_cnt; ++i)
 		{
 			int i6 = i * 6;
@@ -153,8 +164,7 @@ bool GEOAtlasRender::init_render()
 			indices[i6 + 5] = i4 + 3;
 		}
 		if(!_set_indices(indices)) goto init_faild;
-
-		dx_quads_cnt_ = quads_cnt;
+		
 		return true;
 
 init_faild:
@@ -298,9 +308,9 @@ bool GEOAtlasRender::draw_quads()
 		p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			0,						// BaseVertexIndex
 			0,						// MinVertexIndex
-			dx_quads_cnt_ * 4,			// NumVertices
+			dx_quads_cnt_ * 4,		// NumVertices
 			task->offset,			// StartIndex
-			task->count);			// PrimitiveCount
+			task->count * 2);		// PrimitiveCount
 	}
 	GETexture::use_null_texture();
 	return true;

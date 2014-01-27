@@ -21,7 +21,7 @@ class GE_API GEOArmature : public GEObject
 
 public:
 	virtual bool init();
-	virtual void destory();
+	virtual void release();
 
 	virtual void update(time_t delta);
 	virtual void render(time_t delta);

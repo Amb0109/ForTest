@@ -183,7 +183,7 @@ bool GEOPrimitive::init()
 	return true;
 }
 
-void GEOPrimitive::destory()
+void GEOPrimitive::release()
 {
 	release_vetrix_buff();
 	release_index_buff();

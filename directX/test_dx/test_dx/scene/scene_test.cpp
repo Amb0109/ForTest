@@ -34,16 +34,28 @@ bool SceneTest::init_fps_text()
 
 	p_fps_text_->set_font(ge_font);
 
-	add_object(0, p_fps_text_);
+	add_object(10086, p_fps_text_);
 	return true;
 }
 
+bool SceneTest::init_bm_text()
+{
+	p_bm_font_ = ge::GEBMFont::create();
+	p_bm_font_->parse_binary_file("bmfont\\fps2.fnt");
+
+	p_bm_text_ = ge::GEOTextBM::create();
+	p_bm_text_->set_font(p_bm_font_);
+
+	add_object(0, p_bm_text_);
+	return true;
+}
 
 bool SceneTest::show()
 {
 	ge::GEScene::show();
 
 	init_fps_text();
+	init_bm_text();
 
 	//p_panel_2d_ = new Panel2D();
 	//p_panel_2d_->init();
@@ -57,10 +69,6 @@ bool SceneTest::show()
 	p_armature_->init();
 	//add_object(3, p_armature_);
 
-
-	p_bm_font_ = new ge::GEBMFont();
-	p_bm_font_->parse_binary_file("bmfont\\arial.fnt");
-
 	return true;
 }
 
@@ -68,13 +76,13 @@ bool SceneTest::show()
 bool SceneTest::hide()
 {
 	remove_object(2);
-	ge::GEOSpine::release(&p_spine_);
+	ge::GEOSpine::destory(&p_spine_);
 
 	remove_object(3);
-	ge::GEOArmature::release(&p_armature_);
+	ge::GEOArmature::destory(&p_armature_);
 
 	remove_object(0);
-	ge::GEOTextDX::release(&p_fps_text_);
+	ge::GEOTextDX::destory(&p_fps_text_);
 
 	return true;
 }
@@ -130,8 +138,10 @@ void SceneTest::update_fps_text()
 		int mouse_x, mouse_y;
 		p_app->get_input()->get_mouse_pos(mouse_x, mouse_y);
 
-		char buff[1024];
-		sprintf_s(buff, "fps: %.2f\nmouse: %d, %d", fps, mouse_x, mouse_y);
+		char buff[10240];
+		sprintf_s(buff, "fps: %.2f\nmouse: %d, %d\n", fps, mouse_x, mouse_y);
+		strcat(buff, "sdfasdkfjasd\nsdfjlasjdlasd\n213412341234\n*&*^(%*&^%&*\n65df454asf\n");
 		p_fps_text_->set_text(buff);
+		p_bm_text_->set_text(buff);
 	}
 }

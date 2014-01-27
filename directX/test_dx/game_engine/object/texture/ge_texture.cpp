@@ -25,7 +25,21 @@ bool GETexture::create_texture( const char* texture_path )
 	release_texture();
 
 	HRESULT h_res = S_OK;
-	h_res = D3DXCreateTextureFromFile(p_d3d_device, texture_path, &d3d_texture_);
+	h_res = D3DXCreateTextureFromFileEx(
+		p_d3d_device,
+		texture_path,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		D3DX_FROM_FILE,
+		NULL,
+		D3DFMT_UNKNOWN,
+		D3DPOOL_MANAGED,
+		D3DX_DEFAULT,
+		D3DX_DEFAULT,
+		0xff000000,
+		NULL,
+		NULL,
+		&d3d_texture_);
 	if (FAILED(h_res) || d3d_texture_ == NULL) return false;
 
 	texture_key_ = texture_path;

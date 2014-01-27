@@ -67,6 +67,8 @@ struct GEBMFontChar
 
 class GE_API GEBMFont : public GEFont
 {
+	DLL_MANAGE_CLASS(GEBMFont);
+
 public:
 	GEBMFont();
 	virtual ~GEBMFont();
