@@ -12,14 +12,14 @@ SceneTest::SceneTest()
 
 bool SceneTest::init_fps_text()
 {
-	p_fps_text_ = ge::GEOText::create();
+	p_fps_text_ = ge::GEOTextDX::create();
 	if (p_fps_text_ == NULL) return false;
 
-	ge::GE_FONT ge_font = {"consolas", 16, DEFAULT_CHARSET, 0, false };
-	ge::GERFontManager* p_font_manager = ge::GERFontManager::get_instance();;
-	if (p_font_manager == NULL) return false;
+	ge::GEFont* ge_font = ge::GEFontManager::create_font(ge::FontType_D3DXFont);
+	if (ge_font == NULL) return false;
+	ge_font->init("consolas", 16);
+	ge_font->update_font();
 
-	fps_font_id_ = p_font_manager->add_d3dx_font(ge_font);
 	ge::GE_TEXT_STYLE style = {
 		fps_font_id_,
 		DT_LEFT | DT_TOP,
@@ -31,6 +31,8 @@ bool SceneTest::init_fps_text()
 
 	ge::GE_IRECT rect(0, 0, 400, 200);
 	p_fps_text_->set_rect(rect);
+
+	p_fps_text_->set_font(ge_font);
 
 	add_object(0, p_fps_text_);
 	return true;
@@ -72,7 +74,7 @@ bool SceneTest::hide()
 	ge::GEOArmature::release(&p_armature_);
 
 	remove_object(0);
-	ge::GEOText::release(&p_fps_text_);
+	ge::GEOTextDX::release(&p_fps_text_);
 
 	return true;
 }

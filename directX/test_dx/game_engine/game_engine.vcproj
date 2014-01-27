@@ -199,6 +199,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\object\geo_atlas_render.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object\geo_atlas_render.h"
+				>
+			</File>
+			<File
 				RelativePath=".\object\geo_mesh.cpp"
 				>
 				<FileConfiguration
@@ -244,11 +252,19 @@
 				Name="text"
 				>
 				<File
-					RelativePath=".\object\text\geo_bm_font.cpp"
+					RelativePath=".\object\text\ge_bm_font.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\object\text\geo_bm_font.h"
+					RelativePath=".\object\text\ge_bm_font.h"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\ge_font.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\ge_font.h"
 					>
 				</File>
 				<File
@@ -268,11 +284,39 @@
 					>
 				</File>
 				<File
+					RelativePath=".\object\text\geo_text_dx.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\text\geo_text_dx.h"
+					>
+				</File>
+				<File
 					RelativePath=".\object\text\geo_text_ft.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\object\text\geo_text_ft.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="texture"
+				>
+				<File
+					RelativePath=".\object\texture\ge_texture.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\texture\ge_texture.h"
+					>
+				</File>
+				<File
+					RelativePath=".\object\texture\ge_texture_manager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\object\texture\ge_texture_manager.h"
 					>
 				</File>
 			</Filter>
@@ -294,14 +338,6 @@
 			</File>
 			<File
 				RelativePath=".\render\ger_effect.h"
-				>
-			</File>
-			<File
-				RelativePath=".\render\ger_font.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\render\ger_font.h"
 				>
 			</File>
 			<File

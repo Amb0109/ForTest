@@ -2,11 +2,34 @@
 #define _GAME_ENGINE_OBJECT_TEXT_H_
 
 #include "../ge_object.h"
-#include "../../utility/geu_gmath.h"
-#include "../../render/ger_font.h"
+#include "ge_font.h"
 
 namespace ge
 {
+
+struct GE_API GE_TEXT_STYLE
+{
+	int			font_id;
+	int			format;
+	D3DCOLOR	font_color;
+	bool		border;
+	int			border_weight;
+	D3DCOLOR	border_color;
+	bool		shadow;
+	int			shadow_weight;
+	D3DCOLOR	shadow_color;
+};
+
+struct GE_API GE_TEXT_CHAR
+{
+	char		ch_;
+	bool		visible_;
+	GE_IPOINT	pos_;
+	GE_ISIZE	size_;
+	int			img_;
+	GE_IPOINT	img_pos_;
+};
+
 class GE_API GEOText : public GEObject
 {
 	DLL_MANAGE_CLASS(GEOText);
@@ -15,19 +38,18 @@ public:
 	GEOText();
 	virtual ~GEOText();
 
+	virtual bool set_font(GEFont* font);
+	virtual GEFont* get_font();
+
 	virtual bool set_text(const char* text);
 	virtual const char* get_text();
-
-	virtual bool set_rect(GE_IRECT& rect);
-	virtual bool set_text_style(GE_TEXT_STYLE& style);
 
 public:
 	virtual void render(time_t delta);
 
 public:
-	std::string		text_;
-	GE_IRECT		text_rect_;
-	GE_TEXT_STYLE	text_style_;
+	std::string					text_;
+	GEFont*						font_obj_;
 };
 
 } // namespace ge

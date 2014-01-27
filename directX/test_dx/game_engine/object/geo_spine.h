@@ -11,13 +11,13 @@
 namespace ge
 {
 
-class GE_VERTEX_DECL;
+class GEVertexDecl;
 class GE_API GEOSpine : public GEObject
 {
 	DLL_MANAGE_CLASS(GEOSpine);
 
 protected:
-	typedef GE_VERTEX_DECL::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
+	typedef GEVertexDecl::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
 
 public:
 	GEOSpine();
@@ -44,11 +44,11 @@ private:
 	spAnimationStateData*	p_animation_state_data_;
 
 	GEOPrimitive			mesh_;
-	GE_VERTEX_DECL			vertex_decl_;
+	GEVertexDecl			vertex_decl_;
 
 	bool					draw_bone_mesh_;
 	GEOPrimitive			bone_mesh_;
-	GE_VERTEX_DECL			bone_vertex_decl_;
+	GEVertexDecl			bone_vertex_decl_;
 };
 
 } // namespace ge

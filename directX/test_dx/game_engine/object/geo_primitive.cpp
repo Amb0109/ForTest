@@ -26,7 +26,7 @@ GEOPrimitive::~GEOPrimitive()
 
 }
 
-bool GEOPrimitive::set_vertex_decl( GE_VERTEX_DECL* vertex_decl )
+bool GEOPrimitive::set_vertex_decl( GEVertexDecl* vertex_decl )
 {
 	if (vertex_decl == NULL) return false;
 
@@ -83,7 +83,7 @@ bool GEOPrimitive::create_index_buff( int index_cnt )
 	if (index_cnt <= 0) return true;
 
 	HRESULT h_res = p_d3d_device->CreateIndexBuffer(
-		index_cnt * sizeof(DWORD),
+		index_cnt * sizeof(WORD),
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -248,7 +248,7 @@ int GEOPrimitive::get_index_buff_size()
 	return index_cnt_;
 }
 
-GE_VERTEX_DECL* GEOPrimitive::get_vertex_decl()
+GEVertexDecl* GEOPrimitive::get_vertex_decl()
 {
 	return &vertex_decl_;
 }

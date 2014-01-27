@@ -7,7 +7,7 @@
 namespace ge
 {
 
-class GE_VERTEX_DECL;
+class GEVertexDecl;
 class GE_VERTEX;
 class GE_MATERIAL;
 class GEREffect;
@@ -18,7 +18,7 @@ public:
 	virtual ~GEOMesh();
 
 public:
-	bool create_mesh(GE_VERTEX_DECL* vertex_decl, int vertex_cnt, int face_cnt);
+	bool create_mesh(GEVertexDecl* vertex_decl, int vertex_cnt, int face_cnt);
 	bool set_vertices(GE_VERTEX* vertex_array, int vertex_cnt);
 	bool set_indices(WORD* index_array, int index_cnt);
 

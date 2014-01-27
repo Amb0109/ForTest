@@ -64,14 +64,14 @@ GEOTextFT::~GEOTextFT()
 
 }
 
-bool GEOTextFT::set_font( GE_FONT& font )
+bool GEOTextFT::set_font( GEFont& font )
 {
 	GEFreeType::get_instance()->release_face(ft_face_);
 
-	ft_face_ = GEFreeType::get_instance()->create_face(font.font_key);
+	ft_face_ = GEFreeType::get_instance()->create_face(font.face_);
 	if (ft_face_ == NULL) return false;
 
-	int ret = FT_Set_Pixel_Sizes(ft_face_, 0, font.font_size);
+	int ret = FT_Set_Pixel_Sizes(ft_face_, 0, font.size_);
 	return (ret == 0);
 }
 

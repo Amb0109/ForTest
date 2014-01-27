@@ -15,7 +15,7 @@ class GEREffect;
 class GE_API GEOPrimitive : public GEObject
 {
 protected:
-	typedef GE_VERTEX_DECL::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
+	typedef GEVertexDecl::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
 
 	DLL_MANAGE_CLASS(GEOPrimitive);
 public:
@@ -24,8 +24,8 @@ public:
 	virtual ~GEOPrimitive();
 
 public:
-	virtual bool set_vertex_decl(GE_VERTEX_DECL* vertex_decl);
-	virtual GE_VERTEX_DECL* get_vertex_decl();
+	virtual bool set_vertex_decl(GEVertexDecl* vertex_decl);
+	virtual GEVertexDecl* get_vertex_decl();
 	virtual void release_vertex_decl();
 
 	virtual bool create_vetrix_buff(int vertex_cnt);
@@ -60,7 +60,7 @@ protected:
 	LPDIRECT3DTEXTURE9		d3d_texture_;
 	D3DSURFACE_DESC			texture_desc_;
 
-	GE_VERTEX_DECL			vertex_decl_;
+	GEVertexDecl			vertex_decl_;
 	int						vertex_size_;
 	_D3D_VERTEX_DECL*		p_d3d_decl_;
 

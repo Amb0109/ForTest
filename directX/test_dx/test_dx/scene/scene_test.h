@@ -25,7 +25,7 @@ public:
 public:
 
 	int					fps_font_id_;
-	ge::GEOText*		p_fps_text_;
+	ge::GEOTextDX*		p_fps_text_;
 
 	Panel2D*			p_panel_2d_;
 

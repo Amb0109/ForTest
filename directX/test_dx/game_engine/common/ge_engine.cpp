@@ -150,7 +150,7 @@ bool GEEngine::_init_render()
 	p_ge_render_ = GERender::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
-	p_font_manager_ = GERFontManager::get_instance();
+	p_font_manager_ = GEFontManager::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
 	return p_ge_render_->init();

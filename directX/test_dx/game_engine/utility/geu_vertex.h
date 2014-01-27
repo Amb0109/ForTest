@@ -8,17 +8,18 @@
 namespace ge
 {
 
-class GE_API GE_VERTEX_DECL
+class GE_API GEVertexDecl
 {
 public:
 	typedef IDirect3DVertexDeclaration9 D3D_VERTEX_DECL;
 
 public:
-	GE_VERTEX_DECL();
-	virtual ~GE_VERTEX_DECL();
+	GEVertexDecl();
+	virtual ~GEVertexDecl();
 
 public:
 	bool				init(DWORD fvf);
+	void				release();
 
 	int					get_vertex_size() { return vertex_size_; }
 	DWORD				get_vertex_fvf() { return vertex_fvf_; }
@@ -44,7 +45,7 @@ public:
 	virtual ~GE_VERTEX();
 
 public:
-	bool			set_decl(GE_VERTEX_DECL* decl);
+	bool			set_decl(GEVertexDecl* decl);
 
 	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
 	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }

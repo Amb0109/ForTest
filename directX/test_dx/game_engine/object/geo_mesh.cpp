@@ -20,7 +20,7 @@ GEOMesh::~GEOMesh()
 	destory();
 }
 
-bool GEOMesh::create_mesh( GE_VERTEX_DECL* vertex_decl, int vertex_cnt, int face_cnt )
+bool GEOMesh::create_mesh( GEVertexDecl* vertex_decl, int vertex_cnt, int face_cnt )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_device();
 	if (p_d3d_device == NULL) return false;

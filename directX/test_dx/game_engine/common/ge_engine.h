@@ -7,7 +7,7 @@ namespace ge
 {
 
 class GERender;
-class GERFontManager;
+class GEFontManager;
 
 class GE_API GEEngine
 {
@@ -39,7 +39,7 @@ private:
 	D3DPRESENT_PARAMETERS	d3d_present_param_;
 
 	GERender*				p_ge_render_;
-	GERFontManager*			p_font_manager_;
+	GEFontManager*			p_font_manager_;
 };
 
 } // namespace ge

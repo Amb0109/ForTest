@@ -4,8 +4,7 @@
 namespace ge
 {
 
-
-GE_VERTEX_DECL::GE_VERTEX_DECL()
+GEVertexDecl::GEVertexDecl()
 :p_vertex_decl_(NULL),
 vertex_size_(0),
 vertex_fvf_(0)
@@ -13,15 +12,19 @@ vertex_fvf_(0)
 	init(0);
 }
 
+GEVertexDecl::~GEVertexDecl()
+{
+	release();
+}
 
-GE_VERTEX_DECL::~GE_VERTEX_DECL()
+void GEVertexDecl::release()
 {
 	SAFE_RELEASE(p_vertex_decl_);
 	vertex_size_ = 0;
 	vertex_fvf_ = 0;
 }
 
-bool GE_VERTEX_DECL::init( DWORD fvf )
+bool GEVertexDecl::init( DWORD fvf )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
@@ -41,7 +44,7 @@ bool GE_VERTEX_DECL::init( DWORD fvf )
 	return SUCCEEDED(h_res);
 }
 
-void GE_VERTEX_DECL::_calc_vertex_element_array( int& array_pos, int& mem_size )
+void GEVertexDecl::_calc_vertex_element_array( int& array_pos, int& mem_size )
 {
 	array_pos = -1;
 	mem_size = 0;
@@ -54,7 +57,7 @@ void GE_VERTEX_DECL::_calc_vertex_element_array( int& array_pos, int& mem_size )
 	_add_vertex_element(NULL, array_pos, mem_size);
 }
 
-bool GE_VERTEX_DECL::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_offset )
+bool GEVertexDecl::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_offset )
 {
 	if (fvf_type != NULL && !(vertex_fvf_ & fvf_type)) return false;
 	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
@@ -139,7 +142,7 @@ GE_VERTEX::~GE_VERTEX()
 
 }
 
-bool GE_VERTEX::set_decl( GE_VERTEX_DECL* decl )
+bool GE_VERTEX::set_decl( GEVertexDecl* decl )
 {
 	if (decl == NULL) return false;
 	vertex_fvf_ = decl->get_vertex_fvf();

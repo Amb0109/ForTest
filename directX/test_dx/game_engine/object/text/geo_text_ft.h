@@ -3,6 +3,7 @@
 
 #include "../ge_object.h"
 #include "../../utility/geu_gmath.h"
+#include "ge_font.h"
 #include "geo_text.h"
 
 #include "ft2build.h"
@@ -12,7 +13,7 @@
 namespace ge
 {
 
-class GE_API GEFreeType
+class GE_API GEFreeType : public GEFont
 {
 public:
 	GEFreeType();
@@ -46,7 +47,7 @@ public:
 	//virtual bool set_rect(GE_IRECT& rect);
 	//virtual bool set_text_style(GE_TEXT_STYLE& style, const char* font_path);
 	virtual bool set_text(const char* text);
-	bool set_font(GE_FONT& font);
+	bool set_font(GEFont& font);
 	
 	
 

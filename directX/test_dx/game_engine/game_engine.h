@@ -8,7 +8,6 @@
 #include "common/ge_scene.h"
 
 #include "render/ge_render.h"
-#include "render/ger_font.h"
 #include "render/ger_shader.h"
 #include "render/ger_effect.h"
 #include "render/ger_material.h"
@@ -22,8 +21,10 @@
 #include "object/geo_mesh.h"
 #include "object/geo_spine.h"
 #include "object/geo_armature.h"
-#include "object/text/geo_text.h"
-#include "object/text/geo_bm_font.h"
+
+#include "object/text/ge_font.h"
+#include "object/text/ge_bm_font.h"
+#include "object/text/geo_text_dx.h"
 #include "object/text/geo_text_bm.h"
 #include "object/text/geo_text_ft.h"
 

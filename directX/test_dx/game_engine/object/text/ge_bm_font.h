@@ -2,10 +2,13 @@
 #define _GAME_ENGINE_OBJECT_BITMAP_FONT_H_
 
 #include "../../common/ge_include.h"
+#include "geo_text.h"
 #include <string>
 
 namespace ge
 {
+
+class GEOTextBM;
 
 struct GEBMFontInfo
 {
@@ -62,7 +65,7 @@ struct GEBMFontChar
 	unsigned		chnl_;
 };
 
-class GE_API GEBMFont
+class GE_API GEBMFont : public GEFont
 {
 public:
 	GEBMFont();
@@ -71,6 +74,13 @@ public:
 public:
 	bool parse_binary_file(const char* fnt_path);
 	bool parse_binary_data(const char* fnt_content, size_t fnt_size);
+
+	void set_png_dir(const char* png_dir);
+	int  get_png_cnt();
+	void get_png_path(char* out_png_path, int index);
+
+	bool compose(GEOTextBM* out_text, const char* text,
+		int width, int height, bool wrap);
 
 private:
 	typedef std::vector<std::string>						BMF_PAGE_LIST;
@@ -83,6 +93,8 @@ private:
 	BMF_PAGE_LIST				pages_;
 	BMF_CHAR_MAP				chars_;
 	BMF_KERNING_MAP				kerning_;
+
+	std::string					png_dir_;
 };
 
 } // namespace ge
