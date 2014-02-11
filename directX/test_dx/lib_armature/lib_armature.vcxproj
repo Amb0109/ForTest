@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2F179149-A840-4D49-9693-2EC668B2876D}</ProjectGuid>
+    <RootNamespace>lib_armature</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\lib_json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\lib_json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="armature\CCArmature.cpp" />
+    <ClCompile Include="armature\CCBone.cpp" />
+    <ClCompile Include="armature\CCDisplay.cpp" />
+    <ClCompile Include="armature\CCSkin.cpp" />
+    <ClCompile Include="armature\CCTextureAtlas.cpp" />
+    <ClCompile Include="animation\CCAnimation.cpp" />
+    <ClCompile Include="animation\CCProcessBase.cpp" />
+    <ClCompile Include="animation\CCTween.cpp" />
+    <ClCompile Include="cocos\CCAffineTransform.cpp" />
+    <ClCompile Include="cocos\CCGeometry.cpp" />
+    <ClCompile Include="cocos\CCNode.cpp" />
+    <ClCompile Include="cocos\CCTransformHelp.cpp" />
+    <ClCompile Include="cocos\CCTweenFunction.cpp" />
+    <ClCompile Include="cocos\CCUtils.cpp" />
+    <ClCompile Include="data\CCAnimationData.cpp" />
+    <ClCompile Include="data\CCArmatureData.cpp" />
+    <ClCompile Include="data\CCAtlasData.cpp" />
+    <ClCompile Include="data\CCData.cpp" />
+    <ClCompile Include="data\CCTextureData.cpp" />
+    <ClCompile Include="support\CCSAXParser.cpp" />
+    <ClCompile Include="support\tinyxml2\tinyxml2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="armature\CCArmature.h" />
+    <ClInclude Include="armature\CCBone.h" />
+    <ClInclude Include="armature\CCDisplay.h" />
+    <ClInclude Include="armature\CCSkin.h" />
+    <ClInclude Include="armature\CCTextureAtlas.h" />
+    <ClInclude Include="animation\CCAnimation.h" />
+    <ClInclude Include="animation\CCProcessBase.h" />
+    <ClInclude Include="animation\CCTween.h" />
+    <ClInclude Include="cocos\CCAffineTransform.h" />
+    <ClInclude Include="cocos\CCGeometry.h" />
+    <ClInclude Include="cocos\CCMacro.h" />
+    <ClInclude Include="cocos\CCNode.h" />
+    <ClInclude Include="cocos\CCTransformHelp.h" />
+    <ClInclude Include="cocos\CCTweenFunction.h" />
+    <ClInclude Include="cocos\CCUtils.h" />
+    <ClInclude Include="data\CCAnimationData.h" />
+    <ClInclude Include="data\CCArmatureData.h" />
+    <ClInclude Include="data\CCAtlasData.h" />
+    <ClInclude Include="data\CCData.h" />
+    <ClInclude Include="data\CCDataDef.h" />
+    <ClInclude Include="data\CCTextureData.h" />
+    <ClInclude Include="support\CCSAXParser.h" />
+    <ClInclude Include="support\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="CCInclude.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lib_json\lib_json.vcxproj">
+      <Project>{4d9ca00b-8447-46c2-b6bf-baf7d13ea5db}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

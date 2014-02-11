@@ -75,14 +75,14 @@ bool SceneTest::show()
 
 bool SceneTest::hide()
 {
-	remove_object(2);
-	ge::GEOSpine::destory(&p_spine_);
+	//remove_object(2);
+	//ge::GEOSpine::destory(&p_spine_);
 
-	remove_object(3);
-	ge::GEOArmature::destory(&p_armature_);
+	//remove_object(3);
+	//ge::GEOArmature::destory(&p_armature_);
 
-	remove_object(0);
-	ge::GEOTextDX::destory(&p_fps_text_);
+	//remove_object(0);
+	//ge::GEOTextDX::destory(&p_fps_text_);
 
 	return true;
 }

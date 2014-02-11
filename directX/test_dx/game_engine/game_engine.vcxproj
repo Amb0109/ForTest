@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2B054DCC-2B8E-4791-8F11-F59AB423134F}</ProjectGuid>
+    <RootNamespace>game_engine</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\include;..\lib_spine\include;..\lib_armature;..\lib_json;..\lib_freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)/lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)\include;..\lib_spine\include;..\lib_armature;..\lib_json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GAME_ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)/lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="object\ge_object.cpp" />
+    <ClCompile Include="object\geo_armature.cpp" />
+    <ClCompile Include="object\geo_atlas_render.cpp" />
+    <ClCompile Include="object\geo_mesh.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="object\geo_primitive.cpp" />
+    <ClCompile Include="object\geo_spine.cpp" />
+    <ClCompile Include="object\text\ge_bm_font.cpp" />
+    <ClCompile Include="object\text\ge_font.cpp" />
+    <ClCompile Include="object\text\geo_text.cpp" />
+    <ClCompile Include="object\text\geo_text_bm.cpp" />
+    <ClCompile Include="object\text\geo_text_dx.cpp" />
+    <ClCompile Include="object\text\geo_text_ft.cpp" />
+    <ClCompile Include="object\texture\ge_texture.cpp" />
+    <ClCompile Include="object\texture\ge_texture_manager.cpp" />
+    <ClCompile Include="render\ge_render.cpp" />
+    <ClCompile Include="render\ger_effect.cpp" />
+    <ClCompile Include="render\ger_light.cpp" />
+    <ClCompile Include="render\ger_material.cpp" />
+    <ClCompile Include="render\ger_shader.cpp" />
+    <ClCompile Include="common\ge_app.cpp" />
+    <ClCompile Include="common\ge_engine.cpp" />
+    <ClCompile Include="common\ge_game.cpp" />
+    <ClCompile Include="common\ge_input.cpp" />
+    <ClCompile Include="common\ge_scene.cpp" />
+    <ClCompile Include="utility\geu_gmath.cpp" />
+    <ClCompile Include="utility\geu_vertex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="object\ge_object.h" />
+    <ClInclude Include="object\ge_object_def.h" />
+    <ClInclude Include="object\geo_armature.h" />
+    <ClInclude Include="object\geo_atlas_render.h" />
+    <ClInclude Include="object\geo_mesh.h" />
+    <ClInclude Include="object\geo_primitive.h" />
+    <ClInclude Include="object\geo_spine.h" />
+    <ClInclude Include="object\text\ge_bm_font.h" />
+    <ClInclude Include="object\text\ge_font.h" />
+    <ClInclude Include="object\text\geo_text.h" />
+    <ClInclude Include="object\text\geo_text_bm.h" />
+    <ClInclude Include="object\text\geo_text_dx.h" />
+    <ClInclude Include="object\text\geo_text_ft.h" />
+    <ClInclude Include="object\texture\ge_texture.h" />
+    <ClInclude Include="object\texture\ge_texture_manager.h" />
+    <ClInclude Include="render\ge_render.h" />
+    <ClInclude Include="render\ger_effect.h" />
+    <ClInclude Include="render\ger_light.h" />
+    <ClInclude Include="render\ger_material.h" />
+    <ClInclude Include="render\ger_shader.h" />
+    <ClInclude Include="common\ge_app.h" />
+    <ClInclude Include="common\ge_engine.h" />
+    <ClInclude Include="common\ge_game.h" />
+    <ClInclude Include="common\ge_include.h" />
+    <ClInclude Include="common\ge_input.h" />
+    <ClInclude Include="common\ge_scene.h" />
+    <ClInclude Include="utility\geu_gmath.h" />
+    <ClInclude Include="utility\geu_vertex.h" />
+    <ClInclude Include="game_engine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lib_armature\lib_armature.vcxproj">
+      <Project>{2f179149-a840-4d49-9693-2ec668b2876d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\lib_freetype\lib_freetype.vcxproj">
+      <Project>{f653bced-2be5-43d7-a24e-b47ff224e1e5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\lib_json\lib_json.vcxproj">
+      <Project>{4d9ca00b-8447-46c2-b6bf-baf7d13ea5db}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\lib_spine\lib_spine.vcxproj">
+      <Project>{5358983b-0a51-409b-b4e9-59be747139c8}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

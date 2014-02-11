@@ -223,6 +223,8 @@ bool GEOAtlasRender::update_render_task()
 
 bool GEOAtlasRender::_set_verties( std::vector<GE_VERTEX>& vertex_array )
 {
+	if (dx_vertex_buff_ == NULL) return false;
+
 	int vertex_cnt = (int)vertex_array.size();
 	if ( vertex_cnt > dx_quads_cnt_ * 4) return false;
 

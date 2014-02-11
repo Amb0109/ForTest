@@ -118,8 +118,11 @@ bool GEOArmature::init()
 	ptr_armature_->initAnimation(cc_data->getAnimationData());
 	ptr_armature_->initTexture();
 
-	ptr_armature_->getAnimation()->play(0);
-	return true;
+	if(CC::CCAnimation* ptr_animation = ptr_armature_->getAnimation())
+	{
+		ptr_animation->play(0);
+		return true;
+	} else return false;
 }
 
 void GEOArmature::release()

@@ -38,6 +38,7 @@ bool GEOText::set_font( GEFont* font )
 {
 	if (font == NULL) return false;
 	font_obj_ = font;
+	return true;
 }
 
 GEFont* GEOText::get_font()

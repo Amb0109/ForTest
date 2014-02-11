@@ -32,6 +32,8 @@ p_skeleton_json_(NULL),
 p_skeleton_data_(NULL),
 p_skeleton_(NULL),
 p_animation_(NULL),
+p_animation_state_(NULL),
+p_animation_state_data_(NULL),
 draw_bone_mesh_(true)
 {
 
@@ -71,12 +73,12 @@ bool GEOSpine::init()
 
 void GEOSpine::release()
 {
-	spAnimationState_dispose(p_animation_state_);
-	spAnimationStateData_dispose(p_animation_state_data_);
-	spSkeleton_dispose(p_skeleton_);
-	spSkeletonData_dispose(p_skeleton_data_);
-	spSkeletonJson_dispose(p_skeleton_json_);
-	spAtlas_dispose(p_atlas_);
+	if(p_animation_state_)		spAnimationState_dispose(p_animation_state_);
+	if(p_animation_state_data_)	spAnimationStateData_dispose(p_animation_state_data_);
+	if(p_skeleton_)				spSkeleton_dispose(p_skeleton_);
+	if(p_skeleton_data_)		spSkeletonData_dispose(p_skeleton_data_);
+	if(p_skeleton_json_)		spSkeletonJson_dispose(p_skeleton_json_);
+	if(p_atlas_)				spAtlas_dispose(p_atlas_);
 }
 
 void GEOSpine::update( time_t delta )
