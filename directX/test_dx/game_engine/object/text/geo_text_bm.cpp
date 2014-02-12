@@ -36,7 +36,8 @@ bool GEOTextBM::set_font( GEFont* font )
 		{
 			char png_path[MAX_PATH];
 			bm_font->get_png_path(png_path, i);
-			assert(render_object_->add_texture(png_path) == i);
+			int png_id = render_object_->add_texture(png_path);
+			assert(png_id == i);
 		}
 	}
 	return ret;

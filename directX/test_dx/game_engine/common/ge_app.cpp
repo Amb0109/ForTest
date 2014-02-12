@@ -168,4 +168,30 @@ void GEApp::_update_time()
 	}
 }
 
+bool GEApp::show_console( bool is_show )
+{
+	if (is_console_show_ == is_show) return false;
+
+	if (is_show)
+	{
+		::FreeConsole();
+		if (::AllocConsole())
+		{
+			freopen("CONOUT$", "w", stdout);
+			freopen("CONOUT$", "w", stderr);
+			is_console_show_ = is_show;
+			return true;
+		}
+	}
+	else
+	{
+		if(::FreeConsole())
+		{
+			is_console_show_ = is_show;
+			return true;
+		}
+	}
+	return false;
+}
+
 }

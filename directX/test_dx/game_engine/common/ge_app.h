@@ -36,6 +36,9 @@ public:
 
 	GEInput*	get_input()			{ return &input_; };
 
+	bool		show_console(bool is_show);
+	bool		get_console_show()	{ return is_console_show_; }
+	
 protected:
 	bool		_calc_mid_wnd_pos(GE_IRECT& wnd_rect);
 	void		_update_time();
@@ -46,6 +49,8 @@ protected:
 	HINSTANCE	h_app_inst_;
 	GE_IRECT	game_rect_;
 	bool		is_app_created_;
+
+	bool		is_console_show_;
 
 	float		fps_;
 	float		fps_elapsed_;

@@ -29,7 +29,7 @@ bool SceneTest::init_fps_text()
 	};
 	p_fps_text_->set_text_style(style);
 
-	ge::GE_IRECT rect(0, 0, 400, 200);
+	ge::GE_IRECT rect(0, 0, 500, 500);
 	p_fps_text_->set_rect(rect);
 
 	p_fps_text_->set_font(ge_font);
@@ -40,6 +40,7 @@ bool SceneTest::init_fps_text()
 
 bool SceneTest::init_bm_text()
 {
+
 	p_bm_font_ = ge::GEBMFont::create();
 	p_bm_font_->parse_binary_file("bmfont\\fps2.fnt");
 
@@ -54,6 +55,9 @@ bool SceneTest::show()
 {
 	ge::GEScene::show();
 
+	//ge::GEApp* p_app = ge::GEApp::get_instance();
+	//p_app->show_console(true);
+
 	init_fps_text();
 	init_bm_text();
 
@@ -61,12 +65,12 @@ bool SceneTest::show()
 	//p_panel_2d_->init();
 	//add_object(1, p_panel_2d_);
 
-	p_spine_ = ge::GEOSpine::create();
-	p_spine_->init();
+	//p_spine_ = ge::GEOSpine::create();
+	//p_spine_->init();
 	//add_object(2, p_spine_);
 
-	p_armature_ = ge::GEOArmature::create();
-	p_armature_->init();
+	//p_armature_ = ge::GEOArmature::create();
+	//p_armature_->init();
 	//add_object(3, p_armature_);
 
 	return true;
@@ -91,6 +95,16 @@ void SceneTest::update( time_t time_elapsed )
 {
 	update_fps_text();
 	update_camera();
+
+	ge::GEApp* p_app = ge::GEApp::get_instance();
+	ge::GEInput* input = p_app->get_input();
+	if (input)
+	{
+		if (input->get_key_down(DIK_GRAVE))
+		{
+			p_app->show_console(!p_app->get_console_show());
+		}
+	}
 
 	ge::GEScene::update(time_elapsed);
 }
@@ -140,7 +154,14 @@ void SceneTest::update_fps_text()
 
 		char buff[10240];
 		sprintf_s(buff, "fps: %.2f\nmouse: %d, %d\n", fps, mouse_x, mouse_y);
-		strcat(buff, "sdfasdkfjasd\nsdfjlasjdlasd\n213412341234\n*&*^(%*&^%&*\n65df454asf\n");
+		char rand_str[128];
+		for (int i=0; i<100; ++i)
+		{
+			if (i%10 == 0) rand_str[i] = '\n';
+			else rand_str[i] = char(rand() % (128 - 32) + 32);
+		}
+		rand_str[100] = 0;
+		strcat(buff, rand_str);
 		p_fps_text_->set_text(buff);
 		p_bm_text_->set_text(buff);
 	}
