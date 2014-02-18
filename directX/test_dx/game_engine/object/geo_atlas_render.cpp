@@ -322,7 +322,7 @@ bool GEOAtlasRender::draw_quads()
 			0,						// BaseVertexIndex
 			0,						// MinVertexIndex
 			dx_quads_cnt_ * 4,		// NumVertices
-			task->offset,			// StartIndex
+			task->offset * 6,		// StartIndex
 			task->count * 2);		// PrimitiveCount
 		assert(SUCCEEDED(h_res));
 	}
