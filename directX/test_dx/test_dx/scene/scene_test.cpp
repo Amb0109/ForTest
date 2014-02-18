@@ -2,6 +2,8 @@
 
 SceneTest::SceneTest()
 : p_fps_text_(NULL)
+, p_gdi_text_(NULL)
+, p_bm_text_(NULL)
 , p_armature_(NULL)
 , fps_font_id_(-1)
 {
@@ -17,8 +19,7 @@ bool SceneTest::init_fps_text()
 
 	ge::GEFont* ge_font = ge::GEFontManager::create_font(ge::FontType_D3DXFont);
 	if (ge_font == NULL) return false;
-	ge_font->init("consolas", 16);
-	ge_font->update_font();
+	ge_font->init("consolas", 32);
 
 	ge::GE_TEXT_STYLE style = {
 		fps_font_id_,
@@ -29,12 +30,39 @@ bool SceneTest::init_fps_text()
 	};
 	p_fps_text_->set_text_style(style);
 
-	ge::GE_IRECT rect(0, 0, 500, 500);
+	ge::GE_IRECT rect(0, 0, 400, 500);
 	p_fps_text_->set_rect(rect);
 
 	p_fps_text_->set_font(ge_font);
 
 	add_object(10086, p_fps_text_);
+	return true;
+}
+
+bool SceneTest::init_gdi_text()
+{
+	p_gdi_text_ = ge::GEOTextGDI::create();
+	if (p_gdi_text_ == NULL) return false;
+
+	ge::GEFont* ge_font = ge::GEFontManager::create_font(ge::FontType_GDIFont);
+	if (ge_font == NULL) return false;
+	ge_font->init("consolas", 32);
+
+	ge::GE_TEXT_STYLE style = {
+		fps_font_id_,
+		DT_LEFT | DT_TOP,
+		RGBA(0xff, 0xff, 0xff, 0xff),
+		false, 0, RGBA(0xff, 0xff, 0xff, 0xff),
+		false, 0, RGBA(0xff, 0xff, 0xff, 0xff)
+	};
+	p_gdi_text_->set_text_style(style);
+
+	ge::GE_IRECT rect(400, 0, 800, 500);
+	p_gdi_text_->set_rect(rect);
+
+	p_gdi_text_->set_font(ge_font);
+
+	add_object(-10000, p_gdi_text_);
 	return true;
 }
 
@@ -59,6 +87,7 @@ bool SceneTest::show()
 	//p_app->show_console(true);
 
 	init_fps_text();
+	init_gdi_text();
 	init_bm_text();
 
 	//p_panel_2d_ = new Panel2D();
@@ -80,13 +109,13 @@ bool SceneTest::show()
 bool SceneTest::hide()
 {
 	//remove_object(2);
-	//ge::GEOSpine::destory(&p_spine_);
+	//ge::GEOSpine::release(&p_spine_);
 
 	//remove_object(3);
-	//ge::GEOArmature::destory(&p_armature_);
+	//ge::GEOArmature::release(&p_armature_);
 
 	//remove_object(0);
-	//ge::GEOTextDX::destory(&p_fps_text_);
+	//ge::GEOTextDX::release(&p_fps_text_);
 
 	return true;
 }
@@ -162,7 +191,13 @@ void SceneTest::update_fps_text()
 		}
 		rand_str[100] = 0;
 		strcat(buff, rand_str);
+		int len = strlen(buff);
+		buff[len+1] = 0;
+		buff[len] = 'A';
 		p_fps_text_->set_text(buff);
+		buff[len] = 'B';
+		p_gdi_text_->set_text(buff);
+		buff[len] = 'C';
 		p_bm_text_->set_text(buff);
 	}
 }

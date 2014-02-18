@@ -16,10 +16,12 @@ protected:
 	static GETextureManager* get_instance();
 
 public:
+	static GETexture* create_texture();
 	static GETexture* create_texture(const char* texture_path);
 	static void release_texture(GETexture* texture);
 
-	virtual GETexture* _create_texture(const char* texture_path);
+protected:
+	virtual GETexture* _create_texture();
 	virtual void _release_texture(GETexture* texture);
 
 protected:

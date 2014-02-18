@@ -83,7 +83,7 @@ void CCTextureAtlas::releaseTexture()
 	ge::GEOPrimitive* render_object = (ge::GEOPrimitive*)m_pRenderObject;
 	if (render_object)
 	{
-		ge::GEOPrimitive::destory(&render_object);
+		ge::GEOPrimitive::release(&render_object);
 	}
 
 	m_pRenderObject = NULL;
@@ -104,7 +104,7 @@ GEOArmature::GEOArmature()
 
 GEOArmature::~GEOArmature()
 {
-	release();
+	destory();
 }
 
 bool GEOArmature::init()
@@ -125,7 +125,7 @@ bool GEOArmature::init()
 	} else return false;
 }
 
-void GEOArmature::release()
+void GEOArmature::destory()
 {
 	if (ptr_armature_)
 	{

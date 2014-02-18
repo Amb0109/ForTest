@@ -34,12 +34,12 @@ public:
 private:
 	LPDIRECTINPUT			p_input_;
 	LPDIRECTINPUTDEVICE		p_keyboard_device_;
-	char					keyboard_state_[256];
-	char					keyboard_state_old_[256];
+	char					keyboard_state_[2][256];
 
 	LPDIRECTINPUTDEVICE		p_mouse_device_;
-	DIMOUSESTATE2			mouse_state_;
-	DIMOUSESTATE2			mouse_state_old_;
+	DIMOUSESTATE2			mouse_state_[2];
+
+	unsigned				current_state_;
 };
 
 }

@@ -20,8 +20,8 @@ protected:
 	static bool compile_shader(const char* file_content, GERShader& shader);
 
 public:
-	bool create(const char* file_path);
-	void release();
+	bool init(const char* file_path);
+	void destory();
 	const char* get_compile_error();
 
 	LPD3DXCONSTANTTABLE get_constent_table() { return p_constent_table_; }

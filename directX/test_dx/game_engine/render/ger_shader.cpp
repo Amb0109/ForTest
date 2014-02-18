@@ -19,7 +19,7 @@ GERShader::~GERShader()
 
 }
 
-bool GERShader::create( const char* file_path )
+bool GERShader::init( const char* file_path )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if(p_d3d_device == NULL) return false;
@@ -33,7 +33,7 @@ bool GERShader::create( const char* file_path )
 	return SUCCEEDED(h_res);
 }
 
-void GERShader::release()
+void GERShader::destory()
 {
 	file_path_.clear();
 
@@ -57,7 +57,7 @@ D3DXHANDLE GERShader::get_value( const char* value_name, D3DXHANDLE content /*= 
 
 bool GERShader::compile_shader_file( const char* file_path, GERShader& shader )
 {
-	shader.release();
+	shader.destory();
 	if (file_path == NULL) return false;
 
 	shader.file_path_ = file_path;
@@ -78,7 +78,7 @@ bool GERShader::compile_shader_file( const char* file_path, GERShader& shader )
 
 bool GERShader::compile_shader( const char* file_content, GERShader& shader )
 {
-	shader.release();
+	shader.destory();
 	if (file_content == NULL) return false;
 
 	HRESULT h_res = D3DXCompileShader(

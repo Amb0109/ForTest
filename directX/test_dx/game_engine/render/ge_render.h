@@ -23,7 +23,7 @@ public:
 public:
 	bool init();
 	void render(time_t delta);
-	void release();
+	void destory();
 
 	void push_render(GEObject* p_object);
 

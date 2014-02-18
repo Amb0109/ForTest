@@ -4,6 +4,7 @@
 #include "../../common/ge_include.h"
 #include "geo_text.h"
 #include <string>
+#include <hash_map>
 
 namespace ge
 {
@@ -86,7 +87,7 @@ public:
 
 private:
 	typedef std::vector<std::string>						BMF_PAGE_LIST;
-	typedef std::map<unsigned, GEBMFontChar>				BMF_CHAR_MAP;
+	typedef stdext::hash_map<unsigned, GEBMFontChar>		BMF_CHAR_MAP;
 	typedef std::map<std::pair<unsigned, unsigned>, int>	BMF_KERNING_MAP;
 
 	int							version_;

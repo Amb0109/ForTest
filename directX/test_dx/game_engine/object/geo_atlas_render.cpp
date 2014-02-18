@@ -66,12 +66,19 @@ bool GEOAtlasRender::set_vertex_decl( GEVertexDecl* vertex_decl )
 
 void GEOAtlasRender::release_vertex_decl()
 {
-	vertex_decl_.release();
+	vertex_decl_.destory();
 }
 
 GEVertexDecl* GEOAtlasRender::get_vertex_decl()
 {
 	return &vertex_decl_;
+}
+
+int GEOAtlasRender::add_texture()
+{
+	GETexture* texture = GETextureManager::create_texture();
+	texture_list_.push_back(texture);
+	return (int)texture_list_.size() - 1;
 }
 
 int GEOAtlasRender::add_texture( const char* texture_path )
@@ -81,7 +88,7 @@ int GEOAtlasRender::add_texture( const char* texture_path )
 	return (int)texture_list_.size() - 1;
 }
 
-GETexture* GEOAtlasRender::get_texture( int texture_id )
+GETexture* GEOAtlasRender::get_texture( int texture_id/* = 0*/ )
 {
 	if (texture_id < 0) return NULL;
 	if ((int)texture_list_.size() <= texture_id) return NULL;
@@ -297,9 +304,13 @@ bool GEOAtlasRender::draw_quads()
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	p_d3d_device->SetStreamSource(0, dx_vertex_buff_, 0, vertex_size_);
-	p_d3d_device->SetIndices(dx_index_buff_);
-	p_d3d_device->SetVertexDeclaration(vertex_decl_.get_d3d_vertex_decl());
+	HRESULT h_res = S_OK;
+	h_res = p_d3d_device->SetStreamSource(0, dx_vertex_buff_, 0, vertex_size_);
+	assert(SUCCEEDED(h_res));
+	h_res = p_d3d_device->SetIndices(dx_index_buff_);
+	assert(SUCCEEDED(h_res));
+	h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_.get_d3d_vertex_decl());
+	assert(SUCCEEDED(h_res));
 
 	FOR_EACH (QUAD_RENDER_TASK_LIST, render_task_list_, task)
 	{
@@ -307,12 +318,13 @@ bool GEOAtlasRender::draw_quads()
 		if(texture) texture->use_texture();
 		else GETexture::use_null_texture();
 
-		p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+		h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			0,						// BaseVertexIndex
 			0,						// MinVertexIndex
 			dx_quads_cnt_ * 4,		// NumVertices
 			task->offset,			// StartIndex
 			task->count * 2);		// PrimitiveCount
+		assert(SUCCEEDED(h_res));
 	}
 	GETexture::use_null_texture();
 	return true;

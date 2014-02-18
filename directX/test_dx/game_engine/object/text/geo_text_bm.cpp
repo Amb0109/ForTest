@@ -25,7 +25,7 @@ bool GEOTextBM::set_font( GEFont* font )
 	if (ret)
 	{
 		if (render_object_ == NULL) render_object_ = GEOAtlasRender::create();
-		else render_object_->release();
+		else render_object_->destory();
 
 		GEBMFont* bm_font = (GEBMFont*)font_obj_;
 		if (bm_font == NULL) return false;
@@ -45,9 +45,9 @@ bool GEOTextBM::set_font( GEFont* font )
 
 bool GEOTextBM::set_text( const char* text )
 {
-	GEOText::set_text(text);
-	update_text();
-	return true;
+	bool b_ret = GEOText::set_text(text);
+	if (b_ret) return _init_text();
+	return b_ret;
 }
 
 void GEOTextBM::_add_render_char( GE_TEXT_CHAR& text_char )
@@ -60,7 +60,7 @@ void GEOTextBM::_clear_render_chars()
 	render_chars_.clear();
 }
 
-bool GEOTextBM::update_text()
+bool GEOTextBM::_init_text()
 {
 	GEBMFont* bm_font = (GEBMFont*)font_obj_;
 	if (bm_font == NULL) return false;
@@ -115,7 +115,7 @@ void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_
 	float u1 = (float)text_char.img_pos_.x / img_width;
 	float v1 = (float)text_char.img_pos_.y / img_height;
 	float u2 = ((float)text_char.img_pos_.x + text_char.size_.width) / img_width;
-	float v2 = ((float)text_char.img_pos_.y + text_char.size_.height) / img_height;
+	float v2 = ((float)text_char.img_pos_.y + text_char.size_.height + 1) / img_height;
 
 	out_quad.tl.set_texcoords(D3DXVECTOR2(u1, v1));
 	out_quad.tr.set_texcoords(D3DXVECTOR2(u2, v1));

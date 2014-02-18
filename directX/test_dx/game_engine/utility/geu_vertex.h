@@ -19,7 +19,7 @@ public:
 
 public:
 	bool				init(DWORD fvf);
-	void				release();
+	void				destory();
 
 	int					get_vertex_size() { return vertex_size_; }
 	DWORD				get_vertex_fvf() { return vertex_fvf_; }

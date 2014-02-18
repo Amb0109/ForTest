@@ -26,15 +26,15 @@ bool GEFont::init( const char* face, int size )
 {
 	strcpy(face_, face);
 	size_ = size;
-	return true;
+	return _init_font();
 }
 
-bool GEFont::update_font()
+bool GEFont::_init_font()
 {
 	return true;
 }
 
-void GEFont::release()
+void GEFont::destory()
 {
 
 }
@@ -55,7 +55,7 @@ LPD3DXFONT GED3DXFont::get_d3dx_obj()
 	return d3dx_font_;
 }
 
-bool GED3DXFont::update_font()
+bool GED3DXFont::_init_font()
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if (p_d3d_device == NULL) return false;
@@ -68,12 +68,12 @@ bool GED3DXFont::update_font()
 	d3dx_font_desc_.Quality	= ANTIALIASED_QUALITY;
 	strcpy(d3dx_font_desc_.FaceName, face_);
 
-	release();
+	destory();
 	HRESULT h_res = D3DXCreateFontIndirect(p_d3d_device, &d3dx_font_desc_, &d3dx_font_);
 	return SUCCEEDED(h_res);
 }
 
-void GED3DXFont::release()
+void GED3DXFont::destory()
 {
 	SAFE_RELEASE(d3dx_font_)
 }
@@ -89,7 +89,7 @@ GEGDIFont::~GEGDIFont()
 {
 }
 
-bool GEGDIFont::update_font()
+bool GEGDIFont::_init_font()
 {
 	ZeroMemory(&gdi_font_desc_, sizeof(LOGFONT));
 	gdi_font_desc_.lfHeight		= size_;
@@ -101,15 +101,20 @@ bool GEGDIFont::update_font()
 	gdi_font_desc_.lfQuality	= ANTIALIASED_QUALITY;
 	strcpy_s(gdi_font_desc_.lfFaceName, face_);
 
-	release();
+	destory();
 	gdi_font_ = CreateFontIndirect(&gdi_font_desc_);
 	return INVALID_HANDLE_VALUE != gdi_font_;
 }
 
-void GEGDIFont::release()
+void GEGDIFont::destory()
 {
 	if (gdi_font_) CloseHandle(gdi_font_);
 	gdi_font_ = NULL;
+}
+
+HFONT GEGDIFont::get_gdi_obj()
+{
+	return gdi_font_;
 }
 
 GEFontManager::GEFontManager()
@@ -182,7 +187,7 @@ GEFont* GEFontManager::new_font( GEFontType font_type )
 void GEFontManager::delete_font( GEFont* ptr_font )
 {
 	if (ptr_font == NULL) return;
-	ptr_font->release();
+	ptr_font->destory();
 	font_set_.erase(ptr_font);
 }
 

@@ -11,6 +11,7 @@ public:
 
 public:
 	bool init_fps_text();
+	bool init_gdi_text();
 	bool init_bm_text();
 
 public:
@@ -27,6 +28,8 @@ public:
 
 	int					fps_font_id_;
 	ge::GEOTextDX*		p_fps_text_;
+
+	ge::GEOTextGDI*		p_gdi_text_;
 
 	ge::GEBMFont*		p_bm_font_;
 	ge::GEOTextBM*		p_bm_text_;

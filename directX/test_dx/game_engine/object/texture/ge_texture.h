@@ -17,8 +17,9 @@ public:
 	virtual ~GETexture();
 
 public:
-	virtual bool create_texture(const char* texture_path);
-	virtual void release_texture();
+	virtual bool init(const char* texture_path);
+	virtual bool init(int width, int height, D3DFORMAT format = D3DFMT_UNKNOWN);
+	virtual void destory();
 
 	const char* get_key();
 
@@ -26,10 +27,14 @@ public:
 	static bool use_null_texture();
 
 	virtual void get_texture_size(int& width, int& height);
+	LPDIRECT3DSURFACE9 get_surface();
+	bool begin_dc(HDC& h_dc);
+	bool end_dc(HDC& h_dc);
 
 protected:
 	std::string				texture_key_;
 	LPDIRECT3DTEXTURE9		d3d_texture_;
+	LPDIRECT3DSURFACE9		d3d_surface_;
 	D3DSURFACE_DESC			texture_desc_;
 };
 

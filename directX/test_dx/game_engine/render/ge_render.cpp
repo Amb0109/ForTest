@@ -94,7 +94,7 @@ bool GERender::do_projection_trans( float fovy )
 	return SUCCEEDED(h_res);
 }
 
-void GERender::release()
+void GERender::destory()
 {
 }
 

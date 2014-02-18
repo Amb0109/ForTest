@@ -14,10 +14,10 @@ vertex_fvf_(0)
 
 GEVertexDecl::~GEVertexDecl()
 {
-	release();
+	destory();
 }
 
-void GEVertexDecl::release()
+void GEVertexDecl::destory()
 {
 	SAFE_RELEASE(p_vertex_decl_);
 	vertex_size_ = 0;

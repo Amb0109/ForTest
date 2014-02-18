@@ -25,6 +25,7 @@
 #include "object/text/ge_font.h"
 #include "object/text/ge_bm_font.h"
 #include "object/text/geo_text_dx.h"
+#include "object/text/geo_text_gdi.h"
 #include "object/text/geo_text_bm.h"
 #include "object/text/geo_text_ft.h"
 

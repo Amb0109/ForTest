@@ -24,8 +24,10 @@ public:
 
 public:
 	virtual bool init(const char* face, int size);
-	virtual bool update_font();
-	virtual void release();
+	virtual void destory();
+
+protected:
+	virtual bool _init_font();
 
 public:
 	GEFontType	type_;
@@ -48,8 +50,10 @@ public:
 public:
 	LPD3DXFONT get_d3dx_obj();
 
-	virtual bool update_font();
-	virtual void release();
+	virtual void destory();
+
+protected:
+	virtual bool _init_font();
 
 private:
 	D3DXFONT_DESC	d3dx_font_desc_;
@@ -63,8 +67,12 @@ public:
 	virtual ~GEGDIFont();
 
 public:
-	virtual bool update_font();
-	virtual void release();
+	HFONT get_gdi_obj();
+
+	virtual void destory();
+
+protected:
+	virtual bool _init_font();
 
 private:
 	LOGFONT			gdi_font_desc_;

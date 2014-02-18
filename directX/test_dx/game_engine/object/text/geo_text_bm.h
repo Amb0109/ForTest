@@ -27,12 +27,11 @@ public:
 	virtual bool set_font(GEFont* font);
 	virtual bool set_text(const char* text);
 
-	bool update_text();
-
 public:
 	virtual void render(time_t delta);
 
 protected:
+	bool _init_text();
 	void _add_render_char(GE_TEXT_CHAR& text_char);
 	void _clear_render_chars();
 	void _text_char_to_quad(GE_QUAD& out_quad, const GE_TEXT_CHAR& text_char);

@@ -26,7 +26,7 @@ public:
 
 public:
 	virtual bool init();
-	virtual void release();
+	virtual void destory();
 
 	virtual void update(time_t delta);
 	virtual void render(time_t delta);
