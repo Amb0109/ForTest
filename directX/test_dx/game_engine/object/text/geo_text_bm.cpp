@@ -10,6 +10,8 @@ const unsigned GEOTextBM::fvf = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 GEOTextBM::GEOTextBM()
 : render_object_(NULL)
+, need_update_font_(true)
+, need_update_text_(true)
 {
 }
 
@@ -22,49 +24,46 @@ bool GEOTextBM::set_font( GEFont* font )
 	if (font == NULL) return false;
 	if (font->type_ != FontType_BMFont) return false;
 	bool ret = GEOText::set_font(font);
-	if (ret)
-	{
-		if (render_object_ == NULL) render_object_ = GEOAtlasRender::create();
-		else render_object_->destory();
-
-		GEBMFont* bm_font = (GEBMFont*)font_obj_;
-		if (bm_font == NULL) return false;
-
-		int png_cnt = bm_font->get_png_cnt();
-		if (render_object_ == NULL) return false;
-		for (int i=0; i<png_cnt; ++i)
-		{
-			char png_path[MAX_PATH];
-			bm_font->get_png_path(png_path, i);
-			int png_id = render_object_->add_texture(png_path);
-			assert(png_id == i);
-		}
-	}
+	need_update_font_ = true;
 	return ret;
 }
 
 bool GEOTextBM::set_text( const char* text )
 {
 	bool b_ret = GEOText::set_text(text);
-	if (b_ret) return _init_text();
+	need_update_text_ = true;
 	return b_ret;
 }
 
-void GEOTextBM::_add_render_char( GE_TEXT_CHAR& text_char )
+bool GEOTextBM::update_font()
 {
-	render_chars_.push_back(text_char);
+	if (render_object_ == NULL)
+	{
+		render_object_ = GEOAtlasRender::create();
+	} else render_object_->destory();
+
+	GEBMFont* bm_font = (GEBMFont*)font_obj_;
+	if (bm_font == NULL) return false;
+
+	int png_cnt = bm_font->get_png_cnt();
+	if (render_object_ == NULL) return false;
+	for (int i=0; i<png_cnt; ++i)
+	{
+		char png_path[MAX_PATH];
+		bm_font->get_png_path(png_path, i);
+		int png_id = render_object_->add_texture(png_path);
+		assert(png_id == i);
+	}
+
+	need_update_font_ = false;
+	return true;
 }
 
-void GEOTextBM::_clear_render_chars()
-{
-	render_chars_.clear();
-}
-
-bool GEOTextBM::_init_text()
+bool GEOTextBM::update_text()
 {
 	GEBMFont* bm_font = (GEBMFont*)font_obj_;
 	if (bm_font == NULL) return false;
-	
+
 	if (render_object_ == NULL) return false;
 
 	bool ret = bm_font->compose(this, text_.c_str(), 0, 0, false);
@@ -78,7 +77,18 @@ bool GEOTextBM::_init_text()
 			render_object_->add_quad(quad);
 		}
 	}
+	need_update_text_ = false;
 	return ret;
+}
+
+void GEOTextBM::_add_render_char( GE_TEXT_CHAR& text_char )
+{
+	render_chars_.push_back(text_char);
+}
+
+void GEOTextBM::_clear_render_chars()
+{
+	render_chars_.clear();
 }
 
 void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_char )
@@ -129,6 +139,9 @@ void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_
 
 void GEOTextBM::render( time_t delta )
 {
+	if (need_update_font_) update_font();
+	if (need_update_text_) update_text();
+
 	render_object_->render(delta);
 }
 

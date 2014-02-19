@@ -29,6 +29,9 @@ public:
 
 	virtual bool set_text(const char* text);
 
+	virtual bool update_text();
+	virtual bool update_text_ex();
+
 public:
 	virtual void render(time_t delta);
 
@@ -39,10 +42,9 @@ protected:
 	virtual void _destory_bitmap();
 	virtual void _destory_dc();
 	virtual bool _update_quad();
-	virtual bool _update_text();
 
 private:
-	GE_IRECT		text_rect_;
+	GE_IRECT		rect_;
 	GE_TEXT_STYLE	text_style_;
 
 	HBITMAP			h_bitmap_;

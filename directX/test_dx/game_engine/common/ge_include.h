@@ -24,6 +24,7 @@
 
 // win api include
 #include <Windows.h>
+#include <Gdiplus.h>
 
 // d3d include
 #include <d3d9.h>

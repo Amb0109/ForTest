@@ -88,7 +88,7 @@ public:
 private:
 	typedef std::vector<std::string>						BMF_PAGE_LIST;
 	typedef stdext::hash_map<unsigned, GEBMFontChar>		BMF_CHAR_MAP;
-	typedef std::map<std::pair<unsigned, unsigned>, int>	BMF_KERNING_MAP;
+	typedef stdext::hash_map<unsigned __int64, int>			BMF_KERNING_MAP;
 
 	int							version_;
 	GEBMFontInfo				info_;

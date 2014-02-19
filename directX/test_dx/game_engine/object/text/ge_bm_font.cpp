@@ -253,7 +253,7 @@ bool GEBMFont::parse_binary_data( const char* fnt_content, size_t fnt_size )
 					unsigned first = _bmfont_get_uint(&ptr_fnt, 4);
 					unsigned second = _bmfont_get_uint(&ptr_fnt, 4);
 					int amount = _bmfont_get_int(&ptr_fnt, 2);
-					kerning_[std::make_pair(first, second)] = amount;
+					kerning_[((unsigned _int64)first << 32) | second] = amount;
 				}
 			}
 			break;
@@ -306,23 +306,27 @@ bool GEBMFont::compose( GEOTextBM* out_text, const char* text, int width, int he
 			}
 			break;
 		default:
-			if (chars_.find(text[i]) != chars_.end())
 			{
-				GEBMFontChar& bm_char = chars_[text[i]];
-				GE_TEXT_CHAR text_char;
-				text_char.ch_			= text[i];
-				text_char.visible_		= true;
-				text_char.pos_.x		= pen_x + bm_char.xoffset_;
-				text_char.pos_.y		= pen_y + bm_char.yoffset_;
-				text_char.size_.width	= bm_char.width_;
-				text_char.size_.height	= bm_char.height_;
-				text_char.img_			= bm_char.page_;
-				text_char.img_pos_.x	= bm_char.x_;
-				text_char.img_pos_.y	= bm_char.y_;
-				out_text->_add_render_char(text_char);
+				BMF_CHAR_MAP::iterator ch_itor = chars_.find(text[i]);
+				if (ch_itor != chars_.end())
+				{
+					GEBMFontChar& bm_char = ch_itor->second;
+					GE_TEXT_CHAR text_char;
+					text_char.ch_			= text[i];
+					text_char.visible_		= true;
+					text_char.pos_.x		= pen_x + bm_char.xoffset_;
+					text_char.pos_.y		= pen_y + bm_char.yoffset_;
+					text_char.size_.width	= bm_char.width_;
+					text_char.size_.height	= bm_char.height_;
+					text_char.img_			= bm_char.page_;
+					text_char.img_pos_.x	= bm_char.x_;
+					text_char.img_pos_.y	= bm_char.y_;
+					out_text->_add_render_char(text_char);
 
-				pen_x += bm_char.xadvance_;
+					pen_x += bm_char.xadvance_;
+				}
 			}
+
 		}
 	}
 	return true;

@@ -153,6 +153,10 @@ bool GEEngine::_init_render()
 	p_font_manager_ = GEFontManager::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
+	ULONG_PTR gdiplus_token;
+	Gdiplus::GdiplusStartupInput startup_input;
+	GdiplusStartup(&gdiplus_token, &startup_input, NULL);
+
 	return p_ge_render_->init();
 }
 
