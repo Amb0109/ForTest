@@ -13,9 +13,10 @@ GEOAtlasRender::GEOAtlasRender()
 : dx_vertex_buff_(NULL)
 , dx_index_buff_(NULL)
 , dx_quads_cnt_(0)
-, vertex_decl_()
+, vertex_list_()
+, vertex_decl_(NULL)
 , texture_list_()
-, quad_list_()
+, need_render_update_(true)
 {
 	set_vertex_fvf(DEFAULT_FVF_FORMAT);
 }
@@ -38,7 +39,7 @@ void GEOAtlasRender::release()
 	vertex_decl_ = NULL;
 }
 
-bool GEOAtlasRender::set_vertex_fvf( WORD fvf )
+bool GEOAtlasRender::set_vertex_fvf( DWORD fvf )
 {
 	return set_vertex_decl(GEVertexDecl::get_vertex_decl(fvf));
 }
@@ -112,7 +113,7 @@ void GEOAtlasRender::release_all_texture()
 
 bool GEOAtlasRender::init_render()
 {
-	if (dx_quads_cnt_ < (int)quad_list_.size())
+	if (dx_quads_cnt_ * 4 < (int)vertex_list_.size())
 	{
 		release_render();
 
@@ -122,7 +123,7 @@ bool GEOAtlasRender::init_render()
 		if (vertex_decl_ == NULL) return false;
 		if (!vertex_decl_->is_valid()) return false;
 
-		int quads_cnt = (int)quad_list_.size();
+		int quads_cnt = vertex_list_.size() / 4;
 		
 		HRESULT h_res = S_OK;
 		std::vector<WORD> indices;
@@ -171,47 +172,36 @@ init_faild:
 
 bool GEOAtlasRender::update_render()
 {
-	std::vector<GE_VERTEX> verties;
-	verties.resize(quad_list_.size() * 4);
-
-	int offset = 0;
-	FOR_EACH (QUAD_LIST, quad_list_, quad)
-	{
-		verties[offset + 0] = quad->tl;
-		verties[offset + 1] = quad->tr;
-		verties[offset + 2] = quad->br;
-		verties[offset + 3] = quad->bl;
-		offset += 4;
-	}
-
-	return _set_verties(verties);
+	return _set_verties(vertex_list_);
 }
 
-bool GEOAtlasRender::update_render_task()
+bool GEOAtlasRender::_update_render_task( int quad_index, int texture_id )
 {
-	render_task_list_.clear();
+	int current_task = render_task_list_.size() - 1;
 
-	int offset = 0;
-	int current_task = -1;
-	int current_texture = -1;
-	FOR_EACH (QUAD_LIST, quad_list_, quad)
+	if (quad_index == 0)
 	{
-		if(quad->texture != current_texture)
-		{
-			current_texture = quad->texture;
-			current_task = (int) render_task_list_.size();
+		assert (current_task == -1);
+		if (current_task != -1) return false;
+	}
+	else
+	{
+		assert (current_task != -1);
+		if (current_task == -1) return false;
+	}
 
-			QUAD_RENDER_TASK render_task;
-			render_task.offset = offset;
-			render_task.count = 1;
-			render_task.texture = quad->texture;
-			render_task_list_.push_back(render_task);
-		}
-		else
-		{
-			++ render_task_list_[current_task].count;
-		}
-		++ offset;
+	if (current_task == -1
+		|| texture_id != render_task_list_[current_task].texture)
+	{
+		QUAD_RENDER_TASK render_task;
+		render_task.offset = quad_index;
+		render_task.count = 1;
+		render_task.texture = texture_id;
+		render_task_list_.push_back(render_task);
+	}
+	else
+	{
+		++ render_task_list_[current_task].count;
 	}
 	return true;
 }
@@ -270,20 +260,34 @@ void GEOAtlasRender::release_render()
 	D3D_RELEASE(dx_vertex_buff_);
 	D3D_RELEASE(dx_index_buff_);
 	dx_quads_cnt_ = 0;
-	task_list_need_update_ = true;
 }
 
 bool GEOAtlasRender::add_quad( GE_QUAD& quad )
 {
-	quad_list_.push_back(quad);
-	task_list_need_update_ = true;
+	if (vertex_decl_ != quad.tl.get_decl()) return false;
+	if (vertex_decl_ != quad.tr.get_decl()) return false;
+	if (vertex_decl_ != quad.bl.get_decl()) return false;
+	if (vertex_decl_ != quad.br.get_decl()) return false;
+
+	int quad_index = vertex_list_.size() / 4;
+	int texture_id = quad.texture;
+
+	vertex_list_.push_back(quad.tl);
+	vertex_list_.push_back(quad.tr);
+	vertex_list_.push_back(quad.br);
+	vertex_list_.push_back(quad.bl);
+	
+	_update_render_task(quad_index, texture_id);
+
+	need_render_update_ = true;
 	return true;
 }
 
 void GEOAtlasRender::clear_quads()
 {
-	quad_list_.clear();
-	task_list_need_update_ = true;
+	vertex_list_.clear();
+	render_task_list_.clear();
+	need_render_update_ = true;
 }
 
 bool GEOAtlasRender::merge_quads()
@@ -327,12 +331,11 @@ bool GEOAtlasRender::draw_quads()
 
 void GEOAtlasRender::render( time_t delta )
 {
-	if (task_list_need_update_)
+	if (need_render_update_)
 	{
 		if (!init_render()) return;
 		if (!update_render()) return;
-		if (!update_render_task()) return;
-		task_list_need_update_ = false;
+		need_render_update_ = false;
 	}
 
 	draw_quads();

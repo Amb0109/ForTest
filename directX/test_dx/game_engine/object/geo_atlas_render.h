@@ -29,7 +29,7 @@ public:
 	static const DWORD DEFAULT_FVF_FORMAT;
 
 public:
-	virtual bool set_vertex_fvf(WORD fvf);
+	virtual bool set_vertex_fvf(DWORD fvf);
 	virtual bool set_vertex_decl(GE_VERTEX_DECL* vertex_decl);
 	virtual GE_VERTEX_DECL* get_vertex_decl();
 
@@ -42,7 +42,6 @@ public:
 
 	virtual bool init_render();
 	virtual bool update_render();
-	virtual bool update_render_task();
 	virtual void release_render();
 
 	virtual bool add_quad(GE_QUAD& quad);
@@ -61,14 +60,18 @@ protected:
 	virtual bool _set_verties(std::vector<GE_VERTEX>& vertex_array);
 	virtual bool _set_indices(std::vector<WORD>& index_array);
 
+	virtual bool _update_render_task(int quad_index, int texture_id);
+
 protected:
 	GE_VERTEX_DECL*			vertex_decl_;
 
 	typedef std::vector<GETexture*> TEXTURE_LIST;
 	TEXTURE_LIST			texture_list_;
 
-	typedef std::vector<GE_QUAD> QUAD_LIST;
-	QUAD_LIST				quad_list_;
+	bool					need_render_update_;
+
+	typedef std::vector<GE_VERTEX> VERTEX_LIST;
+	VERTEX_LIST				vertex_list_;
 
 	typedef struct _QUAD_RENDER_TASK
 	{
@@ -77,7 +80,6 @@ protected:
 		int			texture;
 	} QUAD_RENDER_TASK;
 
-	bool					task_list_need_update_;
 	typedef std::vector<QUAD_RENDER_TASK> QUAD_RENDER_TASK_LIST;	
 	QUAD_RENDER_TASK_LIST	render_task_list_;
 
