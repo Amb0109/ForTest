@@ -8,34 +8,51 @@
 namespace ge
 {
 
+typedef LPDIRECT3DVERTEXDECLARATION9 D3D_VERTEX_DECL;
+
+struct GE_API GE_VERTEX_DECL
+{
+	DWORD				fvf;
+	int					size;
+	D3D_VERTEX_DECL		decl;
+
+	GE_VERTEX_DECL() :fvf(NULL), size(0), decl(NULL) {}
+	bool is_valid()
+	{
+		if (fvf == NULL)	return false;
+		if (size <= 0)		return false;
+		if (decl == NULL)	return false;
+		return true;
+	}
+};
+
 class GE_API GEVertexDecl
 {
-public:
-	typedef IDirect3DVertexDeclaration9 D3D_VERTEX_DECL;
-
 public:
 	GEVertexDecl();
 	virtual ~GEVertexDecl();
 
 public:
-	bool				init(DWORD fvf);
-	void				destory();
+	static GEVertexDecl* get_instance();
 
-	int					get_vertex_size() { return vertex_size_; }
-	DWORD				get_vertex_fvf() { return vertex_fvf_; }
-	D3D_VERTEX_DECL*	get_d3d_vertex_decl() { return p_vertex_decl_; }
-	LPD3DVERTEXELEMENT9	get_vertex_element() { return vertex_element_; }
+public:
+	static GE_VERTEX_DECL* get_vertex_decl(DWORD fvf);
 
 protected:
-	void				_calc_vertex_element_array(int& array_pos, int& mem_size);
-	bool				_add_vertex_element(DWORD fvf_type, int& array_pos, int& mem_offset);
+	bool				_init_vertex_decl(GE_VERTEX_DECL* out_decl, DWORD fvf);
+	bool				_create_vertex_decl(DWORD fvf);
+	GE_VERTEX_DECL*		_get_vertex_decl(DWORD fvf);
+	void				_destory_vertex_decl(GE_VERTEX_DECL* out_decl);
+	void				_release_vertex_decl(DWORD fvf);
+
+	void				_calc_vertex_element_array(DWORD fvf, int& array_pos, int& mem_size);
+	bool				_add_vertex_element(DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset);
 
 private:
 	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
-	D3D_VERTEX_DECL*	p_vertex_decl_;
-	int					vertex_size_;
 
-	DWORD				vertex_fvf_;
+	typedef std::map<DWORD, GE_VERTEX_DECL*> VERTEX_DECL_MAP;
+	VERTEX_DECL_MAP		vertex_decl_map_;
 };
 
 class GE_API GE_VERTEX
@@ -45,7 +62,9 @@ public:
 	virtual ~GE_VERTEX();
 
 public:
-	bool			set_decl(GEVertexDecl* decl);
+	bool			set_fvf(DWORD fvf);
+	bool			set_decl(GE_VERTEX_DECL* decl);
+	GE_VERTEX_DECL*	get_decl();
 
 	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
 	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }
@@ -63,8 +82,7 @@ private:
 	D3DXVECTOR2			texcoords_;
 	D3DCOLOR			color_;
 
-	DWORD				vertex_fvf_;
-	int					vertex_size_;
+	GE_VERTEX_DECL*		decl_;
 };
 
 

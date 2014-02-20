@@ -70,7 +70,7 @@ bool GEEngine::init_engine()
 	d3d_present_param_.AutoDepthStencilFormat		= D3DFMT_D24X8;
 	d3d_present_param_.Flags						= D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 	d3d_present_param_.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-	d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;
+	d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_ONE;
 
 	h_res = p_d3d_->CreateDevice(D3DADAPTER_DEFAULT,
 		dev_type, p_ge_app_->get_wnd(), vertex_proc_type,
@@ -78,14 +78,14 @@ bool GEEngine::init_engine()
 
 	if (FAILED(h_res)) return false;
 
-	SAFE_RELEASE(p_d3d_);
+	D3D_RELEASE(p_d3d_);
 
 	return _init_render();
 }
 
 void GEEngine::close_engine()
 {
-	SAFE_RELEASE(p_d3d_device_);
+	D3D_RELEASE(p_d3d_device_);
 }
 
 bool GEEngine::_dx_begin_scene()

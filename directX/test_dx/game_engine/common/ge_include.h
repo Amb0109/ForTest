@@ -21,6 +21,7 @@
 #include <queue>
 #include <map>
 #include <set>
+#include <hash_map>
 
 // win api include
 #include <Windows.h>
@@ -35,7 +36,7 @@
 
 #define DEF_WND_STYLE ((WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX) | WS_CLIPCHILDREN | WS_VISIBLE)
 
-#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } } 
+#define D3D_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } } 
 
 #define RGBA(r, g, b, a)   ((D3DCOLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
 

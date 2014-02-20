@@ -23,8 +23,8 @@ bool GEREffect::create_from_file( const char* file_path )
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_device();
 	if(p_d3d_device == NULL) return false;
 
-	SAFE_RELEASE(p_fx_);
-	SAFE_RELEASE(p_err_msg_);
+	D3D_RELEASE(p_fx_);
+	D3D_RELEASE(p_err_msg_);
 	if (file_path == NULL) return false;
 
 	file_path_ = file_path;
@@ -75,8 +75,8 @@ void GEREffect::destory()
 {
 	file_path_.clear();
 
-	SAFE_RELEASE(p_fx_);
-	SAFE_RELEASE(p_err_msg_);
+	D3D_RELEASE(p_fx_);
+	D3D_RELEASE(p_err_msg_);
 
 	h_tech_main_ = NULL;
 }

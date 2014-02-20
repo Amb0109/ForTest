@@ -120,7 +120,7 @@ void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_
 
 	int img_width = 0;
 	int img_height = 0;
-	texture->get_texture_size(img_width, img_height);
+	texture->get_size(img_width, img_height);
 
 	float u1 = (float)text_char.img_pos_.x / img_width;
 	float v1 = (float)text_char.img_pos_.y / img_height;

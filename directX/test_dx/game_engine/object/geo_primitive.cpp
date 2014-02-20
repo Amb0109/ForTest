@@ -14,8 +14,6 @@ GEOPrimitive::GEOPrimitive()
 , vertex_cnt_(0)
 , d3d_index_buff_(NULL)
 , index_cnt_(0)
-, p_d3d_decl_(NULL)
-, vertex_size_(0)
 , d3d_texture_(NULL)
 {
 	GEObject::type_ = GEObjectType_Primitive;
@@ -26,43 +24,39 @@ GEOPrimitive::~GEOPrimitive()
 
 }
 
-bool GEOPrimitive::set_vertex_decl( GEVertexDecl* vertex_decl )
+bool GEOPrimitive::set_vertex_decl( GE_VERTEX_DECL* vertex_decl )
 {
-	if (vertex_decl == NULL) return false;
-
-	release_vertex_decl();
-
-	vertex_decl_ = *vertex_decl;
-	p_d3d_decl_ = vertex_decl->get_d3d_vertex_decl();
-	vertex_size_ = vertex_decl->get_vertex_size();
-
-	if (p_d3d_decl_ == NULL || vertex_size_ <= 0)
+	if (vertex_decl_ && vertex_decl->is_valid())
 	{
-		release_vertex_decl();
-		return false;
-	}
+		if (vertex_decl_ != vertex_decl)
+		{
+			vertex_decl_ = vertex_decl;
 
-	p_d3d_decl_->AddRef();
-	return true;
+			release_vetrix_buff();
+			release_index_buff();
+		}
+
+		return true;
+	}
+	return false;
 }
 
-void GEOPrimitive::release_vertex_decl()
+GE_VERTEX_DECL* GEOPrimitive::get_vertex_decl()
 {
-	SAFE_RELEASE(p_d3d_decl_);
-	vertex_size_ = 0;
+	return vertex_decl_;
 }
 
 bool GEOPrimitive::create_vetrix_buff( int vertex_cnt )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
-	if (vertex_size_ <= 0) return false;
+	if (!vertex_decl_->is_valid()) return false;
 
 	release_vetrix_buff();
 	if (vertex_cnt <= 0) return true;
 
 	HRESULT h_res = p_d3d_device->CreateVertexBuffer(
-		vertex_cnt * vertex_size_,
+		vertex_cnt * vertex_decl_->size,
 		D3DUSAGE_WRITEONLY,
 		NULL, // use decl
 		D3DPOOL_MANAGED,
@@ -115,22 +109,25 @@ bool GEOPrimitive::set_vertices( GE_VERTEX* vertex_array, int offset, int vertex
 	if (vertex_array == NULL) return false;
 	if ( offset + vertex_cnt > vertex_cnt_) return false;
 
+	int vertex_size = vertex_decl_->size;
+	if (vertex_size <= 0) return false;
+
 	char* vertex_buff = NULL;
 	HRESULT h_res = d3d_vertex_buff_->Lock(
-		offset * vertex_size_,
-		vertex_cnt * vertex_size_,
+		offset * vertex_size,
+		vertex_cnt * vertex_size,
 		(void**)&vertex_buff, 0);
 	for (int i=0; i < vertex_cnt; ++i)
 	{
 		bool b_ret = true;
-		b_ret = vertex_array[i].pack(vertex_buff, vertex_size_);
+		b_ret = vertex_array[i].pack(vertex_buff, vertex_size);
 		if (!b_ret)
 		{
 			b_ret = false;
 			break;
 		}
 
-		vertex_buff += vertex_size_;
+		vertex_buff += vertex_size;
 	}
 	d3d_vertex_buff_->Unlock();
 	return true;
@@ -156,19 +153,19 @@ bool GEOPrimitive::set_indices( WORD* index_array, int offset, int index_cnt )
 
 void GEOPrimitive::release_vetrix_buff()
 {
-	SAFE_RELEASE(d3d_vertex_buff_);
+	D3D_RELEASE(d3d_vertex_buff_);
 	vertex_cnt_ = 0;
 }
 
 void GEOPrimitive::release_index_buff()
 {
-	SAFE_RELEASE(d3d_index_buff_);
+	D3D_RELEASE(d3d_index_buff_);
 	index_cnt_ = 0;
 }
 
 void GEOPrimitive::release_texture()
 {
-	SAFE_RELEASE(d3d_texture_);
+	D3D_RELEASE(d3d_texture_);
 	memset(&texture_desc_, 0, sizeof(D3DSURFACE_DESC));
 }
 
@@ -188,8 +185,6 @@ void GEOPrimitive::release()
 	release_vetrix_buff();
 	release_index_buff();
 
-	release_vertex_decl();
-
 	release_texture();
 }
 
@@ -202,25 +197,26 @@ void GEOPrimitive::render( time_t delta )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
-	if (p_d3d_decl_ == NULL) return;
+	
+	if (vertex_decl_ == NULL) return;
+	if (!vertex_decl_->is_valid()) return;
 
 	if (d3d_vertex_buff_ == NULL) return;
-	if (vertex_size_ <= 0) return;
 
 	p_d3d_device->SetTexture(0, d3d_texture_);
 
 	HRESULT h_res = S_OK;
 	if (d3d_index_buff_ == NULL)
 	{
-		h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);
-		h_res = p_d3d_device->SetVertexDeclaration(p_d3d_decl_);
+		h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_decl_->size);
+		h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_->decl);
 		p_d3d_device->DrawPrimitive(D3DPT_TRIANGLELIST, draw_primitive_start_, draw_primitive_cnt_);
 	}
 	else
 	{
-		h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_size_);
+		h_res = p_d3d_device->SetStreamSource(0, d3d_vertex_buff_, 0, vertex_decl_->size);
 		h_res = p_d3d_device->SetIndices(d3d_index_buff_);
-		h_res = p_d3d_device->SetVertexDeclaration(p_d3d_decl_);
+		h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_->decl);
 		h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
 			0,						// BaseVertexIndex
 			0,						// MinVertexIndex
@@ -246,11 +242,6 @@ int GEOPrimitive::get_vertex_buff_size()
 int GEOPrimitive::get_index_buff_size()
 {
 	return index_cnt_;
-}
-
-GEVertexDecl* GEOPrimitive::get_vertex_decl()
-{
-	return &vertex_decl_;
 }
 
 

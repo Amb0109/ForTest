@@ -20,14 +20,17 @@ GEOMesh::~GEOMesh()
 	destory();
 }
 
-bool GEOMesh::create_mesh( GEVertexDecl* vertex_decl, int vertex_cnt, int face_cnt )
+bool GEOMesh::create_mesh( GE_VERTEX_DECL* vertex_decl, int vertex_cnt, int face_cnt )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_device();
 	if (p_d3d_device == NULL) return false;
 
 	if (vertex_decl == NULL) return false;
-	LPD3DVERTEXELEMENT9 vertex_element = vertex_decl->get_vertex_element();
-	vertex_size_ = vertex_decl->get_vertex_size();
+	if (!vertex_decl->is_valid()) return false;
+
+	D3DVERTEXELEMENT9 vertex_element[MAX_FVF_DECL_SIZE];
+	D3DXDeclaratorFromFVF(vertex_decl->fvf, vertex_element);
+	vertex_size_ = vertex_decl->size;
 	if (vertex_size_ <= 0) return false;
 
 	vertex_cnt_ = vertex_cnt;
@@ -146,7 +149,7 @@ bool GEOMesh::init()
 
 void GEOMesh::destory()
 {
-	SAFE_RELEASE(p_mesh_);
+	D3D_RELEASE(p_mesh_);
 	p_effect_ = NULL;
 	
 	vertex_cnt_		= 0;

@@ -63,8 +63,8 @@ bool GEOSpine::init()
 	p_animation_state_ = spAnimationState_create(p_animation_state_data_);
 	spAnimationState_setAnimationByName(p_animation_state_, 0, "walk", true);
 
-	vertex_decl_.init(D3DFVF_XYZ | D3DFVF_TEX1);
-	bone_vertex_decl_.init(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+	vertex_decl_ = GEVertexDecl::get_vertex_decl(D3DFVF_XYZ | D3DFVF_TEX1);
+	bone_vertex_decl_ = GEVertexDecl::get_vertex_decl(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 	
 	transform_.py = -100;
 
@@ -150,7 +150,7 @@ void GEOSpine::_do_render()
 			for (int ii=0; ii<4; ++ii)
 			{
 				GE_VERTEX vertex;
-				vertex.set_decl(&vertex_decl_);
+				vertex.set_decl(vertex_decl_);
 				vertex.set_position(D3DXVECTOR3(verties[ii<<1], verties[ii<<1|1], 0.f));
 				vertex.set_texcoords(D3DXVECTOR2(uvs[ii<<1], uvs[ii<<1|1]));
 				vertex_buff[vertex_offset + ii] = vertex;
@@ -170,7 +170,7 @@ void GEOSpine::_do_render()
 
 	if (render_object->get_vertex_buff_size() <= 0)
 	{
-		render_object->set_vertex_decl(&vertex_decl_);
+		render_object->set_vertex_decl(vertex_decl_);
 		render_object->create_vetrix_buff(slot_cnt * 4);
 		render_object->create_index_buff(slot_cnt * 6);
 	}
@@ -221,7 +221,7 @@ void GEOSpine::_do_bone_render()
 
 		int vertex_offset = render_bone_cnt * 3;
 		GE_VERTEX vertex;
-		vertex.set_decl(&bone_vertex_decl_);
+		vertex.set_decl(bone_vertex_decl_);
 		vertex.set_color(D3DXCOLOR(0xffffffff));
 
 		vertex.set_position(D3DXVECTOR3(vlx, vly, 0.f));
@@ -238,7 +238,7 @@ void GEOSpine::_do_bone_render()
 
 	if (bone_mesh_.get_vertex_buff_size() <= 0)
 	{
-		bone_mesh_.set_vertex_decl(&bone_vertex_decl_);
+		bone_mesh_.set_vertex_decl(bone_vertex_decl_);
 		bone_mesh_.create_vetrix_buff(slot_cnt * 3);
 	}
 

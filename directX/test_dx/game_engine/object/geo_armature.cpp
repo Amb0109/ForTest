@@ -63,9 +63,8 @@ bool CCTextureAtlas::initTexture( const char* texturePath )
 	render_object = ge::GEOPrimitive::create();
 	if (render_object == NULL) return false;
 
-	ge::GEVertexDecl vertex_decl;
-	vertex_decl.init(CC_VERTEX_FVF);
-	render_object->set_vertex_decl(&vertex_decl);
+	ge::GE_VERTEX_DECL* vertex_decl = ge::GEVertexDecl::get_vertex_decl(CC_VERTEX_FVF);
+	render_object->set_vertex_decl(vertex_decl);
 
 	bool ret = render_object->create_texture(texturePath);
 	if (!ret) return false;

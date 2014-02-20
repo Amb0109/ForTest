@@ -16,9 +16,6 @@ class GE_API GEOSpine : public GEObject
 {
 	DLL_MANAGE_CLASS(GEOSpine);
 
-protected:
-	typedef GEVertexDecl::D3D_VERTEX_DECL _D3D_VERTEX_DECL;
-
 public:
 	GEOSpine();
 	virtual ~GEOSpine();
@@ -44,11 +41,11 @@ private:
 	spAnimationStateData*	p_animation_state_data_;
 
 	GEOPrimitive			mesh_;
-	GEVertexDecl			vertex_decl_;
+	GE_VERTEX_DECL*			vertex_decl_;
 
 	bool					draw_bone_mesh_;
 	GEOPrimitive			bone_mesh_;
-	GEVertexDecl			bone_vertex_decl_;
+	GE_VERTEX_DECL*			bone_vertex_decl_;
 };
 
 } // namespace ge

@@ -14,7 +14,6 @@ GEOAtlasRender::GEOAtlasRender()
 , dx_index_buff_(NULL)
 , dx_quads_cnt_(0)
 , vertex_decl_()
-, vertex_size_(0)
 , texture_list_()
 , quad_list_()
 {
@@ -33,45 +32,31 @@ bool GEOAtlasRender::init()
 
 void GEOAtlasRender::release()
 {
-	release_vertex_decl();
 	release_all_texture();
 	release_render();
+
+	vertex_decl_ = NULL;
 }
 
 bool GEOAtlasRender::set_vertex_fvf( WORD fvf )
 {
-	release_vertex_decl();
-	if(!vertex_decl_.init(fvf)) return false;
-	vertex_size_ = vertex_decl_.get_vertex_size();
-	return true;
+	return set_vertex_decl(GEVertexDecl::get_vertex_decl(fvf));
 }
 
-bool GEOAtlasRender::set_vertex_decl( GEVertexDecl* vertex_decl )
+bool GEOAtlasRender::set_vertex_decl( GE_VERTEX_DECL* vertex_decl )
 {
 	if (vertex_decl == NULL) return false;
+	if (!vertex_decl->is_valid()) return false;
 
-	release_vertex_decl();
+	vertex_decl_ = vertex_decl;
 
-	vertex_decl_ = *vertex_decl;
-	vertex_size_ = vertex_decl->get_vertex_size();
-
-	if (vertex_decl_.get_d3d_vertex_decl() || vertex_size_ <= 0)
-	{
-		release_vertex_decl();
-		return false;
-	}
 	release_render();
 	return true;
 }
 
-void GEOAtlasRender::release_vertex_decl()
+GE_VERTEX_DECL* GEOAtlasRender::get_vertex_decl()
 {
-	vertex_decl_.destory();
-}
-
-GEVertexDecl* GEOAtlasRender::get_vertex_decl()
-{
-	return &vertex_decl_;
+	return vertex_decl_;
 }
 
 int GEOAtlasRender::add_texture()
@@ -134,6 +119,9 @@ bool GEOAtlasRender::init_render()
 		LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 		if (p_d3d_device == NULL) return false;
 
+		if (vertex_decl_ == NULL) return false;
+		if (!vertex_decl_->is_valid()) return false;
+
 		int quads_cnt = (int)quad_list_.size();
 		
 		HRESULT h_res = S_OK;
@@ -141,7 +129,7 @@ bool GEOAtlasRender::init_render()
 		indices.resize(quads_cnt * 6);
 
 		h_res = p_d3d_device->CreateVertexBuffer(
-			quads_cnt * 4 * vertex_size_,
+			quads_cnt * 4 * vertex_decl_->size,
 			D3DUSAGE_WRITEONLY,
 			NULL,
 			D3DPOOL_MANAGED,
@@ -232,24 +220,28 @@ bool GEOAtlasRender::_set_verties( std::vector<GE_VERTEX>& vertex_array )
 {
 	if (dx_vertex_buff_ == NULL) return false;
 
+	if (vertex_decl_ == NULL) return false;
+	if (!vertex_decl_->is_valid()) return false;
+
 	int vertex_cnt = (int)vertex_array.size();
 	if ( vertex_cnt > dx_quads_cnt_ * 4) return false;
 
 	char* vertex_buff = NULL;
 	HRESULT h_res = dx_vertex_buff_->Lock(
-		0, vertex_cnt * vertex_size_, (void**)&vertex_buff, 0);
+		0, vertex_cnt * vertex_decl_->size,
+		(void**)&vertex_buff, 0);
 
 	for (int i=0; i < vertex_cnt; ++i)
 	{
 		bool b_ret = true;
-		b_ret = vertex_array[i].pack(vertex_buff, vertex_size_);
+		b_ret = vertex_array[i].pack(vertex_buff, vertex_decl_->size);
 		if (!b_ret)
 		{
 			b_ret = false;
 			break;
 		}
 
-		vertex_buff += vertex_size_;
+		vertex_buff += vertex_decl_->size;
 	}
 
 	dx_vertex_buff_->Unlock();
@@ -275,8 +267,8 @@ bool GEOAtlasRender::_set_indices( std::vector<WORD>& index_array )
 
 void GEOAtlasRender::release_render()
 {
-	SAFE_RELEASE(dx_vertex_buff_);
-	SAFE_RELEASE(dx_index_buff_);
+	D3D_RELEASE(dx_vertex_buff_);
+	D3D_RELEASE(dx_index_buff_);
 	dx_quads_cnt_ = 0;
 	task_list_need_update_ = true;
 }
@@ -304,12 +296,15 @@ bool GEOAtlasRender::draw_quads()
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
+	if (vertex_decl_ == NULL) return false;
+	if (!vertex_decl_->is_valid()) return false;
+
 	HRESULT h_res = S_OK;
-	h_res = p_d3d_device->SetStreamSource(0, dx_vertex_buff_, 0, vertex_size_);
+	h_res = p_d3d_device->SetStreamSource(0, dx_vertex_buff_, 0, vertex_decl_->size);
 	assert(SUCCEEDED(h_res));
 	h_res = p_d3d_device->SetIndices(dx_index_buff_);
 	assert(SUCCEEDED(h_res));
-	h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_.get_d3d_vertex_decl());
+	h_res = p_d3d_device->SetVertexDeclaration(vertex_decl_->decl);
 	assert(SUCCEEDED(h_res));
 
 	FOR_EACH (QUAD_RENDER_TASK_LIST, render_task_list_, task)

@@ -5,64 +5,74 @@ namespace ge
 {
 
 GEVertexDecl::GEVertexDecl()
-:p_vertex_decl_(NULL),
-vertex_size_(0),
-vertex_fvf_(0)
+: vertex_decl_map_()
 {
-	init(0);
 }
 
 GEVertexDecl::~GEVertexDecl()
 {
-	destory();
+	FOR_EACH (VERTEX_DECL_MAP, vertex_decl_map_, decl_itor)
+	{
+		_destory_vertex_decl(decl_itor->second);
+		delete vertex_decl_map_[decl_itor->first];
+		vertex_decl_map_[decl_itor->first] = NULL;
+	}
+	vertex_decl_map_.clear();
 }
 
-void GEVertexDecl::destory()
+GEVertexDecl* GEVertexDecl::get_instance()
 {
-	SAFE_RELEASE(p_vertex_decl_);
-	vertex_size_ = 0;
-	vertex_fvf_ = 0;
+	static GEVertexDecl _global_ge_vertex_decl;
+	return &_global_ge_vertex_decl;
 }
 
-bool GEVertexDecl::init( DWORD fvf )
+bool GEVertexDecl::_init_vertex_decl( GE_VERTEX_DECL* out_decl, DWORD fvf )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
 
-	vertex_fvf_ = fvf;
+	_destory_vertex_decl(out_decl);
+
+	out_decl->fvf = fvf;
 
 	int element_array_pos = 0;
 	int vertex_buff_size = 0;
-	_calc_vertex_element_array(element_array_pos, vertex_buff_size);
-	vertex_size_ = vertex_buff_size;
+	_calc_vertex_element_array(fvf, element_array_pos, vertex_buff_size);
+	out_decl->size = vertex_buff_size;
 
 	HRESULT h_res = S_OK;
-	SAFE_RELEASE(p_vertex_decl_);
-	h_res = p_d3d_device->CreateVertexDeclaration(vertex_element_, &p_vertex_decl_);
-
+	h_res = p_d3d_device->CreateVertexDeclaration(vertex_element_, &(out_decl->decl));
 	assert(SUCCEEDED(h_res));
+
 	return SUCCEEDED(h_res);
 }
 
-void GEVertexDecl::_calc_vertex_element_array( int& array_pos, int& mem_size )
+void GEVertexDecl::_destory_vertex_decl( GE_VERTEX_DECL* out_decl )
+{
+	D3D_RELEASE((out_decl->decl));
+	out_decl->fvf = NULL;
+	out_decl->size = 0;
+}
+
+void GEVertexDecl::_calc_vertex_element_array( DWORD fvf, int& array_pos, int& mem_size )
 {
 	array_pos = -1;
 	mem_size = 0;
 
 	ZeroMemory(vertex_element_, sizeof(vertex_element_));
-	_add_vertex_element(D3DFVF_XYZ, array_pos, mem_size);
-	_add_vertex_element(D3DFVF_NORMAL, array_pos, mem_size);
-	_add_vertex_element(D3DFVF_TEXCOUNT_MASK, array_pos, mem_size);
-	_add_vertex_element(D3DFVF_DIFFUSE, array_pos, mem_size);
-	_add_vertex_element(NULL, array_pos, mem_size);
+	_add_vertex_element(fvf, D3DFVF_XYZ, array_pos, mem_size);
+	_add_vertex_element(fvf, D3DFVF_NORMAL, array_pos, mem_size);
+	_add_vertex_element(fvf, D3DFVF_TEXCOUNT_MASK, array_pos, mem_size);
+	_add_vertex_element(fvf, D3DFVF_DIFFUSE, array_pos, mem_size);
+	_add_vertex_element(fvf, NULL, array_pos, mem_size);
 }
 
-bool GEVertexDecl::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem_offset )
+bool GEVertexDecl::_add_vertex_element( DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset )
 {
-	if (fvf_type != NULL && !(vertex_fvf_ & fvf_type)) return false;
+	if (add_fvf != NULL && !(fvf & add_fvf)) return false;
 	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
 
-	switch (fvf_type)
+	switch (add_fvf)
 	{
 	case D3DFVF_XYZ:
 		{
@@ -108,7 +118,7 @@ bool GEVertexDecl::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem
 			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
 			vertex_element_[array_pos].Type		= D3DDECLTYPE_FLOAT2;
 			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_TEXCOORD;
-			vertex_element_[array_pos].UsageIndex = BYTE(((fvf_type & vertex_fvf_) >> D3DFVF_TEXCOUNT_SHIFT) - 1);
+			vertex_element_[array_pos].UsageIndex = BYTE(((add_fvf & fvf) >> D3DFVF_TEXCOUNT_SHIFT) - 1);
 			mem_offset += sizeof(float) * 2;
 		}
 		break;
@@ -128,12 +138,41 @@ bool GEVertexDecl::_add_vertex_element( DWORD fvf_type, int& array_pos, int& mem
 	return true;
 }
 
+bool GEVertexDecl::_create_vertex_decl( DWORD fvf )
+{
+	if (vertex_decl_map_.find(fvf) != vertex_decl_map_.end()) return true;
+	vertex_decl_map_[fvf] = new GE_VERTEX_DECL;
+	return _init_vertex_decl(vertex_decl_map_[fvf], fvf);
+}
+
+void GEVertexDecl::_release_vertex_decl( DWORD fvf )
+{
+	if (vertex_decl_map_.find(fvf) == vertex_decl_map_.end()) return;
+	_destory_vertex_decl(vertex_decl_map_[fvf]);
+	delete vertex_decl_map_[fvf];
+}
+
+GE_VERTEX_DECL* GEVertexDecl::_get_vertex_decl( DWORD fvf )
+{
+	if (vertex_decl_map_.find(fvf) == vertex_decl_map_.end()) return NULL;
+	return vertex_decl_map_[fvf];
+}
+
+GE_VERTEX_DECL* GEVertexDecl::get_vertex_decl( DWORD fvf )
+{
+	GEVertexDecl* vertex_decl = GEVertexDecl::get_instance();
+	if (!vertex_decl->_create_vertex_decl(fvf)) return false;
+	return vertex_decl->_get_vertex_decl(fvf);
+}
+
 
 
 GE_VERTEX::GE_VERTEX()
-:position_(0.f, 0.f, 0.f), normal_(0.f, 0.f, 0.f),
-texcoords_(0.f, 0.f), color_(0xffffffff),
-vertex_fvf_(0), vertex_size_(0)
+: position_(0.f, 0.f, 0.f)
+, normal_(0.f, 0.f, 0.f)
+, texcoords_(0.f, 0.f)
+, color_(0xffffffff)
+, decl_(NULL)
 {
 }
 
@@ -142,56 +181,62 @@ GE_VERTEX::~GE_VERTEX()
 
 }
 
-bool GE_VERTEX::set_decl( GEVertexDecl* decl )
+bool GE_VERTEX::set_fvf( DWORD fvf )
+{
+	return set_decl(GEVertexDecl::get_vertex_decl(fvf));
+}
+
+bool GE_VERTEX::set_decl( GE_VERTEX_DECL* decl )
 {
 	if (decl == NULL) return false;
-	vertex_fvf_ = decl->get_vertex_fvf();
-	vertex_size_ = decl->get_vertex_size();
-	if (vertex_fvf_ <= 0 || vertex_size_ <= 0)
-	{
-		vertex_size_ = 0;
-		vertex_fvf_ = 0;
-		return false;
-	}
+	if (!decl->is_valid()) return false;
+	decl_ = decl;
 	return true;
+}
+
+GE_VERTEX_DECL* GE_VERTEX::get_decl()
+{
+	return decl_;
 }
 
 bool GE_VERTEX::pack( void* mem_buff, int size )
 {
 	if (mem_buff == NULL) return false;
 
-	if(vertex_size_ <= 0 || vertex_fvf_ <= 0) return false;
-	if(vertex_size_ != size) return false;
+	if (decl_ == NULL) return false;
+	if (!decl_->is_valid()) return false;
+
+	if(decl_->size != size) return false;
 
 	int buff_offset = 0;
 	memset(mem_buff, 0, size);
-	if (vertex_fvf_ & D3DFVF_XYZ)
+	if (decl_->fvf & D3DFVF_XYZ)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(position_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(position_.y), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(position_.z), sizeof(float));
 	}
 
-	if (vertex_fvf_ & D3DFVF_NORMAL)
+	if (decl_->fvf & D3DFVF_NORMAL)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.y), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(normal_.z), sizeof(float));
 	}
 
-	if (vertex_fvf_ & D3DFVF_TEXCOUNT_MASK)
+	if (decl_->fvf & D3DFVF_TEXCOUNT_MASK)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.x), sizeof(float));
 		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.y), sizeof(float));
 	}
 
-	if (vertex_fvf_ & D3DFVF_DIFFUSE)
+	if (decl_->fvf & D3DFVF_DIFFUSE)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(color_), sizeof(D3DCOLOR));
 	}
 
-	assert(buff_offset == vertex_size_);
-	if (buff_offset != vertex_size_) return false;
+	assert(buff_offset == decl_->size);
+	if (buff_offset != decl_->size) return false;
 	return true;
 }
 

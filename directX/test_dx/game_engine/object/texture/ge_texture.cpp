@@ -1,5 +1,6 @@
 #include "ge_texture.h"
 #include "../../common/ge_engine.h"
+#include "../../utility/geu_gmath.h"
 
 namespace ge
 {
@@ -8,9 +9,7 @@ DLL_MANAGE_CLASS_IMPLEMENT(GETexture);
 
 GETexture::GETexture()
 : d3d_texture_(NULL)
-, d3d_surface_(NULL)
 {
-	ZeroMemory(&texture_desc_, sizeof(D3DSURFACE_DESC));
 }
 
 GETexture::~GETexture()
@@ -46,8 +45,10 @@ bool GETexture::init( const char* texture_path )
 	if (FAILED(h_res) || d3d_texture_ == NULL) return false;
 
 	texture_key_ = texture_path;
+	
+	d3d_surface_ = NULL;
 	d3d_texture_->GetSurfaceLevel(0, &d3d_surface_);
-	d3d_texture_->GetLevelDesc(0, &texture_desc_);
+	d3d_texture_->GetLevelDesc(0, &surface_desc_);
 	return true;
 }
 
@@ -74,15 +75,14 @@ bool GETexture::init( int width, int height, D3DFORMAT format/* = D3DFMT_UNKNOWN
 
 	texture_key_ = "$$";
 	d3d_texture_->GetSurfaceLevel(0, &d3d_surface_);
-	d3d_texture_->GetLevelDesc(0, &texture_desc_);
+	d3d_texture_->GetLevelDesc(0, &surface_desc_);
 	return true;
 }
 
 void GETexture::destory()
 {
-	SAFE_RELEASE(d3d_surface_);
-	SAFE_RELEASE(d3d_texture_);
-	ZeroMemory(&texture_desc_, sizeof(D3DSURFACE_DESC));
+	GESurface::destory();
+	D3D_RELEASE(d3d_texture_);
 }
 
 bool GETexture::use_texture()
@@ -105,36 +105,14 @@ bool GETexture::use_null_texture()
 	return true;
 }
 
-void GETexture::get_texture_size( int& width, int& height )
-{
-	width = texture_desc_.Width;
-	height = texture_desc_.Height;
-}
-
 const char* GETexture::get_key()
 {
 	return texture_key_.c_str();
 }
 
-LPDIRECT3DSURFACE9 GETexture::get_surface()
+LPDIRECT3DTEXTURE9 GETexture::get_d3d_texture()
 {
-	return d3d_surface_;
+	return d3d_texture_;
 }
-
-bool GETexture::begin_dc( HDC& h_dc )
-{
-	if (d3d_surface_ == NULL) return false;
-	return SUCCEEDED(d3d_surface_->GetDC(&h_dc));
-}
-
-bool GETexture::end_dc( HDC& h_dc )
-{
-	if (d3d_surface_ == NULL) return false;
-	HRESULT h_res = d3d_surface_->ReleaseDC(h_dc);
-	if (FAILED(h_res)) return false;
-	h_dc = NULL;
-	return true;
-}
-
 
 }

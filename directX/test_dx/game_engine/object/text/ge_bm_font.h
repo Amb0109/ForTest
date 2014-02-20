@@ -4,7 +4,6 @@
 #include "../../common/ge_include.h"
 #include "geo_text.h"
 #include <string>
-#include <hash_map>
 
 namespace ge
 {

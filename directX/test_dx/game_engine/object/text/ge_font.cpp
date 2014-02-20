@@ -75,7 +75,7 @@ bool GED3DXFont::_init_font()
 
 void GED3DXFont::destory()
 {
-	SAFE_RELEASE(d3dx_font_)
+	D3D_RELEASE(d3dx_font_)
 }
 
 

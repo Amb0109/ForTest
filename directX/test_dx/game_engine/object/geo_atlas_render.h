@@ -30,9 +30,8 @@ public:
 
 public:
 	virtual bool set_vertex_fvf(WORD fvf);
-	virtual bool set_vertex_decl(GEVertexDecl* vertex_decl);
-	virtual GEVertexDecl* get_vertex_decl();
-	virtual void release_vertex_decl();
+	virtual bool set_vertex_decl(GE_VERTEX_DECL* vertex_decl);
+	virtual GE_VERTEX_DECL* get_vertex_decl();
 
 	virtual int add_texture();
 	virtual int add_texture(const char* texture_path);
@@ -63,8 +62,7 @@ protected:
 	virtual bool _set_indices(std::vector<WORD>& index_array);
 
 protected:
-	GEVertexDecl			vertex_decl_;
-	int						vertex_size_;
+	GE_VERTEX_DECL*			vertex_decl_;
 
 	typedef std::vector<GETexture*> TEXTURE_LIST;
 	TEXTURE_LIST			texture_list_;

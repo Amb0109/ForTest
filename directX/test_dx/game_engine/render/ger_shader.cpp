@@ -37,10 +37,10 @@ void GERShader::destory()
 {
 	file_path_.clear();
 
-	SAFE_RELEASE(p_shader_buff_);
-	SAFE_RELEASE(p_error_message_);
-	SAFE_RELEASE(p_constent_table_);
-	SAFE_RELEASE(p_shader_);
+	D3D_RELEASE(p_shader_buff_);
+	D3D_RELEASE(p_error_message_);
+	D3D_RELEASE(p_constent_table_);
+	D3D_RELEASE(p_shader_);
 }
 
 const char* GERShader::get_compile_error()

@@ -103,6 +103,7 @@
     </ClCompile>
     <ClCompile Include="object\geo_primitive.cpp" />
     <ClCompile Include="object\geo_spine.cpp" />
+    <ClCompile Include="object\texture\ge_surface.cpp" />
     <ClCompile Include="object\text\geo_text_gdi.cpp" />
     <ClCompile Include="object\text\ge_bm_font.cpp" />
     <ClCompile Include="object\text\ge_font.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="object\geo_mesh.h" />
     <ClInclude Include="object\geo_primitive.h" />
     <ClInclude Include="object\geo_spine.h" />
+    <ClInclude Include="object\texture\ge_surface.h" />
     <ClInclude Include="object\text\geo_text_gdi.h" />
     <ClInclude Include="object\text\ge_bm_font.h" />
     <ClInclude Include="object\text\ge_font.h" />

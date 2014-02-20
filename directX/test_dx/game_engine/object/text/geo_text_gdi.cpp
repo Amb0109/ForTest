@@ -184,7 +184,7 @@ bool GEOTextGDI::update_text()
 	GE_IRECT rect = rect_;
 	rect.move_to(0, 0);
 
-	HBRUSH h_brush = CreateSolidBrush(RGB(127, 127, 127));
+	HBRUSH h_brush = CreateSolidBrush(RGB(0, 0, 0));
 	FillRect(h_dc_, &rect, h_brush);
 	DeleteObject(h_brush);
 
@@ -192,7 +192,7 @@ bool GEOTextGDI::update_text()
 	SetTextColor(h_dc_, RGB(255, 255, 255)); // white color
 
 	// draw text
-	bool ret = true;
+	int ret = 0;
 	ret = DrawText(h_dc_,
 		text_.c_str(), text_.length(),
 		&rect, text_style_.format);
@@ -203,7 +203,7 @@ bool GEOTextGDI::update_text()
 	render_object_->get_texture()->end_dc(h_dc_);
 
 	need_update_text_ = false;
-	return ret;
+	return ret != 0;
 }
 
 bool GEOTextGDI::update_text_ex()
@@ -214,36 +214,45 @@ bool GEOTextGDI::update_text_ex()
 	HFONT h_font = font_obj->get_gdi_obj();
 	if (h_font == NULL) return false;
 
+	GETexture* texture = render_object_->get_texture();
+	if (texture == NULL) return false;
+
+	texture->begin_dc(h_dc_);
+
 	bool ret = true;
-	render_object_->get_texture()->begin_dc(h_dc_);
 
 	std::wstring wtext(text_.begin(), text_.end());
 
 	Gdiplus::Graphics* panel = Gdiplus::Graphics::FromHDC(h_dc_);
-	Gdiplus::SolidBrush brush(Gdiplus::Color((Gdiplus::ARGB)0xffffffff));
-	Gdiplus::Font font(h_dc_, h_font);
 
-	Gdiplus::StringFormat formatx;
-	formatx.SetAlignment(Gdiplus::StringAlignmentNear);
+	if (panel)
+	{
+		Gdiplus::SolidBrush brush(Gdiplus::Color((Gdiplus::ARGB)0xffffffff));
+		Gdiplus::Font font(h_dc_, h_font);
 
-	GE_IRECT rect = rect_; rect.move_to(0, 0);
-	Gdiplus::RectF rectf((Gdiplus::REAL)rect.left, (Gdiplus::REAL)rect.top,
-		(Gdiplus::REAL)rect.width(), (Gdiplus::REAL)rect.height());
+		Gdiplus::StringFormat format;
+		format.SetAlignment(Gdiplus::StringAlignmentNear);
 
-	panel->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-	panel->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
-	panel->SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAliasGridFit);
-	panel->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
+		GE_IRECT rect = rect_; rect.move_to(0, 0);
+		Gdiplus::RectF rectf((Gdiplus::REAL)rect.left, (Gdiplus::REAL)rect.top,
+			(Gdiplus::REAL)rect.width(), (Gdiplus::REAL)rect.height());
 
-	// clean
-	panel->Clear(Gdiplus::Color((Gdiplus::ARGB)0x00000000));
-	// draw
-	panel->DrawString(
-		wtext.c_str(), -1,
-		&font, rectf, &formatx, &brush);
+		panel->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		panel->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
+		panel->SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAliasGridFit);
+		panel->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
 
-	delete panel;
-	render_object_->get_texture()->end_dc(h_dc_);
+		// clean
+		panel->Clear(Gdiplus::Color::Transparent);
+		// draw
+		Gdiplus::Status gdi_ret = panel->DrawString(
+			wtext.c_str(), -1,
+			&font, rectf, &format, &brush);
+
+		delete panel;
+	}
+
+	texture->end_dc(h_dc_);
 	need_update_text_ = false;
 	return ret;
 }
