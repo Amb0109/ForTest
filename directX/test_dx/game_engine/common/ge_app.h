@@ -39,6 +39,8 @@ public:
 	bool		show_console(bool is_show);
 	bool		get_console_show()	{ return is_console_show_; }
 	
+	bool		on_resize();
+
 protected:
 	bool		_calc_mid_wnd_pos(GE_IRECT& wnd_rect);
 	void		_update_time();

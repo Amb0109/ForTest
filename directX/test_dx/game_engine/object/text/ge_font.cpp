@@ -1,5 +1,4 @@
 #include "ge_font.h"
-#include "../../common/ge_engine.h"
 #include "ge_bm_font.h"
 
 namespace ge
@@ -44,10 +43,13 @@ GED3DXFont::GED3DXFont()
 : d3dx_font_(NULL)
 {
 	type_ = FontType_D3DXFont;
+	GEEngine::get_instance()->register_device_object(this);
 }
 
 GED3DXFont::~GED3DXFont()
 {
+	destory();
+	GEEngine::get_instance()->unregister_device_object(this);
 }
 
 LPD3DXFONT GED3DXFont::get_d3dx_obj()
@@ -76,6 +78,22 @@ bool GED3DXFont::_init_font()
 void GED3DXFont::destory()
 {
 	D3D_RELEASE(d3dx_font_)
+}
+
+void GED3DXFont::on_lost_device()
+{
+	if(d3dx_font_)
+	{
+		d3dx_font_->OnLostDevice();
+	}
+}
+
+void GED3DXFont::on_reset_device()
+{
+	if(d3dx_font_)
+	{
+		d3dx_font_->OnResetDevice();
+	}
 }
 
 

@@ -6,6 +6,13 @@
 namespace ge
 {
 
+class GE_API GED3DDeviceObject
+{
+public:
+	virtual void on_lost_device() = 0;
+	virtual void on_reset_device() = 0;
+};
+
 class GERender;
 class GEFontManager;
 
@@ -24,6 +31,11 @@ public:
 
 	virtual void process(time_t delta);
 
+	virtual void register_device_object(GED3DDeviceObject*);
+	virtual void unregister_device_object(GED3DDeviceObject*);
+
+	virtual bool set_resolution(int width, int height);
+
 protected:
 	virtual bool _init_render();
 
@@ -31,6 +43,10 @@ protected:
 	virtual bool _dx_end_scene();
 	virtual bool _dx_clear();
 	virtual bool _dx_present();
+	
+	virtual bool _dx_check();
+	virtual void _on_lost_device();
+	virtual void _on_reset_device();
 	virtual bool _dx_reset();
 
 private:
@@ -39,7 +55,9 @@ private:
 	D3DPRESENT_PARAMETERS	d3d_present_param_;
 
 	GERender*				p_ge_render_;
-	GEFontManager*			p_font_manager_;
+
+	typedef std::set<GED3DDeviceObject*> DEVICE_OBJECT_SET;
+	DEVICE_OBJECT_SET		device_object_set_;
 };
 
 } // namespace ge

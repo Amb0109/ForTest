@@ -3,6 +3,7 @@
 
 #include "../../common/ge_include.h"
 #include "../../utility/geu_gmath.h"
+#include "../../common/ge_engine.h"
 
 namespace ge
 {
@@ -41,11 +42,14 @@ public:
 	bool		strikeout_;
 };
 
-class GE_API GED3DXFont : public GEFont
+class GE_API GED3DXFont : public GEFont, GED3DDeviceObject
 {
 public:
 	GED3DXFont();
 	virtual ~GED3DXFont();
+
+	virtual void on_lost_device();
+	virtual void on_reset_device();
 
 public:
 	LPD3DXFONT get_d3dx_obj();

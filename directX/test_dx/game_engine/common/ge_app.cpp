@@ -44,6 +44,16 @@ LRESULT GEApp::MsgProc( UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bUseDefWi
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_SIZE:
+		if( wParam == SIZE_RESTORED || wParam == SIZE_MAXIMIZED )
+		{
+			on_resize();
+		}
+		else if( wParam == SIZE_MAXHIDE || wParam == SIZE_MINIMIZED )
+		{
+			// The deactivate message will pause the app
+		}
+		return 0;
 	}
 
 	return 0;
@@ -192,6 +202,23 @@ bool GEApp::show_console( bool is_show )
 		}
 	}
 	return false;
+}
+
+bool GEApp::on_resize()
+{
+	GetClientRect(h_wnd_, &game_rect_);
+
+	int width = game_rect_.right - game_rect_.left;
+	int height = game_rect_.bottom - game_rect_.top;
+
+	if (p_ge_engine_)
+	{
+		p_ge_engine_->set_resolution(width, height);
+	}
+
+	InvalidateRect(h_wnd_, 0, false);
+
+	return true;
 }
 
 }

@@ -70,7 +70,9 @@ bool GEEngine::init_engine()
 	d3d_present_param_.AutoDepthStencilFormat		= D3DFMT_D24X8;
 	d3d_present_param_.Flags						= D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 	d3d_present_param_.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-	d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_ONE;
+	// ´¹Ö±Í¬²½
+	//d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_ONE;
+	d3d_present_param_.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	h_res = p_d3d_->CreateDevice(D3DADAPTER_DEFAULT,
 		dev_type, p_ge_app_->get_wnd(), vertex_proc_type,
@@ -129,10 +131,38 @@ bool GEEngine::_dx_reset()
 	return SUCCEEDED(h_res);
 }
 
+bool GEEngine::_dx_check()
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	HRESULT h_res = p_d3d_device_->TestCooperativeLevel();
+
+	if (D3DERR_DEVICELOST == h_res)
+	{
+		return false;
+	}
+	else if(D3DERR_DEVICENOTRESET == h_res)
+	{
+		_on_lost_device();
+		if (_dx_reset())
+		{
+			_on_reset_device();
+			return true;
+		}
+		return false;
+	}
+	else if (FAILED(h_res))
+	{
+		return false;
+	}
+	return true;
+}
+
 void GEEngine::process( time_t delta )
 {
 	if (p_d3d_device_ == NULL) return;
 
+	if(!_dx_check()) return;
 	if(!_dx_begin_scene()) return;
 	if(!_dx_clear()) return;
 
@@ -150,14 +180,75 @@ bool GEEngine::_init_render()
 	p_ge_render_ = GERender::get_instance();
 	if(p_ge_render_ == NULL) return false;
 
-	p_font_manager_ = GEFontManager::get_instance();
-	if(p_ge_render_ == NULL) return false;
-
 	ULONG_PTR gdiplus_token;
 	Gdiplus::GdiplusStartupInput startup_input;
 	GdiplusStartup(&gdiplus_token, &startup_input, NULL);
 
 	return p_ge_render_->init();
+}
+
+bool GEEngine::set_resolution( int width, int height )
+{
+	if (p_d3d_device_ == NULL) return false;
+
+	unsigned orig_width = d3d_present_param_.BackBufferWidth;
+	unsigned orig_height = d3d_present_param_.BackBufferHeight;
+
+	if (width <= 0) width = 1;
+	if (height <= 0) height = 1;
+
+	if (width != orig_width || height != orig_height)
+	{
+		d3d_present_param_.BackBufferWidth = (unsigned)width;
+		d3d_present_param_.BackBufferHeight = (unsigned)height;
+
+		_on_lost_device();
+		if (_dx_reset())
+		{
+			_on_reset_device();
+			return true;
+		}
+		else return false;
+	}
+	return true;
+}
+
+void GEEngine::register_device_object( GED3DDeviceObject* device_obj )
+{
+	if (device_obj != NULL)
+	{
+		device_object_set_.insert(device_obj);
+	}
+}
+
+void GEEngine::unregister_device_object( GED3DDeviceObject* device_obj )
+{
+	if (device_obj != NULL)
+	{
+		device_object_set_.erase(device_obj);
+	}
+}
+
+void GEEngine::_on_lost_device()
+{
+	FOR_EACH (DEVICE_OBJECT_SET, device_object_set_, obj_itor)
+	{
+		(*obj_itor)->on_lost_device();
+	}
+}
+
+void GEEngine::_on_reset_device()
+{
+	FOR_EACH (DEVICE_OBJECT_SET, device_object_set_, obj_itor)
+	{
+		(*obj_itor)->on_reset_device();
+	}
+
+	if (p_ge_render_)
+	{
+		p_ge_render_->do_projection_trans(0.5f);
+		p_ge_render_->init_state();
+	}
 }
 
 }

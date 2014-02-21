@@ -22,6 +22,7 @@ public:
 
 public:
 	bool init();
+	bool init_state();
 	void render(time_t delta);
 	void destory();
 
@@ -44,6 +45,10 @@ protected:
 
 	D3DXMATRIX			view_matrix_;
 	D3DXMATRIX			proj_matrix_;
+
+	D3DXVECTOR3			position_;
+	D3DXVECTOR3			target_;
+	D3DXVECTOR3			up_;
 };
 
 } // namespace ge

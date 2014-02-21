@@ -7,7 +7,11 @@ namespace ge
 {
 
 GERender::GERender()
+: position_(0.0f, 0.0f, -256.f)
+, target_(0.0f, 0.0f, 0.0f)
+, up_(0.0f, 1.0f, 0.0f)
 {
+
 }
 
 GERender::~GERender()
@@ -23,13 +27,14 @@ GERender* GERender::get_instance()
 
 bool GERender::init()
 {
-	D3DXVECTOR3 position(0.0f, 0.0f, -256.f);
-	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	do_view_trans(position_, target_, up_);
+	do_projection_trans(0.5f);
+	init_state();
+	return true;
+}
 
-	bool b_res = true;
-	b_res = b_res && do_view_trans(position, target, up);
-	b_res = b_res && do_projection_trans(0.5f);
+bool GERender::init_state()
+{
 	set_render_state(D3DRS_FILLMODE, D3DFILL_SOLID);
 	set_render_state(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	set_render_state(D3DRS_LIGHTING, false);
@@ -48,7 +53,7 @@ bool GERender::init()
 	set_sampler_state(D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	set_sampler_state(D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
-	return b_res;
+	return true;
 }
 
 void GERender::render(time_t delta)
