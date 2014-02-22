@@ -3,7 +3,7 @@
 
 #include "../ge_object.h"
 #include "../../utility/geu_gmath.h"
-#include "ge_font.h"
+#include "../../render/font/ge_font.h"
 #include "geo_text.h"
 
 namespace ge

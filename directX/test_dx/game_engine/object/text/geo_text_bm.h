@@ -2,7 +2,8 @@
 #define _GAME_ENGINE_OBJECT_TEXT_BM_H_
 
 #include "../ge_object.h"
-#include "ge_bm_font.h"
+#include "../../render/font/bm_font/bm_font.h"
+#include "../../render/font/ge_font_bm.h"
 #include "geo_text.h"
 #include "../geo_atlas_render.h"
 
@@ -13,7 +14,6 @@ class GEOAtlasRender;
 
 class GE_API GEOTextBM : public GEOText
 {
-	friend GEBMFont;
 
 	DLL_MANAGE_CLASS(GEOTextBM);
 
@@ -34,12 +34,11 @@ public:
 	virtual void render(time_t delta);
 
 protected:
-	void _add_render_char(GE_TEXT_CHAR& text_char);
 	void _clear_render_chars();
-	void _text_char_to_quad(GE_QUAD& out_quad, const GE_TEXT_CHAR& text_char);
+	void _render_char_to_quad(GE_QUAD& out_quad, const bmfont::SCharRenderObject& render_char);
 
 private:
-	typedef std::vector<GE_TEXT_CHAR>	RENDER_CHAR_LIST;
+	typedef std::vector<bmfont::SCharRenderObject>	RENDER_CHAR_LIST;
 
 	GEOAtlasRender*				render_object_;
 	RENDER_CHAR_LIST			render_chars_;

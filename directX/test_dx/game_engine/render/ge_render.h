@@ -3,7 +3,7 @@
 
 #include "../common/ge_include.h"
 #include "../utility/geu_gmath.h"
-#include "../object/text/ge_font.h"
+#include "../render/font/ge_font.h"
 
 namespace ge
 {

@@ -103,16 +103,15 @@
     </ClCompile>
     <ClCompile Include="object\geo_primitive.cpp" />
     <ClCompile Include="object\geo_spine.cpp" />
-    <ClCompile Include="object\texture\ge_surface.cpp" />
     <ClCompile Include="object\text\geo_text_gdi.cpp" />
-    <ClCompile Include="object\text\ge_bm_font.cpp" />
-    <ClCompile Include="object\text\ge_font.cpp" />
     <ClCompile Include="object\text\geo_text.cpp" />
     <ClCompile Include="object\text\geo_text_bm.cpp" />
     <ClCompile Include="object\text\geo_text_dx.cpp" />
     <ClCompile Include="object\text\geo_text_ft.cpp" />
-    <ClCompile Include="object\texture\ge_texture.cpp" />
-    <ClCompile Include="object\texture\ge_texture_manager.cpp" />
+    <ClCompile Include="render\font\bm_font\bm_font.cpp" />
+    <ClCompile Include="render\font\bm_font\bm_unicode.cpp" />
+    <ClCompile Include="render\font\ge_font_bm.cpp" />
+    <ClCompile Include="render\font\ge_font.cpp" />
     <ClCompile Include="render\ge_render.cpp" />
     <ClCompile Include="render\ger_effect.cpp" />
     <ClCompile Include="render\ger_light.cpp" />
@@ -123,6 +122,9 @@
     <ClCompile Include="common\ge_game.cpp" />
     <ClCompile Include="common\ge_input.cpp" />
     <ClCompile Include="common\ge_scene.cpp" />
+    <ClCompile Include="render\texture\ge_surface.cpp" />
+    <ClCompile Include="render\texture\ge_texture.cpp" />
+    <ClCompile Include="render\texture\ge_texture_manager.cpp" />
     <ClCompile Include="utility\geu_gmath.cpp" />
     <ClCompile Include="utility\geu_vertex.cpp" />
   </ItemGroup>
@@ -134,16 +136,15 @@
     <ClInclude Include="object\geo_mesh.h" />
     <ClInclude Include="object\geo_primitive.h" />
     <ClInclude Include="object\geo_spine.h" />
-    <ClInclude Include="object\texture\ge_surface.h" />
     <ClInclude Include="object\text\geo_text_gdi.h" />
-    <ClInclude Include="object\text\ge_bm_font.h" />
-    <ClInclude Include="object\text\ge_font.h" />
     <ClInclude Include="object\text\geo_text.h" />
     <ClInclude Include="object\text\geo_text_bm.h" />
     <ClInclude Include="object\text\geo_text_dx.h" />
     <ClInclude Include="object\text\geo_text_ft.h" />
-    <ClInclude Include="object\texture\ge_texture.h" />
-    <ClInclude Include="object\texture\ge_texture_manager.h" />
+    <ClInclude Include="render\font\bm_font\bm_font.h" />
+    <ClInclude Include="render\font\bm_font\bm_unicode.h" />
+    <ClInclude Include="render\font\ge_font_bm.h" />
+    <ClInclude Include="render\font\ge_font.h" />
     <ClInclude Include="render\ge_render.h" />
     <ClInclude Include="render\ger_effect.h" />
     <ClInclude Include="render\ger_light.h" />
@@ -155,6 +156,9 @@
     <ClInclude Include="common\ge_include.h" />
     <ClInclude Include="common\ge_input.h" />
     <ClInclude Include="common\ge_scene.h" />
+    <ClInclude Include="render\texture\ge_surface.h" />
+    <ClInclude Include="render\texture\ge_texture.h" />
+    <ClInclude Include="render\texture\ge_texture_manager.h" />
     <ClInclude Include="utility\geu_gmath.h" />
     <ClInclude Include="utility\geu_vertex.h" />
     <ClInclude Include="game_engine.h" />

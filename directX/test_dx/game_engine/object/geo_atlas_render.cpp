@@ -1,6 +1,6 @@
 #include "geo_atlas_render.h"
 #include "../common/ge_engine.h"
-#include "texture/ge_texture_manager.h"
+#include "../render/texture/ge_texture_manager.h"
 
 namespace ge
 {

@@ -1,5 +1,5 @@
 #include "ge_font.h"
-#include "ge_bm_font.h"
+#include "ge_font_bm.h"
 
 namespace ge
 {
@@ -188,7 +188,7 @@ GEFont* GEFontManager::new_font( GEFontType font_type )
 		}
 	case FontType_BMFont:
 		{
-			GEBMFont* font_ptr = new GEBMFont();
+			GEFontBM* font_ptr = new GEFontBM();
 			font_set_.insert(font_ptr);
 			return font_ptr;
 		}

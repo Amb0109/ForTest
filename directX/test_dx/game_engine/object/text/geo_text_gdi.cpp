@@ -1,6 +1,6 @@
 #include "geo_text_gdi.h"
 #include "../../common/ge_engine.h"
-#include "../texture/ge_texture_manager.h"
+#include "../../render/texture/ge_texture_manager.h"
 #include "../geo_atlas_render.h"
 
 namespace ge

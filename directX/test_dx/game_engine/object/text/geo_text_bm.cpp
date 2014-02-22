@@ -1,6 +1,6 @@
 #include "geo_text_bm.h"
 #include "../../common/ge_engine.h"
-#include "../texture/ge_texture.h"
+#include "../../render/texture/ge_texture.h"
 
 namespace ge
 {
@@ -42,16 +42,16 @@ bool GEOTextBM::update_font()
 		render_object_ = GEOAtlasRender::create();
 	} else render_object_->destory();
 
-	GEBMFont* bm_font = (GEBMFont*)font_obj_;
+	GEFontBM* bm_font = (GEFontBM*)font_obj_;
 	if (bm_font == NULL) return false;
 
-	int png_cnt = bm_font->get_png_cnt();
+	int page_cnt = bm_font->get_page_cnt();
 	if (render_object_ == NULL) return false;
-	for (int i=0; i<png_cnt; ++i)
+	for (int i=0; i<page_cnt; ++i)
 	{
-		char png_path[MAX_PATH];
-		bm_font->get_png_path(png_path, i);
-		int png_id = render_object_->add_texture(png_path);
+		char page_path[MAX_PATH];
+		bm_font->get_page_path(page_path, i);
+		int png_id = render_object_->add_texture(page_path);
 		assert(png_id == i);
 	}
 
@@ -61,19 +61,24 @@ bool GEOTextBM::update_font()
 
 bool GEOTextBM::update_text()
 {
-	GEBMFont* bm_font = (GEBMFont*)font_obj_;
+	GEFontBM* bm_font = (GEFontBM*)font_obj_;
 	if (bm_font == NULL) return false;
 
 	if (render_object_ == NULL) return false;
 
-	bool ret = bm_font->compose(this, text_.c_str(), 0, 0, false);
+	render_chars_.resize(text_.length());
+
+	bm_font->begin_write(&(render_chars_[0]), render_chars_.max_size());
+	bm_font->write_text(text_.c_str(), 0, 400, true);
+	int ret = bm_font->end_write();
+
 	if (ret)
 	{
 		render_object_->clear_quads();
 		FOR_EACH (RENDER_CHAR_LIST, render_chars_, char_itor)
 		{
 			GE_QUAD quad;
-			_text_char_to_quad(quad, *char_itor);
+			_render_char_to_quad(quad, *char_itor);
 			render_object_->add_quad(quad);
 		}
 	}
@@ -81,19 +86,14 @@ bool GEOTextBM::update_text()
 	return ret;
 }
 
-void GEOTextBM::_add_render_char( GE_TEXT_CHAR& text_char )
-{
-	render_chars_.push_back(text_char);
-}
-
 void GEOTextBM::_clear_render_chars()
 {
 	render_chars_.clear();
 }
 
-void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_char )
+void GEOTextBM::_render_char_to_quad( GE_QUAD& out_quad, const bmfont::SCharRenderObject& render_char )
 {
-	GETexture* texture = render_object_->get_texture(text_char.img_);
+	GETexture* texture = render_object_->get_texture(render_char.page);
 	if(texture == NULL) return;
 
 	GE_VERTEX* vertex_ptr[4];
@@ -108,31 +108,27 @@ void GEOTextBM::_text_char_to_quad( GE_QUAD& out_quad, const GE_TEXT_CHAR& text_
 		vertex_ptr[i]->set_color(0xffffffff);
 	}
 
-	float min_x = (float)text_char.pos_.x;
-	float min_y = (float)text_char.pos_.y;
-	float max_x = min_x + text_char.size_.width;
-	float max_y = min_y + text_char.size_.height;
+	float min_x = render_char.xys[0];
+	float min_y = render_char.xys[1];
+	float max_x = render_char.xys[2];
+	float max_y = render_char.xys[3];
 
 	out_quad.tl.set_position(D3DXVECTOR3(min_x, -min_y, 0.f));
 	out_quad.tr.set_position(D3DXVECTOR3(max_x, -min_y, 0.f));
 	out_quad.br.set_position(D3DXVECTOR3(max_x, -max_y, 0.f));
 	out_quad.bl.set_position(D3DXVECTOR3(min_x, -max_y, 0.f));
 
-	int img_width = 0;
-	int img_height = 0;
-	texture->get_size(img_width, img_height);
-
-	float u1 = (float)text_char.img_pos_.x / img_width;
-	float v1 = (float)text_char.img_pos_.y / img_height;
-	float u2 = ((float)text_char.img_pos_.x + text_char.size_.width) / img_width;
-	float v2 = ((float)text_char.img_pos_.y + text_char.size_.height + 1) / img_height;
+	float u1 = render_char.uvs[0];
+	float v1 = render_char.uvs[1];
+	float u2 = render_char.uvs[2];
+	float v2 = render_char.uvs[3];
 
 	out_quad.tl.set_texcoords(D3DXVECTOR2(u1, v1));
 	out_quad.tr.set_texcoords(D3DXVECTOR2(u2, v1));
 	out_quad.br.set_texcoords(D3DXVECTOR2(u2, v2));
 	out_quad.bl.set_texcoords(D3DXVECTOR2(u1, v2));
 
-	out_quad.texture = text_char.img_;
+	out_quad.texture = render_char.page;
 
 	return;
 }

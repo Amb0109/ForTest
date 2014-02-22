@@ -2,7 +2,7 @@
 #define _GAME_ENGINE_OBJECT_TEXT_H_
 
 #include "../ge_object.h"
-#include "ge_font.h"
+#include "../../render/font/ge_font.h"
 
 namespace ge
 {
@@ -18,16 +18,6 @@ struct GE_API GE_TEXT_STYLE
 	bool		shadow;
 	int			shadow_weight;
 	D3DCOLOR	shadow_color;
-};
-
-struct GE_API GE_TEXT_CHAR
-{
-	char		ch_;
-	bool		visible_;
-	GE_IPOINT	pos_;
-	GE_ISIZE	size_;
-	int			img_;
-	GE_IPOINT	img_pos_;
 };
 
 class GE_API GEOText : public GEObject

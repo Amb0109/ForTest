@@ -31,7 +31,7 @@ public:
 
 	ge::GEOTextGDI*		p_gdi_text_;
 
-	ge::GEBMFont*		p_bm_font_;
+	ge::GEFontBM*		p_bm_font_;
 	ge::GEOTextBM*		p_bm_text_;
 
 	Panel2D*			p_panel_2d_;
