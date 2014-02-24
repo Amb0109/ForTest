@@ -46,9 +46,9 @@ void CCTextureAtlas::drawQuads()
 	{
 		ge::GE_VERTEX vertex;
 		vertex.set_decl(render_object->get_vertex_decl());
-		vertex.set_position(D3DXVECTOR3(it->x, it->y, it->z));
-		vertex.set_color(D3DCOLOR(it->color));
-		vertex.set_texcoords(D3DXVECTOR2(it->u, it->v));
+		vertex.set_position(it->x, it->y, it->z);
+		vertex.set_color(it->color);
+		vertex.set_texcoords(it->u, it->v);
 		verties_list.push_back(vertex);
 	}
 

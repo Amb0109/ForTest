@@ -151,8 +151,8 @@ void GEOSpine::_do_render()
 			{
 				GE_VERTEX vertex;
 				vertex.set_decl(vertex_decl_);
-				vertex.set_position(D3DXVECTOR3(verties[ii<<1], verties[ii<<1|1], 0.f));
-				vertex.set_texcoords(D3DXVECTOR2(uvs[ii<<1], uvs[ii<<1|1]));
+				vertex.set_position(verties[ii<<1], verties[ii<<1|1], 0.f);
+				vertex.set_texcoords(uvs[ii<<1], uvs[ii<<1|1]);
 				vertex_buff[vertex_offset + ii] = vertex;
 			}
 
@@ -222,15 +222,15 @@ void GEOSpine::_do_bone_render()
 		int vertex_offset = render_bone_cnt * 3;
 		GE_VERTEX vertex;
 		vertex.set_decl(bone_vertex_decl_);
-		vertex.set_color(D3DXCOLOR(0xffffffff));
+		vertex.set_color(0xffffffff);
 
-		vertex.set_position(D3DXVECTOR3(vlx, vly, 0.f));
+		vertex.set_position(vlx, vly, 0.f);
 		vertex_buff[vertex_offset + 0] = vertex;
 
-		vertex.set_position(D3DXVECTOR3(vrx, vry, 0.f));
+		vertex.set_position(vrx, vry, 0.f);
 		vertex_buff[vertex_offset + 1] = vertex;
 
-		vertex.set_position(D3DXVECTOR3(vtx, vty, 0.f));
+		vertex.set_position(vtx, vty, 0.f);
 		vertex_buff[vertex_offset + 2] = vertex;
 
 		++ render_bone_cnt;

@@ -199,6 +199,31 @@ GE_VERTEX_DECL* GE_VERTEX::get_decl()
 	return decl_;
 }
 
+void GE_VERTEX::set_position( float x, float y, float z )
+{
+	position_.x = x;
+	position_.y = y;
+	position_.z = z;
+}
+
+void GE_VERTEX::set_normal( float x, float y, float z )
+{
+	normal_.x = x;
+	normal_.y = y;
+	normal_.z = z;
+}
+
+void GE_VERTEX::set_texcoords( float u, float v )
+{
+	texcoords_.x = u;
+	texcoords_.y = v;
+}
+
+void GE_VERTEX::set_color( D3DCOLOR color )
+{
+	color_ = color;
+}
+
 bool GE_VERTEX::pack( void* mem_buff, int size )
 {
 	if (mem_buff == NULL) return false;
@@ -212,22 +237,17 @@ bool GE_VERTEX::pack( void* mem_buff, int size )
 	memset(mem_buff, 0, size);
 	if (decl_->fvf & D3DFVF_XYZ)
 	{
-		_append_data(mem_buff, buff_offset, (void*)&(position_.x), sizeof(float));
-		_append_data(mem_buff, buff_offset, (void*)&(position_.y), sizeof(float));
-		_append_data(mem_buff, buff_offset, (void*)&(position_.z), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(position_), sizeof(D3DXVECTOR3));
 	}
 
 	if (decl_->fvf & D3DFVF_NORMAL)
 	{
-		_append_data(mem_buff, buff_offset, (void*)&(normal_.x), sizeof(float));
-		_append_data(mem_buff, buff_offset, (void*)&(normal_.y), sizeof(float));
-		_append_data(mem_buff, buff_offset, (void*)&(normal_.z), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(normal_), sizeof(D3DXVECTOR3));
 	}
 
 	if (decl_->fvf & D3DFVF_TEXCOUNT_MASK)
 	{
-		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.x), sizeof(float));
-		_append_data(mem_buff, buff_offset, (void*)&(texcoords_.y), sizeof(float));
+		_append_data(mem_buff, buff_offset, (void*)&(texcoords_), sizeof(D3DXVECTOR2));
 	}
 
 	if (decl_->fvf & D3DFVF_DIFFUSE)
@@ -246,6 +266,8 @@ bool GE_VERTEX::_append_data( void* mem_buff, int& mem_offset, void* p_data, int
 	mem_offset += data_size;
 	return true;
 }
+
+
 
 }
 

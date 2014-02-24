@@ -83,7 +83,7 @@ bool GEOTextBM::update_text()
 		}
 	}
 	need_update_text_ = false;
-	return ret;
+	return 0 != ret;
 }
 
 void GEOTextBM::_clear_render_chars()
@@ -113,20 +113,20 @@ void GEOTextBM::_render_char_to_quad( GE_QUAD& out_quad, const bmfont::SCharRend
 	float max_x = render_char.xys[2];
 	float max_y = render_char.xys[3];
 
-	out_quad.tl.set_position(D3DXVECTOR3(min_x, min_y, 0.f));
-	out_quad.tr.set_position(D3DXVECTOR3(max_x, min_y, 0.f));
-	out_quad.br.set_position(D3DXVECTOR3(max_x, max_y, 0.f));
-	out_quad.bl.set_position(D3DXVECTOR3(min_x, max_y, 0.f));
+	out_quad.tl.set_position(min_x, min_y, 0.f);
+	out_quad.tr.set_position(max_x, min_y, 0.f);
+	out_quad.br.set_position(max_x, max_y, 0.f);
+	out_quad.bl.set_position(min_x, max_y, 0.f);
 
 	float u1 = render_char.uvs[0];
 	float v1 = render_char.uvs[1];
 	float u2 = render_char.uvs[2];
 	float v2 = render_char.uvs[3];
 
-	out_quad.tl.set_texcoords(D3DXVECTOR2(u1, v1));
-	out_quad.tr.set_texcoords(D3DXVECTOR2(u2, v1));
-	out_quad.br.set_texcoords(D3DXVECTOR2(u2, v2));
-	out_quad.bl.set_texcoords(D3DXVECTOR2(u1, v2));
+	out_quad.tl.set_texcoords(u1, v1);
+	out_quad.tr.set_texcoords(u2, v1);
+	out_quad.br.set_texcoords(u2, v2);
+	out_quad.bl.set_texcoords(u1, v2);
 
 	out_quad.texture = render_char.page;
 

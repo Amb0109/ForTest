@@ -23,7 +23,6 @@ public:
 
 	int  get_page_cnt();
 	bool get_page_path(char* texture_path, int index);
-	//GETexture* get_texture(int index = 0);
 
 	bool begin_write(bmfont::SCharRenderObject* char_buff, int buff_size);
 	int end_write();

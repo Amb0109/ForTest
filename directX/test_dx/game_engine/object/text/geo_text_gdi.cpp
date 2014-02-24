@@ -148,15 +148,15 @@ bool GEOTextGDI::_update_quad()
 	float max_x = (float)rect_.right;
 	float max_y = (float)rect_.bottom;
 
-	out_quad.tl.set_position(D3DXVECTOR3(min_x, -min_y, 0.f));
-	out_quad.tr.set_position(D3DXVECTOR3(max_x, -min_y, 0.f));
-	out_quad.br.set_position(D3DXVECTOR3(max_x, -max_y, 0.f));
-	out_quad.bl.set_position(D3DXVECTOR3(min_x, -max_y, 0.f));
+	out_quad.tl.set_position(min_x, -min_y, 0.f);
+	out_quad.tr.set_position(max_x, -min_y, 0.f);
+	out_quad.br.set_position(max_x, -max_y, 0.f);
+	out_quad.bl.set_position(min_x, -max_y, 0.f);
 
-	out_quad.tl.set_texcoords(D3DXVECTOR2(0.f, 0.f));
-	out_quad.tr.set_texcoords(D3DXVECTOR2(1.f, 0.f));
-	out_quad.br.set_texcoords(D3DXVECTOR2(1.f, 1.f));
-	out_quad.bl.set_texcoords(D3DXVECTOR2(0.f, 1.f));
+	out_quad.tl.set_texcoords(0.f, 0.f);
+	out_quad.tr.set_texcoords(1.f, 0.f);
+	out_quad.br.set_texcoords(1.f, 1.f);
+	out_quad.bl.set_texcoords(0.f, 1.f);
 
 	out_quad.texture = 0;
 

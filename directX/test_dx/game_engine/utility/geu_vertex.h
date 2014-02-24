@@ -66,10 +66,10 @@ public:
 	bool			set_decl(GE_VERTEX_DECL* decl);
 	GE_VERTEX_DECL*	get_decl();
 
-	void			set_position(D3DXVECTOR3 position)	{ position_ = position; }
-	void			set_normal(D3DXVECTOR3 normal)		{ normal_ = normal; }
-	void			set_texcoords(D3DXVECTOR2 texcoords){ texcoords_ = texcoords; }
-	void			set_color(D3DCOLOR color)			{ color_ = color; }
+	void			set_position(float x, float y, float z);
+	void			set_normal(float x, float y, float z);
+	void			set_texcoords(float u, float v);
+	void			set_color(D3DCOLOR color);
 
 	bool			pack(void* mem_buff, int size);
 

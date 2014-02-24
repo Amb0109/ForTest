@@ -32,11 +32,6 @@ bool GEFontBM::get_page_path( char* page_path, int index )
 	strcpy(page_path, bm_font_.GetPagePath(index).c_str());
 	return true;
 }
-//
-//GETexture* GEFontBM::get_texture( int index/* = 0*/ )
-//{
-//	return NULL;
-//}
 
 bool GEFontBM::begin_write( bmfont::SCharRenderObject* char_buff, int buff_size )
 {
@@ -54,8 +49,15 @@ int GEFontBM::end_write()
 
 bool GEFontBM::write_text( const char* text, int width, int height, bool wrap )
 {
-	bm_font_.WriteBox(0.f, 0.f, 0.f,
-		(float)width, text, strlen(text), bmfont::FONT_ALIGN_LEFT);
+	if (wrap)
+	{
+		bm_font_.WriteBox(0.f, 0.f, 0.f, (float)width, text, strlen(text), bmfont::FONT_ALIGN_LEFT);
+	}
+	else
+	{
+		bm_font_.WriteML(0.f, 0.f, 0.f, text, strlen(text), bmfont::FONT_ALIGN_LEFT);
+	}
+
 	return true;
 }
 
