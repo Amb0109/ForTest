@@ -69,7 +69,7 @@ bool GEOTextBM::update_text()
 	render_chars_.resize(text_.length());
 
 	bm_font->begin_write(&(render_chars_[0]), render_chars_.max_size());
-	bm_font->write_text(text_.c_str(), 0, 400, true);
+	bm_font->write_text(text_.c_str(), 400, 0, true);
 	int ret = bm_font->end_write();
 
 	if (ret)
@@ -113,10 +113,10 @@ void GEOTextBM::_render_char_to_quad( GE_QUAD& out_quad, const bmfont::SCharRend
 	float max_x = render_char.xys[2];
 	float max_y = render_char.xys[3];
 
-	out_quad.tl.set_position(D3DXVECTOR3(min_x, -min_y, 0.f));
-	out_quad.tr.set_position(D3DXVECTOR3(max_x, -min_y, 0.f));
-	out_quad.br.set_position(D3DXVECTOR3(max_x, -max_y, 0.f));
-	out_quad.bl.set_position(D3DXVECTOR3(min_x, -max_y, 0.f));
+	out_quad.tl.set_position(D3DXVECTOR3(min_x, min_y, 0.f));
+	out_quad.tr.set_position(D3DXVECTOR3(max_x, min_y, 0.f));
+	out_quad.br.set_position(D3DXVECTOR3(max_x, max_y, 0.f));
+	out_quad.bl.set_position(D3DXVECTOR3(min_x, max_y, 0.f));
 
 	float u1 = render_char.uvs[0];
 	float v1 = render_char.uvs[1];

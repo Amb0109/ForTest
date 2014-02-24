@@ -342,9 +342,9 @@ void CFont::InternalWrite(float x, float y, float z, const char *text, int count
 		renderObject->xys[3] = y-oy;
 
 		renderObject->uvs[0] = u;
-		renderObject->uvs[1] = v;
+		renderObject->uvs[1] = v2;
 		renderObject->uvs[2] = u2;
-		renderObject->uvs[3] = u2;
+		renderObject->uvs[3] = v;
 
 		x += a;
 		if( charId == ' ' )
@@ -688,6 +688,8 @@ int CFontLoaderTextFormat::Load()
 			}
 		}
 
+		if( line.size() <= 0 ) break;
+
 		// Skip white spaces
 		int pos = SkipWhiteSpace(line, 0);
 
@@ -780,6 +782,7 @@ void CFontLoaderTextFormat::InterpretKerning(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
+		if ( pos >= str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
@@ -799,7 +802,7 @@ void CFontLoaderTextFormat::InterpretKerning(string &str, int start)
 		else if( token == "amount" )
 			amount = strtol(value.c_str(), 0, 10);
 
-		if( pos == str.size() ) break;
+		if( pos >= str.size() ) break;
 	}
 
 	// Store the attributes
@@ -824,6 +827,7 @@ void CFontLoaderTextFormat::InterpretChar(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
+		if ( pos >= str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
@@ -878,6 +882,7 @@ void CFontLoaderTextFormat::InterpretCommon(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
+		if ( pos >= str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
@@ -918,6 +923,7 @@ void CFontLoaderTextFormat::InterpretInfo(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
+		if ( pos >= str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
@@ -949,6 +955,7 @@ void CFontLoaderTextFormat::InterpretPage(string &str, int start, const char *fo
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
+		if ( pos >= str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);

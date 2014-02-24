@@ -55,7 +55,7 @@ int GEFontBM::end_write()
 bool GEFontBM::write_text( const char* text, int width, int height, bool wrap )
 {
 	bm_font_.WriteBox(0.f, 0.f, 0.f,
-		(float)width, text, strlen(text), bmfont::FONT_ALIGN_RIGHT);
+		(float)width, text, strlen(text), bmfont::FONT_ALIGN_LEFT);
 	return true;
 }
 
