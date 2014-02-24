@@ -68,7 +68,7 @@ struct SCharRenderObject
 	float		uvs[4];
 };
 
-class CFont
+class GE_API CFont
 {
 public:
 	CFont();

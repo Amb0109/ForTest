@@ -147,7 +147,7 @@ int CFont::GetPageCount()
 
 std::string CFont::GetPagePath( int pageId )
 {
-	if (pageId < 0 || pageId >= pages.size()) return "";
+	if (pageId < 0 || pageId >= (int)pages.size()) return "";
 	return pages[pageId];
 }
 
@@ -782,13 +782,13 @@ void CFontLoaderTextFormat::InterpretKerning(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
-		if ( pos >= str.size() ) break;
+		if ( pos >= (int)str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
 
 		pos = SkipWhiteSpace(str, pos2);
-		if( pos == str.size() || str[pos] != '=' ) break;
+		if( pos == (int)str.size() || str[pos] != '=' ) break;
 
 		pos = SkipWhiteSpace(str, pos+1);
 		pos2 = FindEndOfToken(str, pos);
@@ -802,7 +802,7 @@ void CFontLoaderTextFormat::InterpretKerning(string &str, int start)
 		else if( token == "amount" )
 			amount = strtol(value.c_str(), 0, 10);
 
-		if( pos >= str.size() ) break;
+		if( pos >= (int)str.size() ) break;
 	}
 
 	// Store the attributes
@@ -827,13 +827,13 @@ void CFontLoaderTextFormat::InterpretChar(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
-		if ( pos >= str.size() ) break;
+		if ( pos >= (int)str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
 
 		pos = SkipWhiteSpace(str, pos2);
-		if( pos == str.size() || str[pos] != '=' ) break;
+		if( pos == (int)str.size() || str[pos] != '=' ) break;
 
 		pos = SkipWhiteSpace(str, pos+1);
 		pos2 = FindEndOfToken(str, pos);
@@ -861,7 +861,7 @@ void CFontLoaderTextFormat::InterpretChar(string &str, int start)
 		else if( token == "chnl" )
 			chnl = strtol(value.c_str(), 0, 10);
 
-		if( pos == str.size() ) break;
+		if( pos == (int)str.size() ) break;
 	}
 
 	// Store the attributes
@@ -882,13 +882,13 @@ void CFontLoaderTextFormat::InterpretCommon(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
-		if ( pos >= str.size() ) break;
+		if ( pos >= (int)str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
 
 		pos = SkipWhiteSpace(str, pos2);
-		if( pos == str.size() || str[pos] != '=' ) break;
+		if( pos == (int)str.size() || str[pos] != '=' ) break;
 
 		pos = SkipWhiteSpace(str, pos+1);
 		pos2 = FindEndOfToken(str, pos);
@@ -908,7 +908,7 @@ void CFontLoaderTextFormat::InterpretCommon(string &str, int start)
 		else if( token == "packed" )
 			packed = strtol(value.c_str(), 0, 10);
 
-		if( pos == str.size() ) break;
+		if( pos == (int)str.size() ) break;
 	}
 
 	SetCommonInfo(fontHeight, base, scaleW, scaleH, pages, packed ? true : false);
@@ -923,13 +923,13 @@ void CFontLoaderTextFormat::InterpretInfo(string &str, int start)
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
-		if ( pos >= str.size() ) break;
+		if ( pos >= (int)str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
 
 		pos = SkipWhiteSpace(str, pos2);
-		if( pos == str.size() || str[pos] != '=' ) break;
+		if( pos == (int)str.size() || str[pos] != '=' ) break;
 
 		pos = SkipWhiteSpace(str, pos+1);
 		pos2 = FindEndOfToken(str, pos);
@@ -939,7 +939,7 @@ void CFontLoaderTextFormat::InterpretInfo(string &str, int start)
 		if( token == "outline" )
 			outlineThickness = (short)strtol(value.c_str(), 0, 10);
 
-		if( pos == str.size() ) break;
+		if( pos == (int)str.size() ) break;
 	}
 
 	SetFontInfo(outlineThickness);
@@ -955,13 +955,13 @@ void CFontLoaderTextFormat::InterpretPage(string &str, int start, const char *fo
 	while( true )
 	{
 		pos = SkipWhiteSpace(str, pos2);
-		if ( pos >= str.size() ) break;
+		if ( pos >= (int)str.size() ) break;
 		pos2 = FindEndOfToken(str, pos);
 
 		string token = str.substr(pos, pos2-pos);
 
 		pos = SkipWhiteSpace(str, pos2);
-		if( pos == str.size() || str[pos] != '=' ) break;
+		if( pos == (int)str.size() || str[pos] != '=' ) break;
 
 		pos = SkipWhiteSpace(str, pos+1);
 		pos2 = FindEndOfToken(str, pos);
@@ -973,7 +973,7 @@ void CFontLoaderTextFormat::InterpretPage(string &str, int start, const char *fo
 		else if( token == "file" )
 			file = value.substr(1, value.length()-2);
 
-		if( pos == str.size() ) break;
+		if( pos == (int)str.size() ) break;
 	}
 
 	LoadPage(id, file.c_str(), fontFile);
