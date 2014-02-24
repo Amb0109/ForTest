@@ -60,66 +60,85 @@ void GEVertexDecl::_calc_vertex_element_array( DWORD fvf, int& array_pos, int& m
 	mem_size = 0;
 
 	ZeroMemory(vertex_element_, sizeof(vertex_element_));
-	_add_vertex_element(fvf, D3DFVF_XYZ, array_pos, mem_size);
-	_add_vertex_element(fvf, D3DFVF_NORMAL, array_pos, mem_size);
-	_add_vertex_element(fvf, D3DFVF_TEXCOUNT_MASK, array_pos, mem_size);
-	_add_vertex_element(fvf, D3DFVF_DIFFUSE, array_pos, mem_size);
-	_add_vertex_element(fvf, NULL, array_pos, mem_size);
+	_update_vertex_element(fvf, D3DFVF_POSITION_MASK, array_pos, mem_size);
+	_update_vertex_element(fvf, D3DFVF_NORMAL, array_pos, mem_size);
+	_update_vertex_element(fvf, D3DFVF_TEXCOUNT_MASK, array_pos, mem_size);
+	_update_vertex_element(fvf, D3DFVF_DIFFUSE, array_pos, mem_size);
+	_update_vertex_element(fvf, NULL, array_pos, mem_size);
 }
 
-bool GEVertexDecl::_add_vertex_element( DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset )
+bool GEVertexDecl::_update_vertex_element( DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset )
 {
 	if (add_fvf != NULL && !(fvf & add_fvf)) return false;
 	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
 
+#ifndef PUSH_VERTEX_ELEMENT
+#define PUSH_VERTEX_ELEMENT(type, usage, usage_index, size) \
+	_push_vertex_element(type, usage, usage_index, array_pos, mem_offset, size);
+#endif PUSH_VERTEX_ELEMENT
+
 	switch (add_fvf)
 	{
-	case D3DFVF_XYZ:
+	case D3DFVF_POSITION_MASK:
 		{
-			++ array_pos;
-			vertex_element_[array_pos].Stream	= 0;
-			vertex_element_[array_pos].Offset	= mem_offset;
-			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
-			vertex_element_[array_pos].Type		= D3DDECLTYPE_FLOAT3;
-			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_POSITION;
-			vertex_element_[array_pos].UsageIndex = 0;
-			mem_offset += sizeof(float) * 3;
+			PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_POSITION, 0, (sizeof(float) * 3));
+
+			UINT detail = (fvf & D3DFVF_POSITION_MASK);
+			
+			if (false) // not support
+			{
+				switch(detail)
+				{
+				case D3DFVF_XYZB1:
+					break;
+				case D3DFVF_XYZB2:
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT1, D3DDECLUSAGE_BLENDWEIGHT, 0, (sizeof(float) * 1));
+					break;
+				case D3DFVF_XYZB3:
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_BLENDWEIGHT, 0, (sizeof(float) * 2));
+					break;
+				case D3DFVF_XYZB4:
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_BLENDWEIGHT, 0, (sizeof(float) * 3));
+					break;
+				case D3DFVF_XYZB5:
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_BLENDWEIGHT, 0, (sizeof(float) * 4));
+					break;
+				}
+			}
+
+
+			if (detail >= D3DFVF_XYZB1 && detail <= D3DFVF_XYZB5)
+			{
+				if (0 != (fvf & D3DFVF_LASTBETA_UBYTE4))
+				{
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4, D3DDECLUSAGE_BLENDINDICES, 0, (sizeof(UINT)));
+				}
+				else if (false && 0 != (fvf & D3DFVF_LASTBETA_D3DCOLOR)) // not support
+				{
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_BLENDINDICES, 0, (sizeof(D3DCOLOR)));
+				}
+				else if (false && detail == D3DFVF_XYZB5) // not support
+				{
+					PUSH_VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_BLENDINDICES, 0, (sizeof(D3DCOLOR)));
+				}
+			}
+
 		}
 		break;
 	case D3DFVF_DIFFUSE:
 		{
-			++ array_pos;
-			vertex_element_[array_pos].Stream	= 0;
-			vertex_element_[array_pos].Offset	= mem_offset;
-			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
-			vertex_element_[array_pos].Type		= D3DDECLTYPE_D3DCOLOR;
-			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_COLOR;
-			vertex_element_[array_pos].UsageIndex = 0;
-			mem_offset += sizeof(D3DCOLOR);
+			PUSH_VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 0, (sizeof(D3DCOLOR)));
 		}
 		break;
 	case D3DFVF_NORMAL:
 		{
-			++ array_pos;
-			vertex_element_[array_pos].Stream	= 0;
-			vertex_element_[array_pos].Offset	= mem_offset;
-			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
-			vertex_element_[array_pos].Type		= D3DDECLTYPE_FLOAT3;
-			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_NORMAL;
-			vertex_element_[array_pos].UsageIndex = 0;
-			mem_offset += sizeof(float) * 3;
+			PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_NORMAL, 0, (sizeof(float) * 3));
 		}
 		break;
 	case D3DFVF_TEXCOUNT_MASK:
 		{
-			++ array_pos;
-			vertex_element_[array_pos].Stream	= 0;
-			vertex_element_[array_pos].Offset	= mem_offset;
-			vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
-			vertex_element_[array_pos].Type		= D3DDECLTYPE_FLOAT2;
-			vertex_element_[array_pos].Usage	= D3DDECLUSAGE_TEXCOORD;
-			vertex_element_[array_pos].UsageIndex = BYTE(((add_fvf & fvf) >> D3DFVF_TEXCOUNT_SHIFT) - 1);
-			mem_offset += sizeof(float) * 2;
+			PUSH_VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD,
+				(BYTE(((add_fvf & fvf) >> D3DFVF_TEXCOUNT_SHIFT) - 1)), (sizeof(float) * 2));
 		}
 		break;
 		// TODO
@@ -135,6 +154,23 @@ bool GEVertexDecl::_add_vertex_element( DWORD fvf, DWORD add_fvf, int& array_pos
 		}
 	}
 
+	return true;
+}
+
+bool GEVertexDecl::_push_vertex_element(
+	BYTE type, BYTE usage, BYTE usage_index,
+	int& array_pos, int& mem_offset, int elem_size )
+{
+	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
+	++ array_pos;
+
+	vertex_element_[array_pos].Stream	= 0;
+	vertex_element_[array_pos].Offset	= mem_offset;
+	vertex_element_[array_pos].Method	= D3DDECLMETHOD_DEFAULT;
+	vertex_element_[array_pos].Type		= type;
+	vertex_element_[array_pos].Usage	= usage;
+	vertex_element_[array_pos].UsageIndex = usage_index;
+	mem_offset += elem_size;
 	return true;
 }
 
@@ -171,6 +207,7 @@ GE_VERTEX::GE_VERTEX()
 : position_(0.f, 0.f, 0.f)
 , normal_(0.f, 0.f, 0.f)
 , texcoords_(0.f, 0.f)
+, blend_(0)
 , color_(0xffffffff)
 , decl_(NULL)
 {
@@ -219,6 +256,11 @@ void GE_VERTEX::set_texcoords( float u, float v )
 	texcoords_.y = v;
 }
 
+void GE_VERTEX::set_blend( UINT blend )
+{
+	blend_ = blend;
+}
+
 void GE_VERTEX::set_color( D3DCOLOR color )
 {
 	color_ = color;
@@ -235,9 +277,18 @@ bool GE_VERTEX::pack( void* mem_buff, int size )
 
 	int buff_offset = 0;
 	memset(mem_buff, 0, size);
-	if (decl_->fvf & D3DFVF_XYZ)
+	if (decl_->fvf & D3DFVF_POSITION_MASK)
 	{
 		_append_data(mem_buff, buff_offset, (void*)&(position_), sizeof(D3DXVECTOR3));
+
+		DWORD detail = (decl_->fvf & D3DFVF_POSITION_MASK);
+		if (detail >= D3DFVF_XYZB1 && detail <= D3DFVF_XYZB5)
+		{
+			if (0 != (decl_->fvf & D3DFVF_LASTBETA_UBYTE4))
+			{
+				_append_data(mem_buff, buff_offset, (void*)&(blend_), sizeof(UINT));
+			}
+		}
 	}
 
 	if (decl_->fvf & D3DFVF_NORMAL)

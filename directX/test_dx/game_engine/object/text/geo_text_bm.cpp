@@ -6,7 +6,7 @@ namespace ge
 {
 DLL_MANAGE_CLASS_IMPLEMENT(GEOTextBM);
 
-const unsigned GEOTextBM::fvf = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+const unsigned GEOTextBM::fvf = (D3DFVF_XYZB1 | D3DFVF_LASTBETA_UBYTE4 | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 GEOTextBM::GEOTextBM()
 : render_object_(NULL)
@@ -47,6 +47,7 @@ bool GEOTextBM::update_font()
 
 	int page_cnt = bm_font->get_page_cnt();
 	if (render_object_ == NULL) return false;
+	render_object_->set_vertex_decl(GEVertexDecl::get_vertex_decl(fvf));
 	for (int i=0; i<page_cnt; ++i)
 	{
 		char page_path[MAX_PATH];
@@ -106,6 +107,7 @@ void GEOTextBM::_render_char_to_quad( GE_QUAD& out_quad, const bmfont::SCharRend
 	{
 		vertex_ptr[i]->set_decl(render_object_->get_vertex_decl());
 		vertex_ptr[i]->set_color(0xffffffff);
+		vertex_ptr[i]->set_blend(render_char.chnl);
 	}
 
 	float min_x = render_char.xys[0];

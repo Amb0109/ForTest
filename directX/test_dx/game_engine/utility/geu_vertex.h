@@ -46,7 +46,10 @@ protected:
 	void				_release_vertex_decl(DWORD fvf);
 
 	void				_calc_vertex_element_array(DWORD fvf, int& array_pos, int& mem_size);
-	bool				_add_vertex_element(DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset);
+	bool				_update_vertex_element(DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset);
+	bool				_push_vertex_element(
+							BYTE type, BYTE usage, BYTE usage_index,
+							int& array_pos, int& mem_offset, int elem_size);
 
 private:
 	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
@@ -69,6 +72,7 @@ public:
 	void			set_position(float x, float y, float z);
 	void			set_normal(float x, float y, float z);
 	void			set_texcoords(float u, float v);
+	void			set_blend(UINT blend);
 	void			set_color(D3DCOLOR color);
 
 	bool			pack(void* mem_buff, int size);
@@ -80,6 +84,7 @@ private:
 	D3DXVECTOR3			position_;
 	D3DXVECTOR3			normal_;
 	D3DXVECTOR2			texcoords_;
+	UINT				blend_;
 	D3DCOLOR			color_;
 
 	GE_VERTEX_DECL*		decl_;
