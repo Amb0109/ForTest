@@ -56,29 +56,54 @@ bool GEREffect::init()
 	return true;
 }
 
-void GEREffect::render( GEObject* obj, time_t delta )
-{
-	if (p_fx_ == NULL) return;
-
-	int pass_num = 0;
-	p_fx_->Begin((UINT*)&pass_num, 0);
-	for(int i = 0; i < pass_num; ++i)
-	{
-		p_fx_->BeginPass(i);
-		obj->on_render(delta);
-		p_fx_->End();
-	}
-	p_fx_->End();
-}
-
 void GEREffect::destory()
 {
 	file_path_.clear();
 
 	D3D_RELEASE(p_fx_);
 	D3D_RELEASE(p_err_msg_);
+}
 
-	h_tech_main_ = NULL;
+bool GEREffect::set_technique( const char* name )
+{
+	if (p_fx_ == NULL) return false;
+
+	HRESULT h_res = p_fx_->SetTechnique(name);
+	return SUCCEEDED(h_res);
+}
+
+int GEREffect::begin_effect()
+{
+	if (p_fx_ == NULL) return -1;
+
+	int pass_num = 0;
+	HRESULT h_res = p_fx_->Begin((UINT*)&pass_num, 0);
+	if (FAILED(h_res)) return -1;
+	return pass_num;
+}
+
+bool GEREffect::end_effect()
+{
+	if (p_fx_ == NULL) return false;
+	
+	HRESULT h_res = p_fx_->End();
+	return SUCCEEDED(h_res);
+}
+
+bool GEREffect::begin_pass( int pass_id )
+{
+	if (p_fx_ == NULL) return false;
+
+	HRESULT h_res = p_fx_->BeginPass((UINT)pass_id);
+	return SUCCEEDED(h_res);
+}
+
+bool GEREffect::end_pass()
+{
+	if (p_fx_ == NULL) return false;
+
+	HRESULT h_res = p_fx_->EndPass();
+	return SUCCEEDED(h_res);
 }
 
 }

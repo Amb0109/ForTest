@@ -44,8 +44,6 @@ public:
 	virtual void update(time_t delta);
 	virtual void render(time_t delta);
 
-	virtual void on_render(time_t delta);
-
 protected:
 	LPD3DXMESH		p_mesh_;
 	GEREffect*		p_effect_;

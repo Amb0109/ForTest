@@ -2,11 +2,11 @@
 #define _GAME_ENGINE_RENDER_EFFECT_H_
 
 #include "../common/ge_include.h"
+#include "../object/ge_object.h"
 
 namespace ge
 {
 
-class GEObject;
 class GE_API GEREffect
 {
 public:
@@ -20,15 +20,18 @@ public:
 	LPD3DXEFFECT	get_fx() { return p_fx_; }
 
 public:
-	virtual bool init();
-	virtual void render(GEObject* obj, time_t delta);
-	virtual void destory();
+	virtual bool	init();
+	virtual void	destory();
+
+	virtual bool	set_technique(const char* name);
+	virtual int		begin_effect();
+	virtual bool	end_effect();
+	virtual bool	begin_pass(int pass_id);
+	virtual bool	end_pass();
 
 protected:
 	LPD3DXEFFECT			p_fx_;
 	LPD3DXBUFFER			p_err_msg_;
-
-	D3DXHANDLE				h_tech_main_;
 
 	std::string				file_path_;
 };

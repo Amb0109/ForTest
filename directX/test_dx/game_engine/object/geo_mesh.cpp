@@ -168,9 +168,11 @@ void GEOMesh::render( time_t delta )
 	LPDIRECT3DDEVICE9 p_d3d_device = ge::GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return;
 
+	if (p_mesh_) return;
+
 	if (p_material_ == NULL)
 	{
-			GE_MATERIAL::use_default_material();
+		GE_MATERIAL::use_default_material();
 	}
 	else
 	{
@@ -179,18 +181,19 @@ void GEOMesh::render( time_t delta )
 
 	if (p_effect_ == NULL)
 	{
-		this->on_render(delta);
+		p_mesh_->DrawSubset(0);
 	}
 	else
 	{
-		p_effect_->render(this, delta);
+		int pass_cnt = p_effect_->begin_effect();
+		for (int i=0; i<pass_cnt; ++i)
+		{
+			p_effect_->begin_pass(i);
+			p_mesh_->DrawSubset(0);
+			p_effect_->end_pass();
+		}
+		p_effect_->end_effect();
 	}
-}
-
-void GEOMesh::on_render( time_t delta )
-{
-	if(p_mesh_ == NULL) return;
-	p_mesh_->DrawSubset(0);
 }
 
 bool GEOMesh::create_mesh_box( float width, float height, float depth )

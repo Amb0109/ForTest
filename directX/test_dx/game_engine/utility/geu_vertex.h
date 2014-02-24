@@ -3,8 +3,6 @@
 
 #include "../common/ge_include.h"
 
-#define VERTEX_ELEMENT_MAX_CNT 16
-
 namespace ge
 {
 
@@ -52,7 +50,7 @@ protected:
 							int& array_pos, int& mem_offset, int elem_size);
 
 private:
-	D3DVERTEXELEMENT9	vertex_element_[VERTEX_ELEMENT_MAX_CNT];
+	D3DVERTEXELEMENT9	vertex_element_[MAX_FVF_DECL_SIZE];
 
 	typedef std::map<DWORD, GE_VERTEX_DECL*> VERTEX_DECL_MAP;
 	VERTEX_DECL_MAP		vertex_decl_map_;

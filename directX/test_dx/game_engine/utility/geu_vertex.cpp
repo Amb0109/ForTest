@@ -70,7 +70,7 @@ void GEVertexDecl::_calc_vertex_element_array( DWORD fvf, int& array_pos, int& m
 bool GEVertexDecl::_update_vertex_element( DWORD fvf, DWORD add_fvf, int& array_pos, int& mem_offset )
 {
 	if (add_fvf != NULL && !(fvf & add_fvf)) return false;
-	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
+	if (array_pos + 1 >= MAX_FVF_DECL_SIZE) return false;
 
 #ifndef PUSH_VERTEX_ELEMENT
 #define PUSH_VERTEX_ELEMENT(type, usage, usage_index, size) \
@@ -161,7 +161,7 @@ bool GEVertexDecl::_push_vertex_element(
 	BYTE type, BYTE usage, BYTE usage_index,
 	int& array_pos, int& mem_offset, int elem_size )
 {
-	if (array_pos + 1 >= VERTEX_ELEMENT_MAX_CNT) return false;
+	if (array_pos + 1 >= MAX_FVF_DECL_SIZE) return false;
 	++ array_pos;
 
 	vertex_element_[array_pos].Stream	= 0;
