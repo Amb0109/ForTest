@@ -35,6 +35,8 @@ public:
 	virtual void unregister_device_object(GED3DDeviceObject*);
 
 	virtual bool set_resolution(int width, int height);
+	virtual bool set_windowed(bool is_windowed);
+	virtual bool get_windowed();
 
 protected:
 	virtual bool _init_render();
@@ -45,9 +47,10 @@ protected:
 	virtual bool _dx_present();
 	
 	virtual bool _dx_check();
+	virtual bool _dx_reset();
 	virtual void _on_lost_device();
 	virtual void _on_reset_device();
-	virtual bool _dx_reset();
+	virtual bool _on_dx_reset();
 
 private:
 	LPDIRECT3D9				p_d3d_;
@@ -58,6 +61,8 @@ private:
 
 	typedef std::set<GED3DDeviceObject*> DEVICE_OBJECT_SET;
 	DEVICE_OBJECT_SET		device_object_set_;
+
+	bool					is_windowed_;
 };
 
 } // namespace ge

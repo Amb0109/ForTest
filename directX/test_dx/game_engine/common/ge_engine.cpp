@@ -6,8 +6,10 @@ namespace ge
 {
 
 GEEngine::GEEngine()
-:p_d3d_(NULL) ,p_d3d_device_(NULL),
-p_ge_render_(NULL)
+: p_d3d_(NULL)
+, p_d3d_device_(NULL)
+, p_ge_render_(NULL)
+, is_windowed_(true)
 {
 }
 
@@ -65,7 +67,7 @@ bool GEEngine::init_engine()
 	d3d_present_param_.MultiSampleQuality			= 0;
 	d3d_present_param_.SwapEffect					= D3DSWAPEFFECT_DISCARD;
 	d3d_present_param_.hDeviceWindow				= p_ge_app_->get_wnd();
-	d3d_present_param_.Windowed						= TRUE;
+	d3d_present_param_.Windowed						= is_windowed_;
 	d3d_present_param_.EnableAutoDepthStencil		= TRUE;
 	d3d_present_param_.AutoDepthStencilFormat		= D3DFMT_D24X8;
 	d3d_present_param_.Flags						= D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
@@ -124,7 +126,7 @@ bool GEEngine::_dx_present()
 	return SUCCEEDED(h_res);
 }
 
-bool GEEngine::_dx_reset()
+bool GEEngine::_on_dx_reset()
 {
 	if (p_d3d_device_ == NULL) return false;
 	HRESULT h_res = p_d3d_device_->Reset(&d3d_present_param_);
@@ -143,19 +145,24 @@ bool GEEngine::_dx_check()
 	}
 	else if(D3DERR_DEVICENOTRESET == h_res)
 	{
-		_on_lost_device();
-		if (_dx_reset())
-		{
-			_on_reset_device();
-			return true;
-		}
-		return false;
+		return _dx_reset();
 	}
 	else if (FAILED(h_res))
 	{
 		return false;
 	}
 	return true;
+}
+
+bool GEEngine::_dx_reset()
+{
+	_on_lost_device();
+	if (_on_dx_reset())
+	{
+		_on_reset_device();
+		return true;
+	}
+	return false;
 }
 
 void GEEngine::process( time_t delta )
@@ -202,15 +209,28 @@ bool GEEngine::set_resolution( int width, int height )
 		d3d_present_param_.BackBufferWidth = (unsigned)width;
 		d3d_present_param_.BackBufferHeight = (unsigned)height;
 
-		_on_lost_device();
-		if (_dx_reset())
-		{
-			_on_reset_device();
-			return true;
-		}
-		else return false;
+		if(!_dx_reset()) return false;
 	}
 	return true;
+}
+
+bool GEEngine::set_windowed( bool is_windowed )
+{
+	is_windowed_ = is_windowed;
+	if (p_d3d_device_ == NULL) return false;
+
+	if (is_windowed != d3d_present_param_.Windowed)
+	{
+		d3d_present_param_.Windowed = is_windowed;		
+
+		if(!_dx_reset()) return false;
+	}
+	return true;
+}
+
+bool GEEngine::get_windowed()
+{
+	return is_windowed_;
 }
 
 void GEEngine::register_device_object( GED3DDeviceObject* device_obj )
