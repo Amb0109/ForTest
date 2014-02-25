@@ -18,6 +18,7 @@ struct GE_API GE_QUAD
 };
 
 class GETexture;
+class GEREffect;
 class GE_API GEOAtlasRender : public GEObject
 {
 	DLL_MANAGE_CLASS(GEOAtlasRender);
@@ -43,18 +44,16 @@ public:
 	virtual bool init_render();
 	virtual bool update_render();
 	virtual void release_render();
+	virtual bool prepare_render();
 
 	virtual bool add_quad(GE_QUAD& quad);
 	virtual void clear_quads();
 	virtual bool merge_quads();	//把同一贴图的图元放在一次drawcall里，会改变渲染层次
-	virtual bool draw_quads();
+	virtual bool draw_quads(GEREffect* effect = NULL);
 
 public:
 	virtual bool init();
 	virtual void release();
-
-	//virtual void update(time_t delta);
-	virtual void render(time_t delta);
 
 protected:
 	virtual bool _set_verties(std::vector<GE_VERTEX>& vertex_array);

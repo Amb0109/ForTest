@@ -1,5 +1,7 @@
 #include "ge_font_bm.h"
 #include "../../object/text/geo_text_bm.h"
+#include "../../render/ger_effect.h"
+#include "../../render/ge_render.h"
 
 namespace ge
 {
@@ -8,18 +10,48 @@ DLL_MANAGE_CLASS_IMPLEMENT(GEFontBM);
 
 GEFontBM::GEFontBM()
 : bm_font_()
+, effect_(NULL)
 {
 	type_ = FontType_BMFont;
 }
 
 GEFontBM::~GEFontBM()
 {
-
+	destory();
 }
 
 bool GEFontBM::init( const char* fnt_path )
 {
 	return (0 == bm_font_.Init(fnt_path));
+}
+
+void GEFontBM::destory()
+{
+	destory_effect();
+}
+
+bool GEFontBM::init_effect( const char* fx_path )
+{
+	if(!effect_) effect_ = GEREffect::create();
+	if (effect_)
+	{
+		effect_->create_from_file(fx_path);
+
+		GERender* render = GERender::get_instance();
+		effect_->set_matrix("VIEW", render->get_view_matrix());
+		effect_->set_matrix("PROJECTION", render->get_proj_matrix());
+	}
+	return effect_ != NULL;
+}
+
+void GEFontBM::destory_effect()
+{
+	if (effect_) GEREffect::release(&effect_);
+}
+
+GEREffect* GEFontBM::get_effect()
+{
+	return effect_;
 }
 
 int GEFontBM::get_page_cnt()

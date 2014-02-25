@@ -1,6 +1,7 @@
 #include "geo_text_bm.h"
 #include "../../common/ge_engine.h"
 #include "../../render/texture/ge_texture.h"
+#include "../../render/ger_effect.h"
 
 namespace ge
 {
@@ -55,7 +56,8 @@ bool GEOTextBM::update_font()
 		int png_id = render_object_->add_texture(page_path);
 		assert(png_id == i);
 	}
-
+	effect_ = bm_font->get_effect();
+	if (effect_) effect_->set_matrix("WORLD", get_world_transform());
 	need_update_font_ = false;
 	return true;
 }
@@ -140,7 +142,17 @@ void GEOTextBM::render( time_t delta )
 	if (need_update_font_) update_font();
 	if (need_update_text_) update_text();
 
-	render_object_->render(delta);
+	if(effect_)
+	{
+		effect_->set_technique("RenderWithOutline");
+		render_object_->prepare_render();
+		render_object_->draw_quads(effect_);
+	}
+	else
+	{
+		render_object_->prepare_render();
+		render_object_->draw_quads();
+	}
 }
 
 }

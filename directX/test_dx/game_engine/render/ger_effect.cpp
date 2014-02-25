@@ -3,19 +3,24 @@
 #include "../common/ge_engine.h"
 #include "../common/ge_app.h"
 #include "../object/ge_object.h"
+#include "../render/texture/ge_texture.h"
 
 namespace ge
 {
+
+DLL_MANAGE_CLASS_IMPLEMENT(GEREffect);
+
 GEREffect::GEREffect()
 :p_fx_(NULL),
 p_err_msg_(NULL)
 {
-
+	GEEngine::get_instance()->register_device_object(this);
 }
 
 GEREffect::~GEREffect()
 {
 	destory();
+	GEEngine::get_instance()->unregister_device_object(this);
 }
 
 bool GEREffect::create_from_file( const char* file_path )
@@ -104,6 +109,51 @@ bool GEREffect::end_pass()
 
 	HRESULT h_res = p_fx_->EndPass();
 	return SUCCEEDED(h_res);
+}
+
+bool GEREffect::set_texture( const char* semantic, GETexture* texture )
+{
+	if (p_fx_ == NULL) return false;
+
+	D3DXHANDLE h_param = NULL;
+	h_param = p_fx_->GetParameterBySemantic(NULL, semantic);
+	if (h_param == NULL) return false;
+	
+	HRESULT h_res = S_OK;
+	if (texture == NULL) h_res = p_fx_->SetTexture(h_param, NULL);
+	else h_res = p_fx_->SetTexture(h_param, texture->get_d3d_texture());
+	assert(SUCCEEDED(h_res));
+	return SUCCEEDED(h_res);
+}
+
+bool GEREffect::set_matrix( const char* semantic, D3DXMATRIX &matrix )
+{
+	if (p_fx_ == NULL) return false;
+
+	D3DXHANDLE h_param = NULL;
+	h_param = p_fx_->GetParameterBySemantic(NULL, semantic);
+	if (h_param == NULL) return false;
+
+	HRESULT h_res = S_OK;
+	h_res = p_fx_->SetMatrix(h_param, &matrix);
+	assert(SUCCEEDED(h_res));
+	return SUCCEEDED(h_res);
+}
+
+void GEREffect::on_lost_device()
+{
+	if(p_fx_)
+	{
+		p_fx_->OnLostDevice();
+	}
+}
+
+void GEREffect::on_reset_device()
+{
+	if(p_fx_)
+	{
+		p_fx_->OnResetDevice();
+	}
 }
 
 }

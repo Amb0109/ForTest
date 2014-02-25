@@ -65,7 +65,8 @@ void GEOTextGDI::render( time_t delta )
 	if (need_update_quad_) _update_quad();
 	if (need_update_text_) update_text_ex();
 
-	render_object_->render(delta);
+	render_object_->prepare_render();
+	render_object_->draw_quads();
 }
 
 bool GEOTextGDI::_init_render_object()

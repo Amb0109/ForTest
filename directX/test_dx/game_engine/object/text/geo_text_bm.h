@@ -11,7 +11,7 @@ namespace ge
 {
 
 class GEOAtlasRender;
-
+class GEREffect;
 class GE_API GEOTextBM : public GEOText
 {
 
@@ -45,6 +45,8 @@ private:
 
 	bool						need_update_text_;
 	bool						need_update_font_;
+
+	GEREffect*					effect_;
 };
 
 } // namespace ge

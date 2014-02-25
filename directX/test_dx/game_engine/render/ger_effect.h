@@ -7,11 +7,17 @@
 namespace ge
 {
 
-class GE_API GEREffect
+class GETexture;
+class GE_API GEREffect : public GED3DDeviceObject
 {
+	DLL_MANAGE_CLASS(GEREffect);
+
 public:
 	GEREffect();
 	virtual ~GEREffect();
+
+	virtual void on_lost_device();
+	virtual void on_reset_device();
 
 public:
 	bool create_from_file(const char* file_path);
@@ -28,6 +34,9 @@ public:
 	virtual bool	end_effect();
 	virtual bool	begin_pass(int pass_id);
 	virtual bool	end_pass();
+
+	virtual bool	set_texture(const char* semantic, GETexture* texture);
+	virtual bool	set_matrix(const char* semantic, D3DXMATRIX &matrix);
 
 protected:
 	LPD3DXEFFECT			p_fx_;

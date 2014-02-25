@@ -1,6 +1,7 @@
 #include "geo_atlas_render.h"
 #include "../common/ge_engine.h"
 #include "../render/texture/ge_texture_manager.h"
+#include "../render/ger_effect.h"
 
 namespace ge
 {
@@ -295,7 +296,7 @@ bool GEOAtlasRender::merge_quads()
 	return true;
 }
 
-bool GEOAtlasRender::draw_quads()
+bool GEOAtlasRender::draw_quads( GEREffect* effect/* = NULL*/ )
 {
 	LPDIRECT3DDEVICE9 p_d3d_device = GEEngine::get_instance()->get_device();
 	if (p_d3d_device == NULL) return false;
@@ -314,31 +315,53 @@ bool GEOAtlasRender::draw_quads()
 	FOR_EACH (QUAD_RENDER_TASK_LIST, render_task_list_, task)
 	{
 		GETexture* texture = get_texture(task->texture);
-		if(texture) texture->use_texture();
-		else GETexture::use_null_texture();
+		if (effect)
+		{
+			effect->set_texture("TEXTURE0", texture);
 
-		h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-			0,						// BaseVertexIndex
-			0,						// MinVertexIndex
-			dx_quads_cnt_ * 4,		// NumVertices
-			task->offset * 6,		// StartIndex
-			task->count * 2);		// PrimitiveCount
-		assert(SUCCEEDED(h_res));
+			int pass_cnt = effect->begin_effect();
+			for (int i=0; i<pass_cnt; ++i)
+			{
+				effect->begin_pass(i);
+				h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+					0,						// BaseVertexIndex
+					0,						// MinVertexIndex
+					dx_quads_cnt_ * 4,		// NumVertices
+					task->offset * 6,		// StartIndex
+					task->count * 2);		// PrimitiveCount
+				assert(SUCCEEDED(h_res));
+				effect->end_pass();
+			}
+			effect->end_effect();
+		}
+		else
+		{
+			if(texture) texture->use_texture();
+			else GETexture::use_null_texture();
+
+			h_res = p_d3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+				0,						// BaseVertexIndex
+				0,						// MinVertexIndex
+				dx_quads_cnt_ * 4,		// NumVertices
+				task->offset * 6,		// StartIndex
+				task->count * 2);		// PrimitiveCount
+			assert(SUCCEEDED(h_res));
+		}
 	}
-	GETexture::use_null_texture();
+	if (effect) effect->set_texture("TEXTURE0", NULL);
+	else GETexture::use_null_texture();
 	return true;
 }
 
-void GEOAtlasRender::render( time_t delta )
+bool GEOAtlasRender::prepare_render()
 {
 	if (need_render_update_)
 	{
-		if (!init_render()) return;
-		if (!update_render()) return;
+		if (!init_render()) return false;
+		if (!update_render()) return false;
 		need_render_update_ = false;
 	}
-
-	draw_quads();
+	return true;
 }
 
 

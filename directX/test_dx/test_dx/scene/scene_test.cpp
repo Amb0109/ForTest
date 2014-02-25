@@ -70,7 +70,8 @@ bool SceneTest::init_bm_text()
 {
 
 	p_bm_font_ = ge::GEFontBM::create();
-	p_bm_font_->init("bmfont\\fps3.fnt");
+	p_bm_font_->init("bmfont\\arial24.fnt");
+	p_bm_font_->init_effect("bmfont\\font.fx");
 
 	p_bm_text_ = ge::GEOTextBM::create();
 	p_bm_text_->set_font(p_bm_font_);

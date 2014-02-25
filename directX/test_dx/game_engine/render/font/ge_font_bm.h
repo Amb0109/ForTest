@@ -9,7 +9,7 @@
 namespace ge
 {
 
-class GETexture;
+class GEREffect;
 class GE_API GEFontBM : public GEFont
 {
 	DLL_MANAGE_CLASS(GEFontBM);
@@ -20,6 +20,11 @@ public:
 
 public:
 	virtual bool init(const char* fnt_path);
+	virtual void destory();
+	virtual bool init_effect(const char* fx_path);
+	virtual void destory_effect();
+
+	GEREffect* get_effect();
 
 	int  get_page_cnt();
 	bool get_page_path(char* texture_path, int index);
@@ -31,6 +36,7 @@ public:
 	
 private:
 	bmfont::CFont		bm_font_;
+	GEREffect*			effect_;
 };
 
 } // namespace ge
