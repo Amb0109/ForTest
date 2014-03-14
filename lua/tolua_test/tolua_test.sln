@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tolua_test", "tolua_test\tolua_test.vcxproj", "{6D4BC1AD-57D2-425D-8BEC-05415D30D0BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FB487FD5-43CE-4042-AFF8-3D6B9709290A} = {FB487FD5-43CE-4042-AFF8-3D6B9709290A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_lua", "lib_lua\lib_lua.vcxproj", "{FB487FD5-43CE-4042-AFF8-3D6B9709290A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D4BC1AD-57D2-425D-8BEC-05415D30D0BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6D4BC1AD-57D2-425D-8BEC-05415D30D0BA}.Debug|Win32.Build.0 = Debug|Win32
+		{6D4BC1AD-57D2-425D-8BEC-05415D30D0BA}.Release|Win32.ActiveCfg = Release|Win32
+		{6D4BC1AD-57D2-425D-8BEC-05415D30D0BA}.Release|Win32.Build.0 = Release|Win32
+		{FB487FD5-43CE-4042-AFF8-3D6B9709290A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FB487FD5-43CE-4042-AFF8-3D6B9709290A}.Debug|Win32.Build.0 = Debug|Win32
+		{FB487FD5-43CE-4042-AFF8-3D6B9709290A}.Release|Win32.ActiveCfg = Release|Win32
+		{FB487FD5-43CE-4042-AFF8-3D6B9709290A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
