@@ -81,11 +81,14 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="tests\tarray.h" />
+    <ClInclude Include="tests\tclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tests\tarray.c" />
     <ClCompile Include="tests\tarraybind.c" />
+    <ClCompile Include="tests\tclass.cpp" />
+    <ClCompile Include="tests\tclassbind.cpp" />
     <ClCompile Include="tolua_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

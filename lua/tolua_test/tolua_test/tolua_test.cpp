@@ -10,6 +10,8 @@ extern "C" {
 #include "tests/tarray.h"
 }
 
+#include "tests/tclass.h"
+
 void report_error(lua_State* L)
 {
 	int count = lua_gettop(L);
@@ -31,9 +33,11 @@ int main (void)
 	int ret = luaL_loadfile(L, "tarray.lua");
 	if (ret == 0)
 	{
-		ret == lua_pcall(L, 0, LUA_MULTRET, 0);
+		ret = lua_pcall(L, 0, LUA_MULTRET, 0);
 	}
 	if (ret != 0) report_error(L);
+
+	run_tclass(L);
 
 	lua_close(L);
 	return 0;

@@ -118,4 +118,6 @@ static void outside_func(Test::Tst_Outside* p_out, lua_State* ls) {
 	//printf("luastate: %i\n", ls);
 };
 
+int run_tclass (lua_State* L);
+
 #endif
