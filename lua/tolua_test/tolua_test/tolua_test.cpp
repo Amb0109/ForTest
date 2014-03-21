@@ -1,44 +1,23 @@
 
+#include "lua_engine.h"
 
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
-
-extern "C" {
 #include "tests/tarray.h"
-}
-
 #include "tests/tclass.h"
-
-void report_error(lua_State* L)
-{
-	int count = lua_gettop(L);
-
-	while(count > 0)
-	{
-		const char* msg = lua_tostring(L, -1);
-
-		fprintf(stderr, "%s\n", msg);
-		lua_pop(L, 1);
-		count--;
-	}
-}
+#include "tests/tcallback.h"
 
 int main (void)
 {
-	lua_State* L = lua_open();
-	init_tarray(L);
-	int ret = luaL_loadfile(L, "tarray.lua");
-	if (ret == 0)
-	{
-		ret = lua_pcall(L, 0, LUA_MULTRET, 0);
-	}
-	if (ret != 0) report_error(L);
+	LuaEngine* LE = LuaEngine::get_instance();
+	LE->open();
 
-	run_tclass(L);
+	lua_State* L = LE->get_state();
 
-	lua_close(L);
+	run_tarray(LE);
+	run_tclass(LE);
+
+	run_tcallback(LE);
+	
+
+	LE->close();
 	return 0;
 }

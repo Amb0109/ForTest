@@ -1,0 +1,12 @@
+$#include "tcallback.h"
+
+class TestCB
+{
+	TestCB();
+	~TestCB();
+
+	void print();
+
+	void set_lua_func(LUA_FUNCTION lua_func);
+	void do_func();
+}

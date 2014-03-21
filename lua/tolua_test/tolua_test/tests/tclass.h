@@ -1,6 +1,7 @@
 #ifndef TCLASS_H
 #define TCLASS_H
 
+#include "../lua_engine.h"
 #include <stdio.h>
 
 namespace Test {
@@ -118,6 +119,6 @@ static void outside_func(Test::Tst_Outside* p_out, lua_State* ls) {
 	//printf("luastate: %i\n", ls);
 };
 
-int run_tclass (lua_State* L);
+int run_tclass (LuaEngine* LE);
 
 #endif

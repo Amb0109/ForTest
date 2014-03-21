@@ -1,7 +1,3 @@
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-
 #include "tarray.h"
 
 
@@ -16,7 +12,7 @@ Point* mpp[10];
 Array array;
 Array* parray = &array;
 
-void init_tarray(lua_State* L)
+void run_tarray(LuaEngine* LE)
 {
 	int  tolua_tarray_open (lua_State*);
 	int i;
@@ -34,7 +30,8 @@ void init_tarray(lua_State* L)
 		array.pp[i] = pp[i];
 	}
 
-	luaopen_base(L);
-	tolua_tarray_open(L);
+	tolua_tarray_open(LE->get_state());
+
+	LE->run_script("tarray.lua");
 }
 

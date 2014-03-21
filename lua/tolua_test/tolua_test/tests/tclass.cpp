@@ -1,9 +1,3 @@
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
-
 #include "tclass.h"
 
 //Test::Tst_A* Test::Tst_A::last;
@@ -13,14 +7,13 @@ extern "C" {
 
 int  tolua_tclass_open (lua_State*);
 
-int run_tclass (lua_State* L)
+int run_tclass (LuaEngine* LE)
 {
 	Test::Tst_B* b = new Test::Tst_B;         // instance used in Lua code
 
-	luaL_openlibs(L);
-	tolua_tclass_open(L);
+	tolua_tclass_open(LE->get_state());
 
-	luaL_dofile(L,"tclass.lua");
+	LE->run_script("tclass.lua");
 
 	delete b;
 	return 0;

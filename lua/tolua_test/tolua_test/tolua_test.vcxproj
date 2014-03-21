@@ -79,14 +79,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="lua_engine.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="tests\tarray.h" />
+    <ClInclude Include="tests\tcallback.h" />
     <ClInclude Include="tests\tclass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lua_engine.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="tests\tarray.c" />
-    <ClCompile Include="tests\tarraybind.c" />
+    <ClCompile Include="tests\tarray.cpp" />
+    <ClCompile Include="tests\tarraybind.cpp" />
+    <ClCompile Include="tests\tcallback.cpp" />
+    <ClCompile Include="tests\tcallbackbind.cpp" />
     <ClCompile Include="tests\tclass.cpp" />
     <ClCompile Include="tests\tclassbind.cpp" />
     <ClCompile Include="tolua_test.cpp" />

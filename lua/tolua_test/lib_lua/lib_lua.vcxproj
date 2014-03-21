@@ -44,6 +44,7 @@
     <ClCompile Include="lua\lzio.c" />
     <ClCompile Include="lua\print.c" />
     <ClCompile Include="tolua_event.c" />
+    <ClCompile Include="tolua_fix.c" />
     <ClCompile Include="tolua_is.c" />
     <ClCompile Include="tolua_map.c" />
     <ClCompile Include="tolua_push.c" />
@@ -75,6 +76,7 @@
     <ClInclude Include="lua\lzio.h" />
     <ClInclude Include="tolua++.h" />
     <ClInclude Include="tolua_event.h" />
+    <ClInclude Include="tolua_fix.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB487FD5-43CE-4042-AFF8-3D6B9709290A}</ProjectGuid>

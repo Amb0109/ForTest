@@ -1,6 +1,6 @@
 /*
 ** Lua binding: tarray
-** Generated automatically by tolua++-1.0.92 on 03/13/14 15:55:11.
+** Generated automatically by tolua++-1.0.92 on 03/20/14 17:42:53.
 */
 
 #ifndef __cplusplus

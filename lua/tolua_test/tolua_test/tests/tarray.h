@@ -1,3 +1,7 @@
+#ifndef _TARRAY_H_
+#define _TARRAY_H_
+
+#include "../lua_engine.h"
 
 typedef struct Point Point;
 struct Point
@@ -27,4 +31,6 @@ struct Array
 extern Array array;
 extern Array* parray;
 
-void init_tarray(lua_State* L);
+void run_tarray(LuaEngine* LE);
+
+#endif
